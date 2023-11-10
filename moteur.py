@@ -24,7 +24,7 @@ class CMoteur:
 
     def initialiser(self):  
         self.JOUEURS = []
-        self.JOUEURS.append(CJoueur(self, 4.0, 4.0, "joueur 1"))
+        self.JOUEURS.append(CJoueur(self, 4.0, 4.0, "Director"))
         self.TERRAIN = CTerrain('carte.txt')
         self.MAP = self.TERRAIN.MAP
             
@@ -72,7 +72,7 @@ class CMoteur:
             
             VAR.fenetre.fill((16,16,16))    
             VAR.fenetre.blit(self.TERRAIN.planche, (0,0))
-            self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y, 0) 
+            #self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y, 0) 
             VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
             
             
