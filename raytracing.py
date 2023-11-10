@@ -34,9 +34,10 @@ class raytracing:
        
         # --- limite au champ de vision
         champs = 60   
+        precision = 4
         
         if self.MOTEUR.JOUEURS[0].direction == None : return
-        plages = raytracing.plage_angles(self.MOTEUR.JOUEURS[0].direction, champs, 4) 
+        plages = raytracing.plage_angles(self.MOTEUR.JOUEURS[0].direction, champs, precision) 
         
         # --- recupere la zone
         for i in plages: 

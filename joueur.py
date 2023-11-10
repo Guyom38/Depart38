@@ -36,11 +36,11 @@ class CJoueur:
         elif self.direction == ENUM_DIR.BAS:
             self.y = self.y + VAR.pas
 
-        x2 = int(round(self.x, 0))
-        y2 = int(round(self.y, 0))
+        x2 = int(round(self.x * VAR.dim, 0))+ self.offsetX
+        y2 = int(round(self.y * VAR.dim, 0))+ self.offsetY
                         
-        if x2 > -1 and x2 < 60 and y2 > -1 and y2 < 30 :                
-            if self.MOTEUR.MAP[x2][y2] == 1:
+        if x2 > -1 and x2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and y2 > -1 and y2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[1] :                
+            if self.MOTEUR.TERRAIN.arrayBlocage[x2, y2] == 0:
                 self.x, self.y = xo, yo
                 d = 0
     
