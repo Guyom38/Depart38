@@ -15,7 +15,7 @@ from joueur import *
 class CMoteur:
     def __init__(self):
         pygame.init()
-        VAR.fenetre = pygame.display.set_mode((1400, 768), pygame.DOUBLEBUF, 32)
+        VAR.fenetre = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN, 32)
         pygame.display.set_caption("Espion")
         self.horloge = pygame.time.Clock()
         
@@ -72,7 +72,7 @@ class CMoteur:
             
             VAR.fenetre.fill((16,16,16))    
             VAR.fenetre.blit(self.TERRAIN.planche, (0,0))
-            #self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y, 0) 
+           # self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y, 0) 
             VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
             
             

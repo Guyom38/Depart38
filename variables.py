@@ -4,7 +4,7 @@ from fonctions import *
 fenetre = None
 boucle = True
 
-pas = 0.1
+pas = 0.2
 dim = 32
 
 t_ray = 0

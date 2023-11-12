@@ -1,0 +1,53 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "Interiors_32x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Modern_Office_Black_Shadow_32x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Room_Builder_Office_32x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 743,
+                "y": 618
+            }
+        },
+        "test.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/Guillaume/Documents/#Projets/python/Depart38/.ressources",
+    "map.height": 30,
+    "map.lastUsedFormat": "tmx",
+    "map.width": 60,
+    "openFiles": [
+        "Interiors_32x32.tsx",
+        "map.tmx"
+    ],
+    "project": "NoJobNoGain.tiled-project",
+    "recentFiles": [
+        "Interiors_32x32.tsx",
+        "map.tmx",
+        "Room_Builder_Office_32x32.tsx",
+        "Modern_Office_Black_Shadow_32x32.tsx",
+        "test.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}

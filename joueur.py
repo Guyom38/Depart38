@@ -4,14 +4,14 @@ import variables as VAR
 from fonctions import *
 import time
 
-class ENUM_DIR(Enum):
+class ENUM_DIR:
     BAS = 270
     GAUCHE = 0
     DROITE = 180
     HAUT = 90
     AUCUN = None
 
-class ENUM_ANIMATION(Enum):
+class ENUM_ANIMATION:
     ARRETER = 0
     IDEAL = 1
     MARCHER = 2
