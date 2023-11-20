@@ -29,13 +29,13 @@ class raytracing:
         return  [angle % 360 for angle in (plage1 + plage2)]
     
            
-    def afficher(self, x, y, mode):
+    def afficher(self, x, y):
         VAR.t_ray = time.time()
         contour = []
        
         # --- limite au champ de vision
         champs = 60   
-        precision = 8
+        precision = 4
         
         if self.MOTEUR.JOUEURS[0].direction == None : return
         plages = raytracing.plage_angles(self.MOTEUR.JOUEURS[0].direction, champs, precision) 
@@ -55,7 +55,7 @@ class raytracing:
                 # --- c'est le dernier element de la liste
                 if px2 > -1 and px2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and py2 > -1 and py2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[1] :
                     
-                    if self.MOTEUR.TERRAIN.arrayBlocage[px2, py2] == 255:                           
+                    if self.MOTEUR.TERRAIN.arrayBlocage[px2, py2] == 0:                           
                         if o == len(liste)-1:                                
                             bord = True                                
                     else:

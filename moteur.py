@@ -24,13 +24,12 @@ class CMoteur:
 
     def initialiser(self):  
         self.JOUEURS = []
-        self.JOUEURS.append(CJoueur(self, 4.0, 4.0, "Director"))
-        self.TERRAIN = CTerrain('carte.txt')
+        self.JOUEURS.append(CJoueur(self, 6.0, 6.0, "Director"))
+        self.TERRAIN = CTerrain()
         self.MAP = self.TERRAIN.MAP
             
         self.rays = raytracing(self, 300, 1)
-        
-        
+         
     def demarrer(self):       
         cycle, som_t = 0,0
         self.TERRAIN.preparer_terrain()
@@ -72,9 +71,9 @@ class CMoteur:
             
             VAR.fenetre.fill((16,16,16))    
             VAR.fenetre.blit(self.TERRAIN.planche, (0,0))
-           # self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y, 0) 
-            VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
-            
+           
+            self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y) 
+          #  VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
             
             
             
@@ -91,7 +90,7 @@ class CMoteur:
             pygame.display.update()
 
             # --- limite la fréquence de raffraichissement a 25 images seconde
-            self.horloge.tick(50)
+            self.horloge.tick(25)
 
         # --- en sortie de boucle, quitte le programme
         pygame.quit() 

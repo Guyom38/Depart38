@@ -56,7 +56,7 @@ class CJoueur:
         y2 = int(round(self.y * VAR.dim, 0))
                         
         if x2 > -1 and x2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and y2 > -1 and y2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[1] :                
-            if self.MOTEUR.TERRAIN.arrayBlocage[x2, y2] == 0 or self.MOTEUR.TERRAIN.arrayBlocage[x2+16, y2+4] == 0:
+            if not (self.MOTEUR.TERRAIN.arrayBlocage[x2, y2] == 0 or self.MOTEUR.TERRAIN.arrayBlocage[x2+16, y2+4] == 0):
                 self.x, self.y = xo, yo
                 self.direction = ENUM_DIR.AUCUN
 

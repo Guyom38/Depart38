@@ -1,6 +1,11 @@
 from fonctions import *
 
+dimension_x = 10
+dimension_y = 10
 
+images = {}
+
+        
 fenetre = None
 boucle = True
 
