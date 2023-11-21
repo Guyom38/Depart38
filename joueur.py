@@ -25,22 +25,48 @@ class CJoueur:
         self.MOTEUR = moteur
         
         self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
-        self.nom = ["Vincent", "(Director)"]
+        self.nom ="(Director)"
+      
+        ecriture = pygame.font.SysFont('arial', 20) 
+        self.image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
+        self.image_texte = ecriture.render( self.nom , True, (255,255,255)) 
         
+         
         self.x, self.y = x, y
         self.nom = nom
         self.vitesse = 0.1
         self.direction = ENUM_DIR.AUCUN
         
         self.directionPrecedente = ENUM_DIR.AUCUN
-        self.seTourne = 0
-        
-        self.taille = 10
-        self.offsetX, self.offsetY = 0, -8
+        self.seTourne = 0        
+       
+        self.offsetX, self.offsetY = 0, -60
         
         self.tempo = 0
         self.tempoTimer = time.time()
         
+    def position_ecran_x(self):
+        return int(round((self.x * VAR.dim) + self.offsetX,0))
+    def position_ecran_y(self):
+        return int(round((self.y * VAR.dim) + self.offsetY,0))
+    
+    def position_int_x(self):
+        return int(round((self.x * VAR.dim), 0))
+    def position_int_y(self):
+        return int(round((self.y * VAR.dim), 0))
+        
+    def toujours_sur_le_terrain(self):
+        return (    self.position_int_x() > -1 and self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] \
+                    and self.position_int_y() > -1 and self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
+    
+    def collision_avec_decors(self):
+        x2, y2 = self.position_int_x(), self.position_int_y()
+        collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x2+4, y2] > 0)
+        collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x2+26, y2+4] > 0)
+        
+        #pygame.draw.rect(VAR.fenetre, (255,0,0), (x2+4,y2,22,6), 0)        
+        return collision_coin1 or collision_coin2
+    
     def se_deplace(self):
         xo, yo = self.x, self.y
         if self.direction == ENUM_DIR.GAUCHE:
@@ -52,11 +78,10 @@ class CJoueur:
         elif self.direction == ENUM_DIR.BAS:
             self.y = self.y + VAR.pas
 
-        x2 = int(round(self.x * VAR.dim, 0))
-        y2 = int(round(self.y * VAR.dim, 0))
-                        
-        if x2 > -1 and x2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and y2 > -1 and y2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[1] :                
-            if not (self.MOTEUR.TERRAIN.arrayBlocage[x2, y2] == 0 or self.MOTEUR.TERRAIN.arrayBlocage[x2+16, y2+4] == 0):
+        
+          
+        if self.toujours_sur_le_terrain():                
+            if self.collision_avec_decors():
                 self.x, self.y = xo, yo
                 self.direction = ENUM_DIR.AUCUN
 
@@ -75,19 +100,16 @@ class CJoueur:
         
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
-    def afficher(self):   
-        joueurX, joueurY = (self.x * VAR.dim) + self.offsetX, (self.y * VAR.dim) + self.offsetY
+    
+    def afficher(self):          
+        VAR.fenetre.blit(self.image, (self.position_ecran_x(), self.position_ecran_y()), self.coordonnees_image_animee())
+        VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-64-2))
+        VAR.fenetre.blit(self.image_texte, (self.position_ecran_x(), self.position_ecran_y()-64))
         
-       # ombre = pygame.Surface((16,16), pygame.SRCALPHA)
-       # pygame.draw.circle(ombre, (0,0,0, 128), (0,0,16,16)) 
-        
-       # VAR.fenetre.blit(ombre, (joueurX+6, joueurY+6))
-        #pygame.draw.circle(VAR.fenetre, (0,0,0), (joueurX+6, joueurY+6), 16) 
-        VAR.fenetre.blit(self.image, (joueurX-10, joueurY-48), self.coordonnees_image_animee())
-        
+        key = "{:04d}{:04d}{:01d}".format(self.position_ecran_y(), self.position_ecran_x(), 9)
         ecriture = pygame.font.SysFont('arial', 20) 
-        image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
-        image_texte = ecriture.render( self.nom , True, (255,255,255)) 
-        VAR.fenetre.blit(image_ombre, (joueurX-2, joueurY-64-2))
-        VAR.fenetre.blit(image_texte, (joueurX, joueurY-64))
-        #print(self.tempo)
+        image_texte = ecriture.render( key , True, (0,0,0)) 
+        VAR.fenetre.blit(image_texte, (self.position_ecran_x()+50, self.position_ecran_y()))
+    
+        
+    

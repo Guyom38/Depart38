@@ -5,7 +5,7 @@ dimension_y = 10
 
 images = {}
 
-        
+       
 fenetre = None
 boucle = True
 

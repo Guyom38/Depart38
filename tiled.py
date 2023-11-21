@@ -3,13 +3,17 @@ import xml.etree.ElementTree as XML
 
 import fonctions as FCT
 import variables as VAR
+import objets as OBJS
 
 class map_tiled:
-    def __init__(self, fichier):
+    def __init__(self, moteur, fichier):
+        self.MOTEUR = moteur
+        
         tree = XML.parse(fichier)
         self.root = tree.getroot()
         
         self.fichiers_image = []
+        self.objets = {}
         
         # --- Charge les fichiers contenant les images du jeu
         self.chargement_des_fichiers_images()
@@ -17,7 +21,6 @@ class map_tiled:
         # --- Cree le terrain pour connaitre les sprites a recuperer
         self.chargement_des_calques()   
         
-        self.initialisation_terrain()
         
         
                
@@ -44,8 +47,7 @@ class map_tiled:
                             index = int(index)           
                             if not index in VAR.images:
                                 VAR.images[index] = self.retourne_images_index(index)
-                                print(index)
-                         
+                              
     
     
     
@@ -72,34 +74,34 @@ class map_tiled:
             if debut <= index < debut+nombre:   
                 indexN = index - debut
                 y = indexN // colonnes
-                x = indexN % colonnes                
+                x = indexN % colonnes   
+                dimX, dimY = 32, 32
+                
+                if indexN in OBJS.LISTE_OBJ_DOUBLE_HAUTEUR:
+                    y -= 1
+                    dimY = 64                             
 
-                return image.subsurface( (x * 32, y * 32, 32, 32))
+                return (indexN, image.subsurface( (x * 32, y * 32, dimX, dimY)))
         
         image_none = pygame.Surface((32,32))
         pygame.draw.rect(image_none, (255,255,255), (0, 0, 32, 32), 4)
-        return image_none
+        return (0, image_none)
         
            
             
-    def initialisation_terrain(self):
-        VAR.dimension_x = int(self.root.attrib['width'].replace("'","")) 
-        VAR.dimension_y = int(self.root.attrib['height'].replace("'","")) 
-        
-        self.MAP =  FCT.GenereMat2D(VAR.dimension_x, VAR.dimension_y, 0)
-        
-        self.planche = pygame.image.load(".ressources/maps.png")
+   
        
     def generer_map(self):
         planche = pygame.Surface((1920, 1080))
- 
+        
+        c = 0
         for layer in self.root.findall('layer'):
             if not layer.attrib['name'] == "Bloqué":
                 data = layer.find('data')
                 if data is not None:               
                     csv_text = data.text.strip()
                     lines = csv_text.split('\n')
-                    x, y = 0, 0
+                    y = 0
                     for line in lines:
                         x = 0
                         tile_ids = line.split(',')   
@@ -109,12 +111,16 @@ class map_tiled:
                             
                             if not index == "":
                                 index = int(index)   
-                                if index > 0:
-                                    image = VAR.images[index]                                    
-                                    planche.blit(image, (x*32, y*32))   
+                                if index > 0:  
+                                    if layer.attrib['name'] in ("Sol", "Mur"): 
+                                        indexOrigine, image = VAR.images[index]                                                                
+                                        planche.blit(image, (x*32, y*32))   
+                                    else:
+                                        self.MOTEUR.OBJETS.traitement_objet(index, x, y, c)
+
                             x += 1                             
                         y+=1
-        
+            c+=1
         return planche
     
     def generer_blocage(self):
@@ -137,7 +143,7 @@ class map_tiled:
                             if not index == "":
                                 index = int(index)   
                                 if index > 0:
-                                    image = VAR.images[index]                                    
+                                    indexOrigine, image = VAR.images[index]                                    
                                     bloquage.blit(image, (x*32, y*32))   
                             x += 1                             
                         y+=1

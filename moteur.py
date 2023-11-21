@@ -11,6 +11,8 @@ from raytracing import *
 from fonctions import *
 from terrain import *
 from joueur import *
+from objets import *
+
 
 class CMoteur:
     def __init__(self):
@@ -22,14 +24,29 @@ class CMoteur:
         self.initialiser()
         
 
-    def initialiser(self):  
+    def initialiser(self):          
+        self.OBJETS = CObjets(self)
+        
         self.JOUEURS = []
-        self.JOUEURS.append(CJoueur(self, 6.0, 6.0, "Director"))
-        self.TERRAIN = CTerrain()
-        self.MAP = self.TERRAIN.MAP
+        self.JOUEURS.append(CJoueur(self, 1.0, 5.0, "Director"))
+        
+        VAR.OBJETS = []
+        
+        self.TERRAIN = CTerrain(self)
             
         self.rays = raytracing(self, 300, 1)
-         
+        
+    def afficher_elements(self):
+        x = self.JOUEURS[0].position_int_x() 
+        y = self.JOUEURS[0].position_int_y() 
+        key = "{:04d}{:04d}{:01d}".format(y, x, 9)
+        listes_fusionnees = {**self.OBJETS.liste, **{key: self.JOUEURS[0]}}
+        
+        liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
+        for cle_coordonnees, objet in liste_objets_tries:               
+            objet.afficher()
+            
+                
     def demarrer(self):       
         cycle, som_t = 0,0
         self.TERRAIN.preparer_terrain()
@@ -61,27 +78,28 @@ class CMoteur:
             
 
                         
-            self.JOUEURS[0].se_deplace()
+            
 
        
         
             som_t += VAR.t_ray
             cycle += 1
             
+            self.JOUEURS[0].se_deplace()
+          
             
             VAR.fenetre.fill((16,16,16))    
             VAR.fenetre.blit(self.TERRAIN.planche, (0,0))
            
-            self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y) 
+        # self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y) 
           #  VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
+            self.afficher_elements()
             
             
-            
-            
-            self.JOUEURS[0].afficher()
+            #self.JOUEURS[0].afficher()
             
             ecriture = pygame.font.SysFont('arial', 40) 
-            image_texte = ecriture.render( str(int(VAR.t_ray * 1000)) + "ms" , True, (255,0,0)) 
+            image_texte = ecriture.render( str(int(VAR.t_ray * 1000)) + "ms, " + str(len(self.OBJETS.liste)) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 550))
             
             
