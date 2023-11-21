@@ -3,7 +3,7 @@ import xml.etree.ElementTree as XML
 
 import fonctions as FCT
 import variables as VAR
-import objets as OBJS
+from objets import *
 
 class map_tiled:
     def __init__(self, moteur, fichier):
@@ -15,14 +15,36 @@ class map_tiled:
         self.fichiers_image = []
         self.objets = {}
         
+        self.planche = pygame.Surface((1920, 1080))
+        self.bloquage = pygame.Surface((1920, 1080)).convert_alpha()
+        
         # --- Charge les fichiers contenant les images du jeu
-        self.chargement_des_fichiers_images()
-    
+        self.chargement_des_fichiers_images()    
         # --- Cree le terrain pour connaitre les sprites a recuperer
         self.chargement_des_calques()   
         
         
         
+        
+    def chargement_des_fichiers_images(self):
+        # --- crée une liste de fichier avec l'index de debut et de fin
+        tilesets = self.root.findall('tileset')
+        for tileset in tilesets:         
+            
+            source = tileset.attrib.get('source')         
+            xml_fichier_tsx = XML.parse(".ressources/"+source)
+            root_fichier_tsx = xml_fichier_tsx.getroot()
+            
+            firstgid = int(tileset.attrib.get('firstgid'))
+            nombre_colonnes = int(root_fichier_tsx.attrib['columns'])
+            nombre_tiles = int(root_fichier_tsx.attrib['tilecount'])
+            fichier = root_fichier_tsx.find('image').get('source')                                    
+            image = pygame.image.load(".ressources/"+fichier).convert_alpha()
+            
+            self.fichiers_image.append((firstgid, nombre_tiles, nombre_colonnes, image))
+               
+               
+               
                
     # --- Parcours les differentes couches et crée une entrée vide dans le dictionnaire contenant la clé de l'image         
     def chargement_des_calques(self):
@@ -51,48 +73,37 @@ class map_tiled:
     
     
     
-    def chargement_des_fichiers_images(self):
-        # --- crée une liste de fichier avec l'index de debut et de fin
-        tilesets = self.root.findall('tileset')
-        for tileset in tilesets:         
-            
-            source = tileset.attrib.get('source')         
-            xml_fichier_tsx = XML.parse(".ressources/"+source)
-            root_fichier_tsx = xml_fichier_tsx.getroot()
-            
-            firstgid = int(tileset.attrib.get('firstgid'))
-            nombre_colonnes = int(root_fichier_tsx.attrib['columns'])
-            nombre_tiles = int(root_fichier_tsx.attrib['tilecount'])
-            fichier = root_fichier_tsx.find('image').get('source')                                    
-            image = pygame.image.load(".ressources/"+fichier).convert_alpha()
-            
-            self.fichiers_image.append((firstgid, nombre_tiles, nombre_colonnes, image))
+    
             
             
     def retourne_images_index(self, index):
         for debut, nombre, colonnes, image in self.fichiers_image:
+            etat = C_AUCUN
+            
             if debut <= index < debut+nombre:   
                 indexN = index - debut
-                y = indexN // colonnes
-                x = indexN % colonnes   
-                dimX, dimY = 32, 32
-                
-                if indexN in OBJS.LISTE_OBJ_DOUBLE_HAUTEUR:
-                    y -= 1
-                    dimY = 64                             
+                y = (indexN // colonnes)
+                x = (indexN % colonnes)   
+                dimX, dimY = VAR.dim, VAR.dim
+                                
+                if index in LISTE_SCALE_OBJET:
+                    coeffX, coeffY, etat = LISTE_SCALE_OBJET[index]
+                    if coeffX > 1 or coeffY > 1:
+                        y -= (coeffY - 1)                        
+                        dimX = (coeffX * VAR.dim)
+                        dimY = (coeffY * VAR.dim)                             
 
-                return (indexN, image.subsurface( (x * 32, y * 32, dimX, dimY)))
+                return (image.subsurface( (x * VAR.dim, y * VAR.dim, dimX, dimY)), etat)
         
-        image_none = pygame.Surface((32,32))
-        pygame.draw.rect(image_none, (255,255,255), (0, 0, 32, 32), 4)
-        return (0, image_none)
+        return "index introuvable"
+
         
            
             
    
        
     def generer_map(self):
-        planche = pygame.Surface((1920, 1080))
+        
         
         c = 0
         for layer in self.root.findall('layer'):
@@ -112,20 +123,24 @@ class map_tiled:
                             if not index == "":
                                 index = int(index)   
                                 if index > 0:  
+                                    
                                     if layer.attrib['name'] in ("Sol", "Mur"): 
-                                        indexOrigine, image = VAR.images[index]                                                                
-                                        planche.blit(image, (x*32, y*32))   
+                                        image, traversable = VAR.images[index]                                                                                                        
+                                        self.planche.blit(image, (x * VAR.dim, y * VAR.dim))  
+                                         
                                     else:
-                                        self.MOTEUR.OBJETS.traitement_objet(index, x, y, c)
-
+                                        # --- ajoute a la liste des objets a afficher avec une priorité
+                                        objet = self.MOTEUR.OBJETS.traitement_objet(index, x, y, (layer.attrib['name'] == "Decors"))
+                                        
+                                        # --- integration a la zone bloquée
+                                        if (not objet == None) and (objet.etat == C_OBSTACLE):
+                                            objet.afficher(self.bloquage)
                             x += 1                             
                         y+=1
             c+=1
-        return planche
+        return self.planche
     
-    def generer_blocage(self):
-        bloquage = pygame.Surface((1920, 1080))
- 
+    def generer_blocage(self):   
         for layer in self.root.findall('layer'):
             if layer.attrib['name'] == "Bloqué":
                 data = layer.find('data')
@@ -143,9 +158,9 @@ class map_tiled:
                             if not index == "":
                                 index = int(index)   
                                 if index > 0:
-                                    indexOrigine, image = VAR.images[index]                                    
-                                    bloquage.blit(image, (x*32, y*32))   
+                                    image, traversable = VAR.images[index]                                    
+                                    self.bloquage.blit(image, (x * VAR.dim, y * VAR.dim))   
                             x += 1                             
                         y+=1
         
-        return bloquage
+        return self.bloquage

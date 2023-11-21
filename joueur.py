@@ -21,9 +21,9 @@ class ENUM_ANIMATION:
     COURIR = 8
     
 class CJoueur:
-    def __init__(self, moteur, x, y, nom):
+    def __init__(self, moteur, index, x, y, nom):
         self.MOTEUR = moteur
-        
+        self.index = index
         self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
         self.nom ="(Director)"
       
@@ -105,11 +105,7 @@ class CJoueur:
         VAR.fenetre.blit(self.image, (self.position_ecran_x(), self.position_ecran_y()), self.coordonnees_image_animee())
         VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-64-2))
         VAR.fenetre.blit(self.image_texte, (self.position_ecran_x(), self.position_ecran_y()-64))
-        
-        key = "{:04d}{:04d}{:01d}".format(self.position_ecran_y(), self.position_ecran_x(), 9)
-        ecriture = pygame.font.SysFont('arial', 20) 
-        image_texte = ecriture.render( key , True, (0,0,0)) 
-        VAR.fenetre.blit(image_texte, (self.position_ecran_x()+50, self.position_ecran_y()))
+
     
         
     
