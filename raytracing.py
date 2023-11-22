@@ -69,7 +69,7 @@ class raytracing:
                 contour.append((px2 , py2))
                     
         if len(contour) > 2 : 
-            px2, py2 = ( x * VAR.dim) + 8 , ( y * VAR.dim ) 
+            px2, py2 = ( x * VAR.dim) +15 , ( y * VAR.dim ) -4
             contour.append((px2 , py2))
             pygame.draw.polygon(VAR.fenetre, (0,0,255, 255), contour, 0)
                     

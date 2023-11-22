@@ -100,14 +100,43 @@ class map_tiled:
         
            
             
-   
-       
+    
+    def generer_parcours_PNJ(self):
+        parcours = {}
+        for layer in self.root.findall('layer'):
+            if layer.attrib['name'].startswith("Chemin"):
+                data = layer.find('data')
+                if data is not None:               
+                    xx, yy = 4, 4
+                    grille_parcours = FCT.GenereMat2D(VAR.dimension_x, VAR.dimension_y, 0)
+                    
+                    csv_text = data.text.strip()
+                    lines = csv_text.split('\n')
+                    y = 0
+                    for line in lines:
+                        x = 0
+                        tile_ids = line.split(',')   
+                        print(line)
+                        for tile in tile_ids:                              
+                            index = tile.replace("'","")     
+                            
+                            if not index == "":
+                                grille_parcours[x][y] = int(index)  
+                                if int(index) == 17106: xx, yy = x, y
+                            x += 1
+                        y += 1
+                    
+                    parcours[layer.attrib['name']] = {}
+                    parcours[layer.attrib['name']]['GRILLE'] = grille_parcours 
+                    parcours[layer.attrib['name']]['DEPART'] = (xx, yy)
+        return parcours
+                
     def generer_map(self):
         
         
         c = 0
         for layer in self.root.findall('layer'):
-            if not layer.attrib['name'] == "Bloqué":
+            if not layer.attrib['name'] == "Bloqué" and not layer.attrib['name'].startswith("Chemin"):
                 data = layer.find('data')
                 if data is not None:               
                     csv_text = data.text.strip()
@@ -130,11 +159,12 @@ class map_tiled:
                                          
                                     else:
                                         # --- ajoute a la liste des objets a afficher avec une priorité
-                                        objet = self.MOTEUR.OBJETS.traitement_objet(index, x, y, (layer.attrib['name'] == "Decors"))
+                                        objet = self.MOTEUR.OBJETS.traitement_objet(index, x, y, c, (layer.attrib['name'] in ("Decors", "Derriere_Meuble", "Devant_Meuble")))
                                         
                                         # --- integration a la zone bloquée
                                         if (not objet == None) and (objet.etat == C_OBSTACLE):
                                             objet.afficher(self.bloquage)
+                                            
                             x += 1                             
                         y+=1
             c+=1

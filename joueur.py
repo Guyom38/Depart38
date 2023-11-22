@@ -23,17 +23,21 @@ class ENUM_ANIMATION:
 class CJoueur:
     def __init__(self, moteur, index, x, y, nom):
         self.MOTEUR = moteur
+        
         self.index = index
-        self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
-        self.nom ="(Director)"
-      
+        if nom == "Director":
+            self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
+        else:
+            self.image = pygame.image.load(".ressources/agent2.png").convert_alpha()
+        self.nom = nom
+        self.parcours = None
+        
         ecriture = pygame.font.SysFont('arial', 20) 
         self.image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
         self.image_texte = ecriture.render( self.nom , True, (255,255,255)) 
-        
-         
+                 
         self.x, self.y = x, y
-        self.nom = nom
+
         self.vitesse = 0.1
         self.direction = ENUM_DIR.AUCUN
         
@@ -67,7 +71,24 @@ class CJoueur:
         #pygame.draw.rect(VAR.fenetre, (255,0,0), (x2+4,y2,22,6), 0)        
         return collision_coin1 or collision_coin2
     
+    def PNJ_suit_la_trace(self):
+        x, y = int(round(self.x, 0)), int(round(self.y, 0))
+        print((x, y))
+        if x+1 < VAR.dimension_x and self.parcours[x+1][y] > 0: 
+            self.direction = ENUM_DIR.DROITE
+        elif x-1 >= 0 and self.parcours[x-1][y] > 0: 
+            self.direction = ENUM_DIR.GAUCHE
+        elif y+1 < VAR.dimension_y and self.parcours[x][y+1] > 0: 
+            self.direction = ENUM_DIR.BAS
+        elif y-1 >= 0 and self.parcours[x][y-1] > 0: 
+            self.direction = ENUM_DIR.HAUT
+                                         
+        
     def se_deplace(self):
+        # --- Si ordinateur suivre le chemin
+        if not self.parcours == None:
+            self.PNJ_suit_la_trace()
+            
         xo, yo = self.x, self.y
         if self.direction == ENUM_DIR.GAUCHE:
             self.x = self.x - VAR.pas
