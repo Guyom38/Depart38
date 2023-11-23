@@ -23,7 +23,7 @@ class CTerrain:
         parcours = self.MOTEUR_TILED.generer_parcours_PNJ()
         
         compteurs_parcours = {}
-        for pnj in self.MOTEUR.PNJS:
+        for pnj in self.MOTEUR.PERSONNAGES.PNJS:
             id_parcours = 'Chemin_' + str(pnj.fonction)
             if not id_parcours in compteurs_parcours: 
                 compteurs_parcours[id_parcours] = 0

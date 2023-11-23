@@ -27,7 +27,7 @@ class CJoueur:
             self.IA = CIA(moteur, self)
             
             if fonction == 0:
-                self.vitesse = 0.2
+                self.vitesse = 0.1
                 self.distance_vision = 200
                 
             elif fonction == 1:

@@ -55,7 +55,7 @@ class CObjets:
       
     def afficher(self):        
         liste_personnages = {}
-        for personnage in self.MOTEUR.JOUEURS + self.MOTEUR.PNJS:
+        for personnage in self.MOTEUR.PERSONNAGES.JOUEURS + self.MOTEUR.PERSONNAGES.PNJS:
             x = personnage.position_int_x() 
             y = personnage.position_int_y() - 1
             key = "{:04d}{:04d}{:01d}".format(y, x, 9)

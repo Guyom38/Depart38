@@ -163,7 +163,7 @@ class map_tiled:
                                          
                                     else:
                                         # --- ajoute a la liste des objets a afficher avec une priorité
-                                        objet = self.MOTEUR.OBJETS.traitement_objet(index, x, y, c, (layer.attrib['name'] in ("Decors", "Derriere_Meuble", "Devant_Meuble")))
+                                        objet = self.MOTEUR.ELEMENTS_VISUELS.traitement_objet(index, x, y, c, (layer.attrib['name'] in ("Decors", "Derriere_Meuble", "Devant_Meuble")))
                                         
                                         # --- integration a la zone bloquée
                                         if (not objet == None) and (objet.etat == C_OBSTACLE):
