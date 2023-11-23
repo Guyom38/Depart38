@@ -18,7 +18,7 @@ class CIA:
         
         # Mémorisation de la dernière position du PNJ
         self.position_precedente = (-1, -1)
-        self.champs_vision = 60
+        self.champ_vision = 60
        
         
     def est_ce_toujours_sur_le_terrain(self, x, y):

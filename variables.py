@@ -1,5 +1,8 @@
 from fonctions import *
 
+resolution_x = 1920
+resolution_y = 1080
+
 dimension_x = 10
 dimension_y = 10
 
@@ -12,7 +15,11 @@ boucle = True
 pas = 0.2
 dim = 32
 
-t_ray = 0
+
+
+# ray_alpha = 0 desactive la transparence
+ray_alpha = 128
+timer_ray = 0
 
 
 urlWss = "wss://ws.ladnet.net"

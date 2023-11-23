@@ -16,8 +16,8 @@ class CPersonnages:
             personnage.se_deplace()
     
     def afficher_visions(self):
-        VAR.t_ray = time.time()
+        VAR.timer_ray = time.time()
         for pnj in self.PNJS:
             self.rays[pnj.fonction].afficher(pnj) 
-        VAR.t_ray = time.time() - VAR.t_ray    
+        VAR.timer_ray = time.time() - VAR.timer_ray    
         

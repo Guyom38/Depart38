@@ -11,9 +11,7 @@ from ia import *
 class CJoueur:
     def __init__(self, moteur, index, x, y, nom, is_IA, fonction = -1):
         self.MOTEUR = moteur
-        
-
-        
+                
         self.index = index
         self.nom = nom
         self.x, self.y = x, y
@@ -30,15 +28,15 @@ class CJoueur:
                 self.vitesse = 0.1
                 self.distance_vision = 200
                 self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
-                self.couleur_vision = (193,249,153)
+                self.couleur_vision = (193,249,153, VAR.ray_alpha)
             elif fonction == 1:
                 self.vitesse = 0.1
                 self.image = pygame.image.load(".ressources/basile.png").convert_alpha()
-                self.couleur_vision = (255,255,255)
+                self.couleur_vision = (255,255,255, VAR.ray_alpha)
             else:
                 self.vitesse = 0.05
                 self.image = pygame.image.load(".ressources/chef.png").convert_alpha()
-                self.couleur_vision = (239,231,129)
+                self.couleur_vision = (239,231,129, VAR.ray_alpha)
             
             
    

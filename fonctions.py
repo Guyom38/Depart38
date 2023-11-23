@@ -1,5 +1,6 @@
 import string
 import random
+import pygame
 
 def GenereMat2D(dimX, dimY, valeurDefaut):
     return [[valeurDefaut for x in range(dimY)] for i in range(dimX)]
@@ -8,6 +9,7 @@ def generate_short_id(length=6):
     characters = string.ascii_uppercase + string.digits
     short_id = ''.join(random.choice(characters) for _ in range(length))
     return short_id
+
 
 def contientDans(objet, objet_conteneur):
     xC, yC, dxC, dyC = objet_conteneur

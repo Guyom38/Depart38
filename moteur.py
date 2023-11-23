@@ -18,18 +18,56 @@ from personnages import *
 class CMoteur:
     def __init__(self):
         pygame.init()
-        VAR.fenetre = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN, 32)
+        VAR.fenetre = pygame.display.set_mode((VAR.resolution_x, VAR.resolution_y), pygame.FULLSCREEN, 32)
         pygame.display.set_caption("No Escape Departement")
         self.horloge = pygame.time.Clock()
         
+        self.titre = pygame.image.load(".ressources/titre.jpg")
+        self.titre = pygame.transform.scale(self.titre, (VAR.resolution_x, VAR.resolution_y))
+        
+       
+        VAR.fenetre.blit(self.titre, (0, 0))
+        pygame.display.flip()
+        
+        
+        
         self.initialiser()
         
-
-    def initialiser(self):          
+        
+    def afficher_barre_progression(self, valeur, maximum, texte):
+        dimx = 800
+        dimy = 64
+        
+        x = (VAR.resolution_x - dimx) // 2
+        y = VAR.resolution_y - dimy - 20
+        
+        dim_valeur = int((dimx / maximum) * valeur)
+        pygame.draw.rect(VAR.fenetre, (0,0,0), (x, y, dimx, dimy), 0) 
+        pygame.draw.rect(VAR.fenetre, (255,0,0), (x, y, dim_valeur, dimy), 0)   
+        pygame.draw.rect(VAR.fenetre, (255,255,255), (x, y, dimx, dimy), 4)   
+         
+        ecriture = pygame.font.SysFont('arial', 30) 
+        image_texte = ecriture.render(texte , True, (255,255,255)) 
+        posx = (VAR.resolution_x - image_texte.get_width()) //2
+        posy = y + int((dimy - image_texte.get_height()) // 2)
+        VAR.fenetre.blit(image_texte, (posx, posy))            
+    
+        pygame.display.flip()
+        #time.sleep(0.3)
+        
+        
+        
+        
+    def initialiser(self):  
+        
+        
+        self.afficher_barre_progression(30, 100, "Empilage des dossiers ...")        
         self.ELEMENTS_VISUELS = CObjets(self)
+        
+        self.afficher_barre_progression(40, 100, "Préparation des pauses café ...")  
         self.PERSONNAGES = CPersonnages(self)
         
-      
+        self.afficher_barre_progression(50, 100, "Configuration des tapis ...")  
         self.PERSONNAGES.JOUEURS.append(CJoueur(self, 0, 1.0, 5.0, "Guyom", False))
                 
         self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Vincent", True, 0))
@@ -38,14 +76,17 @@ class CMoteur:
         self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Emmanuel", True, 2))
         self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Stevan", True, 2))
         
+        self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
         self.TERRAIN = CTerrain(self) 
-        self.TERRAIN.initialisation_joueurs()        
+        self.TERRAIN.initialisation_joueurs()  
+              
+        self.afficher_barre_progression(90, 100, "Optimisation des réseaux Wi-Fi pour transmissions télépathiques ...")  
+        self.PERSONNAGES.rays[0] = CRaytracing(self, 200, 20)
+        self.PERSONNAGES.rays[1] = CRaytracing(self, 128, 20)
+        self.PERSONNAGES.rays[2] = CRaytracing(self, 128, 20)
         
-        self.PERSONNAGES.rays[0] = raytracing(self, 200, 10)
-        self.PERSONNAGES.rays[1] = raytracing(self, 128, 5)
-        self.PERSONNAGES.rays[2] = raytracing(self, 128, 5)
-        
-   
+        self.afficher_barre_progression(100, 100, "Démarrage du jeu")  
+                    
             
     def clavier(self):
         # --- récupére l'ensemble des évènements
@@ -89,7 +130,7 @@ class CMoteur:
             self.ELEMENTS_VISUELS.afficher()
             
             ecriture = pygame.font.SysFont('arial', 20) 
-            image_texte = ecriture.render( str(int(VAR.t_ray * 1000)) + "ms, elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
+            image_texte = ecriture.render( str(int(VAR.timer_ray * 1000)) + "ms, elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 10))            
     
             image_texte = ecriture.render( str( (round(self.PERSONNAGES.PNJS[0].x, 2), round(self.PERSONNAGES.PNJS[0].y, 2)) ) , True, (255,0,0)) 
@@ -104,7 +145,7 @@ class CMoteur:
 
             # --- limite la fréquence de raffraichissement a 25 images seconde
             self.horloge.tick(30)
-            som_t += VAR.t_ray
+            som_t += VAR.timer_ray
             cycle += 1
 
         # --- en sortie de boucle, quitte le programme
