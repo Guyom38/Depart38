@@ -44,6 +44,7 @@ class CJoueur:
             self.image = pygame.image.load(".ressources/agent2.png").convert_alpha()
             self.IA = None
             self.vitesse = VAR.pas
+
             
         ecriture = pygame.font.SysFont('arial', 24) 
         self.image_ombre = ecriture.render( self.nom , True, (0,0,0)) 

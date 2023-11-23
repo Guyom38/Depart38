@@ -19,5 +19,7 @@ class CPersonnages:
         VAR.timer_ray = time.time()
         for pnj in self.PNJS:
             self.rays[pnj.fonction].afficher(pnj) 
+        
+
         VAR.timer_ray = time.time() - VAR.timer_ray    
         

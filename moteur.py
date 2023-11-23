@@ -139,7 +139,13 @@ class CMoteur:
             image_texte = ecriture.render( str( (self.PERSONNAGES.PNJS[0].IA.objectifx, self.PERSONNAGES.PNJS[0].IA.objectify) ) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 50))
             
-            
+            cercle = self.PERSONNAGES.rays[0].calculer_points_cercle(500,500,400)
+            for index, xx, yy in cercle:
+                ligne = bresenham((500, 500), (xx, yy), 10).path
+                for xxx, yyy in ligne:
+                    pygame.draw.circle(VAR.fenetre, (255,255,0), (xxx, yyy), 2)
+                    
+                pygame.draw.circle(VAR.fenetre, (255,0,0), (xx, yy), 2)
             # --- afficher le résultat
             pygame.display.update()
 
