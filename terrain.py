@@ -15,17 +15,26 @@ class CTerrain:
             
     def preparer_terrain(self):    
         self.blocage = self.MOTEUR_TILED.generer_blocage() 
+        
         self.planche = self.MOTEUR_TILED.generer_map()         
         self.arrayBlocage = pygame.surfarray.array_blue(self.blocage)
     
     def initialisation_joueurs(self):
         parcours = self.MOTEUR_TILED.generer_parcours_PNJ()
         
-        
+        compteurs_parcours = {}
         for pnj in self.MOTEUR.PNJS:
-            x, y = parcours['Chemin_' + pnj.nom]['DEPART']
+            id_parcours = 'Chemin_' + str(pnj.fonction)
+            if not id_parcours in compteurs_parcours: 
+                compteurs_parcours[id_parcours] = 0
+            
+            x, y = parcours[id_parcours]['DEPART'][compteurs_parcours[id_parcours]]
             pnj.x, pnj.y = x ,y 
-            pnj.IA.parcours = parcours['Chemin_' + pnj.nom]['GRILLE']
+            pnj.IA.parcours = parcours[id_parcours]['GRILLE']
+            compteurs_parcours[id_parcours] += 1
  
+    def afficher(self):
+        VAR.fenetre.fill((16,16,16))    
+        VAR.fenetre.blit(self.planche, (0,0))
 
    

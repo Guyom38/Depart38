@@ -106,9 +106,10 @@ class map_tiled:
         for layer in self.root.findall('layer'):
             if layer.attrib['name'].startswith("Chemin"):
                 data = layer.find('data')
-                if data is not None:               
-                    xx, yy = 4, 4
+                if data is not None:              
+                  
                     grille_parcours = FCT.GenereMat2D(VAR.dimension_x, VAR.dimension_y, 0)
+                    liste_positions_pnjs = []
                     
                     csv_text = data.text.strip()
                     lines = csv_text.split('\n')
@@ -125,13 +126,13 @@ class map_tiled:
                                 grille_parcours[x][y]['CHEMIN'] = ( int(index) > 0 ) 
                                 grille_parcours[x][y]['UTILISE'] = 0 
                                 
-                                if int(index) == 17106: xx, yy = x, y
+                                if int(index) == 17106: liste_positions_pnjs.append( (x, y) )
                             x += 1
                         y += 1
                     
                     parcours[layer.attrib['name']] = {}
                     parcours[layer.attrib['name']]['GRILLE'] = grille_parcours 
-                    parcours[layer.attrib['name']]['DEPART'] = (xx, yy)
+                    parcours[layer.attrib['name']]['DEPART'] = liste_positions_pnjs
         return parcours
                 
     def generer_map(self):

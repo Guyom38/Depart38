@@ -17,7 +17,7 @@ OBJ_CHAISE_DER =  (C_MODERN + 179, 1, 2, C_OBSTACLE)
 OBJ_TRACE1 = (17106, 1, 1, C_TRAVERSABLE)
 OBJ_TRACE2 = (17105, 1, 1, C_TRAVERSABLE)
 # Liste de tous les objets
-objets = [OBJ_EXTINCTEUR, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_CHAISE_DER, OBJ_CHAISE_DEV, OBJ_TRACE1, OBJ_TRACE2]
+objets = [OBJ_EXTINCTEUR, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_CHAISE_DER, OBJ_CHAISE_DEV] #, OBJ_TRACE1, OBJ_TRACE2]
 
 # Création du dictionnaire avec une boucle for
 LISTE_SCALE_OBJET = {}
@@ -33,11 +33,12 @@ for objet in objets:
 class CObjets:        
     def __init__(self, moteur):
         self.MOTEUR = moteur
-        self.liste = {}        
+        self.liste = {}   
+        
+             
         
     def traitement_objet(self, index, x, y, couche, force = False):
-        objet = None
-        
+        objet = None        
         image, etat = VAR.images[index]          
         if (index in LISTE_SCALE_OBJET) or force:  
             if force: etat = C_OBSTACLE                                     
@@ -49,4 +50,18 @@ class CObjets:
             self.liste[key] = objet 
             
         return objet
+    
+    
       
+    def afficher(self):        
+        liste_personnages = {}
+        for personnage in self.MOTEUR.JOUEURS + self.MOTEUR.PNJS:
+            x = personnage.position_int_x() 
+            y = personnage.position_int_y() - 1
+            key = "{:04d}{:04d}{:01d}".format(y, x, 9)
+            liste_personnages[key] = personnage
+            
+        listes_fusionnees = {**self.liste, **liste_personnages}        
+        liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
+        for cle_coordonnees, objet in liste_objets_tries:   
+            objet.afficher()

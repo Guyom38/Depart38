@@ -10,14 +10,14 @@ class raytracing:
         self.MOTEUR = moteur
         self.rayons = []
         self.distance = distance
-
-        for index, xx, yy in self.cercle_COS(0, 0, distance, precision):
+        
+        for index, xx, yy in self.cercle_COS(0, 0, distance):
             ligne = bresenham((0, 0), (xx, yy), precision).path
             self.rayons.append(ligne)
             
-    def cercle_COS(self, centreX, centreY, rayon, precision):
+    def cercle_COS(self, centreX, centreY, rayon):
         tmp = []
-        for index in range(0, 360, precision):
+        for index in range(0, 360):
             angle = (index*math.pi/180)
             tmp.append( (index, centreX + int(rayon*math.cos(angle)), centreY + int(rayon*math.sin(angle))) )
         return tmp
@@ -32,19 +32,20 @@ class raytracing:
         plage2 = list(range(angle, (angle + champsDIV2 - balancement), precision))       
         return  [angle % 360 for angle in (plage1 + plage2)]
     
-           
+    
+
     def afficher(self, personnage):
         x, y = personnage.x, personnage.y
         
-        VAR.t_ray = time.time()
+        
         contour = []
        
         
         # exemple: 10 degrés de chaque côté
         amplitude_balancement = 20
         # --- limite au champ de vision
-        champs = 60   
-        precision = 4
+        champs = personnage.IA.champs_vision   
+        precision = VAR.precision_champs
         
         if personnage.direction == None : return
         plages = raytracing.plage_angles(personnage.direction, champs, amplitude_balancement, precision, personnage.tempo) 
@@ -82,4 +83,4 @@ class raytracing:
             contour.append((px2 , py2))
             pygame.draw.polygon(VAR.fenetre, (0,0,255, 255), contour, 0)
                     
-        VAR.t_ray = time.time() - VAR.t_ray
+       

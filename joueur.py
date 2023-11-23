@@ -9,7 +9,7 @@ from ia import *
 
     
 class CJoueur:
-    def __init__(self, moteur, index, x, y, nom, is_IA):
+    def __init__(self, moteur, index, x, y, nom, is_IA, fonction = -1):
         self.MOTEUR = moteur
         
 
@@ -18,13 +18,24 @@ class CJoueur:
         self.nom = nom
         self.x, self.y = x, y
         self.direction = ENUM_DIR.AUCUN
+        self.fonction = fonction
         
         self.offsetX, self.offsetY = 0, -60     
         
         if is_IA:
             self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
             self.IA = CIA(moteur, self)
-            self.vitesse = 0.1
+            
+            if fonction == 0:
+                self.vitesse = 0.2
+                self.distance_vision = 200
+                
+            elif fonction == 1:
+                self.vitesse = 0.1
+            else:
+                self.vitesse = 0.05
+            
+            
    
         else:
             self.image = pygame.image.load(".ressources/agent2.png").convert_alpha()
