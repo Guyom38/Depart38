@@ -19,11 +19,13 @@ class CTerrain:
         self.arrayBlocage = pygame.surfarray.array_blue(self.blocage)
     
     def initialisation_joueurs(self):
-        self.parcours = self.MOTEUR_TILED.generer_parcours_PNJ()
-        x, y = self.parcours['Chemin_Directeur']['DEPART']
+        parcours = self.MOTEUR_TILED.generer_parcours_PNJ()
         
-        self.MOTEUR.PNJS[0].x, self.MOTEUR.PNJS[0].y = x , y 
-        self.MOTEUR.PNJS[0].parcours = self.parcours['Chemin_Directeur']['GRILLE']
+        
+        for pnj in self.MOTEUR.PNJS:
+            x, y = parcours['Chemin_' + pnj.nom]['DEPART']
+            pnj.x, pnj.y = x ,y 
+            pnj.IA.parcours = parcours['Chemin_' + pnj.nom]['GRILLE']
  
 
    

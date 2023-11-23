@@ -1,53 +1,47 @@
-from enum import *
+
 import pygame
 import variables as VAR
 from fonctions import *
 import time
 
-class ENUM_DIR:
-    BAS = 270
-    GAUCHE = 0
-    DROITE = 180
-    HAUT = 90
-    AUCUN = None
+from ia import *
 
-class ENUM_ANIMATION:
-    ARRETER = 0
-    IDEAL = 1
-    MARCHER = 2
-    ASSIS = 4
-    JOUER_TELEPHONE = 6
-    BOUQUINER = 7
-    COURIR = 8
+
     
 class CJoueur:
-    def __init__(self, moteur, index, x, y, nom):
+    def __init__(self, moteur, index, x, y, nom, is_IA):
         self.MOTEUR = moteur
         
+
+        
         self.index = index
-        if nom == "Director":
+        self.nom = nom
+        self.x, self.y = x, y
+        self.direction = ENUM_DIR.AUCUN
+        
+        self.offsetX, self.offsetY = 0, -60     
+        
+        if is_IA:
             self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
+            self.IA = CIA(moteur, self)
+            self.vitesse = 0.1
+   
         else:
             self.image = pygame.image.load(".ressources/agent2.png").convert_alpha()
-        self.nom = nom
-        self.parcours = None
-        
+            self.IA = None
+            self.vitesse = VAR.pas
+            
         ecriture = pygame.font.SysFont('arial', 20) 
         self.image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
         self.image_texte = ecriture.render( self.nom , True, (255,255,255)) 
-                 
-        self.x, self.y = x, y
-
-        self.vitesse = 0.1
-        self.direction = ENUM_DIR.AUCUN
         
         self.directionPrecedente = ENUM_DIR.AUCUN
-        self.seTourne = 0        
-       
-        self.offsetX, self.offsetY = 0, -60
+        self.seTourne = 0  
         
-        self.tempo = 0
-        self.tempoTimer = time.time()
+        self.tempo,self.tempoTimer = 0, time.time()
+        
+        
+        
         
     def position_ecran_x(self):
         return int(round((self.x * VAR.dim) + self.offsetX,0))
@@ -71,40 +65,34 @@ class CJoueur:
         #pygame.draw.rect(VAR.fenetre, (255,0,0), (x2+4,y2,22,6), 0)        
         return collision_coin1 or collision_coin2
     
-    def PNJ_suit_la_trace(self):
-        x, y = int(round(self.x, 0)), int(round(self.y, 0))
-        print((x, y))
-        if x+1 < VAR.dimension_x and self.parcours[x+1][y] > 0: 
-            self.direction = ENUM_DIR.DROITE
-        elif x-1 >= 0 and self.parcours[x-1][y] > 0: 
-            self.direction = ENUM_DIR.GAUCHE
-        elif y+1 < VAR.dimension_y and self.parcours[x][y+1] > 0: 
-            self.direction = ENUM_DIR.BAS
-        elif y-1 >= 0 and self.parcours[x][y-1] > 0: 
-            self.direction = ENUM_DIR.HAUT
+    
                                          
         
     def se_deplace(self):
+        est_ordinateur = (not self.IA == None)
+        
         # --- Si ordinateur suivre le chemin
-        if not self.parcours == None:
-            self.PNJ_suit_la_trace()
+        if est_ordinateur:
+            if self.direction == ENUM_DIR.AUCUN:
+                self.IA.etablir_direction_initiale()
+                
+            self.IA.je_reflechis()
             
         xo, yo = self.x, self.y
         if self.direction == ENUM_DIR.GAUCHE:
-            self.x = self.x - VAR.pas
+            self.x = self.x - self.vitesse
         elif self.direction == ENUM_DIR.DROITE:
-            self.x = self.x + VAR.pas
+            self.x = self.x + self.vitesse
         elif self.direction == ENUM_DIR.HAUT:
-            self.y = self.y - VAR.pas
+            self.y = self.y - self.vitesse
         elif self.direction == ENUM_DIR.BAS:
-            self.y = self.y + VAR.pas
+            self.y = self.y + self.vitesse
 
-        
-          
-        if self.toujours_sur_le_terrain():                
-            if self.collision_avec_decors():
-                self.x, self.y = xo, yo
-                self.direction = ENUM_DIR.AUCUN
+        if not est_ordinateur:
+            if self.toujours_sur_le_terrain():                
+                if self.collision_avec_decors():
+                    self.x, self.y = xo, yo
+                    #self.direction = ENUM_DIR.AUCUN
 
     
     def coordonnees_image_animee(self):
@@ -123,9 +111,12 @@ class CJoueur:
     
     
     def afficher(self):          
+        # --- affiche joueur
         VAR.fenetre.blit(self.image, (self.position_ecran_x(), self.position_ecran_y()), self.coordonnees_image_animee())
-        VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-64-2))
-        VAR.fenetre.blit(self.image_texte, (self.position_ecran_x(), self.position_ecran_y()-64))
+        
+        # --- affiche nom
+        VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-2))
+        VAR.fenetre.blit(self.image_texte, (self.position_ecran_x(), self.position_ecran_y()))
 
     
         

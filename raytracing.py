@@ -22,23 +22,32 @@ class raytracing:
             tmp.append( (index, centreX + int(rayon*math.cos(angle)), centreY + int(rayon*math.sin(angle))) )
         return tmp
     
-    def plage_angles(angle, champs, precision):
+    def plage_angles(angle, champs, amplitude_balancement, precision, tempo):        
+          
+        # Calcul du balancement basé sur le tempo et l'amplitude
+        balancement = int(amplitude_balancement * math.sin(tempo * math.pi / 10))
+
         champsDIV2 = (champs // 2)
-        plage1 = list(range((angle - champsDIV2) , angle, precision))
-        plage2 = list(range(angle, (angle + champsDIV2), precision))       
+        plage1 = list(range((angle - champsDIV2 - balancement) , angle, precision))
+        plage2 = list(range(angle, (angle + champsDIV2 - balancement), precision))       
         return  [angle % 360 for angle in (plage1 + plage2)]
     
            
-    def afficher(self, x, y):
+    def afficher(self, personnage):
+        x, y = personnage.x, personnage.y
+        
         VAR.t_ray = time.time()
         contour = []
        
+        
+        # exemple: 10 degrés de chaque côté
+        amplitude_balancement = 20
         # --- limite au champ de vision
         champs = 60   
         precision = 4
         
-        if self.MOTEUR.JOUEURS[0].direction == None : return
-        plages = raytracing.plage_angles(self.MOTEUR.JOUEURS[0].direction, champs, precision) 
+        if personnage.direction == None : return
+        plages = raytracing.plage_angles(personnage.direction, champs, amplitude_balancement, precision, personnage.tempo) 
         
         # --- recupere la zone
         for i in plages: 

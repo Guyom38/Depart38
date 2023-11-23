@@ -28,15 +28,16 @@ class CMoteur:
         self.OBJETS = CObjets(self)
         
         self.JOUEURS = []
-        self.JOUEURS.append(CJoueur(self, 0, 1.0, 5.0, "Guyom"))
+        self.JOUEURS.append(CJoueur(self, 0, 1.0, 5.0, "Guyom", False))
         
         self.PNJS = []
-        self.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Director"))
+        self.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Directeur1", True))
+        self.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Directeur2", True))
         
         self.TERRAIN = CTerrain(self) 
         self.TERRAIN.initialisation_joueurs()
              
-        self.rays = raytracing(self, 300, 1)
+        self.rays = raytracing(self, 200, 1)
         
     def afficher_elements(self):
         
@@ -88,6 +89,7 @@ class CMoteur:
             som_t += VAR.t_ray
             cycle += 1
             
+            
             for personnage in self.JOUEURS + self.PNJS:
                 personnage.se_deplace()
           
@@ -97,16 +99,25 @@ class CMoteur:
            
             
             
-            if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
-                VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
+            #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
+            #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
             
-            self.rays.afficher(self.JOUEURS[0].x, self.JOUEURS[0].y) 
+            for pnj in self.PNJS:
+                self.rays.afficher(pnj) 
+                
             self.afficher_elements()
                         
-            ecriture = pygame.font.SysFont('arial', 40) 
+            ecriture = pygame.font.SysFont('arial', 20) 
             image_texte = ecriture.render( str(int(VAR.t_ray * 1000)) + "ms, " + str(len(self.OBJETS.liste)) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 10))
             
+            ecriture = pygame.font.SysFont('arial', 20) 
+            image_texte = ecriture.render( str( (round(self.PNJS[0].x, 2), round(self.PNJS[0].y, 2)) ) , True, (255,0,0)) 
+            VAR.fenetre.blit(image_texte, (50, 30))
+            
+            ecriture = pygame.font.SysFont('arial', 20) 
+            image_texte = ecriture.render( str( (self.PNJS[0].IA.objectifx, self.PNJS[0].IA.objectify) ) , True, (255,0,0)) 
+            VAR.fenetre.blit(image_texte, (50, 50))
             
             
             # --- afficher le résultat

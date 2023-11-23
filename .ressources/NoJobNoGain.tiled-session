@@ -22,10 +22,10 @@
         },
         "map.tmx": {
             "scale": 0.75,
-            "selectedLayer": 5,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 565.9999999999999,
-                "y": 553.3333333333334
+                "x": 700.6666666666667,
+                "y": 552
             }
         },
         "test.tsx": {

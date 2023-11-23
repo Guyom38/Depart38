@@ -116,12 +116,15 @@ class map_tiled:
                     for line in lines:
                         x = 0
                         tile_ids = line.split(',')   
-                        print(line)
+                        #print(line)
                         for tile in tile_ids:                              
                             index = tile.replace("'","")     
                             
                             if not index == "":
-                                grille_parcours[x][y] = int(index)  
+                                grille_parcours[x][y] = {}
+                                grille_parcours[x][y]['CHEMIN'] = ( int(index) > 0 ) 
+                                grille_parcours[x][y]['UTILISE'] = 0 
+                                
                                 if int(index) == 17106: xx, yy = x, y
                             x += 1
                         y += 1
@@ -136,7 +139,7 @@ class map_tiled:
         
         c = 0
         for layer in self.root.findall('layer'):
-            if not layer.attrib['name'] == "Bloqué" and not layer.attrib['name'].startswith("Chemin"):
+            if not layer.attrib['name'] == "Bloqué": # and not layer.attrib['name'].startswith("Chemin"):
                 data = layer.find('data')
                 if data is not None:               
                     csv_text = data.text.strip()
