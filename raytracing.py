@@ -58,7 +58,7 @@ class raytracing:
             bord = False     
  
             for xx2, yy2 in liste:
-                px2, py2 = int(round((x * VAR.dim) - xx2,0)), int(round((y * VAR.dim) - yy2,0))
+                px2, py2 = int(round((x * VAR.dim) - xx2 +15,0)), int(round((y * VAR.dim) - yy2 -4,0))
                 
                 # --- le champs de vision n'est plus dans les limites du terrain
                 # --- la zone est libre n'est pas libre
@@ -79,8 +79,8 @@ class raytracing:
                 contour.append((px2 , py2))
                     
         if len(contour) > 2 : 
-            px2, py2 = ( x * VAR.dim) +15 , ( y * VAR.dim ) -4
+            px2, py2 = ( x * VAR.dim) +15 , ( y * VAR.dim -4) 
             contour.append((px2 , py2))
-            pygame.draw.polygon(VAR.fenetre, (0,0,255, 255), contour, 0)
+            pygame.draw.polygon(VAR.fenetre, personnage.couleur_vision , contour, 0)
                     
        

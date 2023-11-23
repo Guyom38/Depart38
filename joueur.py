@@ -23,17 +23,22 @@ class CJoueur:
         self.offsetX, self.offsetY = 0, -60     
         
         if is_IA:
-            self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
+            
             self.IA = CIA(moteur, self)
             
             if fonction == 0:
                 self.vitesse = 0.1
                 self.distance_vision = 200
-                
+                self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
+                self.couleur_vision = (193,249,153)
             elif fonction == 1:
                 self.vitesse = 0.1
+                self.image = pygame.image.load(".ressources/basile.png").convert_alpha()
+                self.couleur_vision = (255,255,255)
             else:
                 self.vitesse = 0.05
+                self.image = pygame.image.load(".ressources/chef.png").convert_alpha()
+                self.couleur_vision = (239,231,129)
             
             
    
@@ -42,7 +47,7 @@ class CJoueur:
             self.IA = None
             self.vitesse = VAR.pas
             
-        ecriture = pygame.font.SysFont('arial', 20) 
+        ecriture = pygame.font.SysFont('arial', 24) 
         self.image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
         self.image_texte = ecriture.render( self.nom , True, (255,255,255)) 
         

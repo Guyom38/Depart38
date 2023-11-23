@@ -10,7 +10,8 @@ class CIA:
         self.MOTEUR = moteur
         self.PNJ = personnage
         self.parcours = None
-
+        
+        
         # Objectifs initiaux pour la position du PNJ
         self.objectifx = -1
         self.objectify = -1
@@ -18,6 +19,7 @@ class CIA:
         # Mémorisation de la dernière position du PNJ
         self.position_precedente = (-1, -1)
         self.champs_vision = 60
+       
         
     def est_ce_toujours_sur_le_terrain(self, x, y):
         return (0 <= x < VAR.dimension_x) and (0 <= y < VAR.dimension_y)  
