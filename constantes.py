@@ -9,6 +9,12 @@ C_ROOM = 1
 C_MODERN = 225
 C_INTERIOR = 1073
 
+class ENUM_DEMO:
+    DESACTIVER = 0
+    ASTAR = 1
+    DIJISKRA = 2
+    CHAMP_VISION = 3
+    REPERES = 4
 
 # --- Joueurs
 class ENUM_DIR:

@@ -15,7 +15,6 @@ from objets import *
 from personnages import *
 from pathfinding import *
 
-
 class CMoteur:
     def __init__(self):
         pygame.init()
@@ -26,7 +25,7 @@ class CMoteur:
         self.titre = pygame.image.load(".ressources/titre.jpg")
         self.titre = pygame.transform.scale(self.titre, (VAR.resolution_x, VAR.resolution_y))
         
-       
+        VAR.ecriture = pygame.font.SysFont('arial', 20) 
         VAR.fenetre.blit(self.titre, (0, 0))
         pygame.display.flip()
         
@@ -60,10 +59,7 @@ class CMoteur:
         
         
     def initialiser(self):  
-        self.pos_joueur, self.pos_pnj, self.chemin, self.ouverte, self.ferme = None, None, None, None, None
-        self.grille = None
-        
-        
+   
         
         
         self.afficher_barre_progression(30, 100, "Empilage des dossiers ...")        
@@ -85,8 +81,10 @@ class CMoteur:
         self.TERRAIN = CTerrain(self) 
         self.TERRAIN.initialisation_joueurs()                
         
+        self.initialisation_pathfinding()
+        
         self.afficher_barre_progression(100, 100, "Démarrage du jeu")  
-                    
+        self.grille_traitee = FCT.GenereMat2D(VAR.dimension_x, VAR.dimension_y, 0)            
             
     def clavier(self):
         # --- récupére l'ensemble des évènements
@@ -113,41 +111,24 @@ class CMoteur:
                     self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.AUCUN 
     
     
-    def pathfinding_demo(self):
-        if self.grille == None:
-            self.grille = generer_grille(self.TERRAIN.arrayBlocage)
-        pos_joueur = (int(self.PERSONNAGES.JOUEURS[0].x), int(self.PERSONNAGES.JOUEURS[0].y)) 
-        pos_pnj = (int(self.PERSONNAGES.PNJS[0].x), int(self.PERSONNAGES.PNJS[0].y))
-        
-        if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
-            self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
-              
-            #self.chemin, self.ouverte, self.ferme = astar( pos_joueur, pos_pnj, self.grille)   
-            self.chemin, self.ouverte, self.ferme = dijkstra( pos_joueur, pos_pnj, self.grille)   
-                  
-            if self.chemin == None:
-                print("Aucun chemin")
-                quit()
-            
-        ecriture = pygame.font.SysFont('arial', 20) 
-        for x, y in self.chemin:
-            pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 16, 0)
-            #image_texte = ecriture.render( ""  , True, (255,0,0)) 
-            #VAR.fenetre.blit(image_texte, ((x*VAR.dim)+16, (y*VAR.dim)+16))           
-        
-        # Dessiner les nœuds
-        for noeud in self.ouverte:
-            x, y = noeud.position
-            pygame.draw.circle(VAR.fenetre, (255, 0, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 8, 0)
 
-        for noeud in self.ferme:
-            x, y = noeud.position
-            pygame.draw.circle(VAR.fenetre, (0, 255, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 4, 0)
+
+    def initialisation_pathfinding(self):
+        if len(self.PERSONNAGES.PATHFINDING.grille_obstacles) == 0:
+            self.PERSONNAGES.PATHFINDING.generer_matrice_obstacle(self.TERRAIN.arrayBlocage)        
+        
+        self.PERSONNAGES.PATHFINDING.generer_reperes_sur_le_terrain()
+        self.PERSONNAGES.PATHFINDING.generer_chemin_entre_reperes()
+
+
+        
+
 
         
                 
     def demarrer(self):       
         ecriture = pygame.font.SysFont('arial', 20) 
+        
         
         VAR.boucle = True
         while VAR.boucle:
@@ -162,7 +143,12 @@ class CMoteur:
                  
         
             self.ELEMENTS_VISUELS.afficher()
-            self.pathfinding_demo()
+            self.PERSONNAGES.PATHFINDING.calculer_pathfinding()
+            self.PERSONNAGES.PATHFINDING.afficher()
+            
+            for repere in self.PERSONNAGES.PATHFINDING.REPERES:                
+                pygame.draw.rect(VAR.fenetre, (255,255,255), (repere.x * VAR.dim, repere.y * VAR.dim,  VAR.dim, VAR.dim), 4)
+
             
             image_texte = ecriture.render( "elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 10))            

@@ -139,7 +139,7 @@ class CJoueur:
         VAR.fenetre.blit(self.image, (self.position_ecran_x(), self.position_ecran_y()), self.coordonnees_image_animee())
         
         if est_ordinateur:
-            self.MOTEUR.PERSONNAGES.rays.afficher(self)
+            self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
         
         # --- affiche nom
         VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-2))

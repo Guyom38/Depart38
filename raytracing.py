@@ -10,8 +10,6 @@ class CRaytracing:
         self.MOTEUR = moteur
         self.rayons = []
         
-        self.demo = False
-        
         self.distance_max_ref = 300 
         self.amplitude_balancement_ref = 20
         
@@ -73,7 +71,7 @@ class CRaytracing:
             
                          
             # --- demo --- detection (FACULTATIF)
-            if self.demo: 
+            if VAR.demo == ENUM_DEMO.CHAMP_VISION: 
                 if joueur_detecte:   
                     pygame.draw.circle(VAR.fenetre, (255, 0, 0, 255), zone_du_champ, 2)  
                 else:

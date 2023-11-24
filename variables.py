@@ -1,4 +1,8 @@
 from fonctions import *
+from constantes import *
+
+
+demo = ENUM_DEMO.REPERES
 
 resolution_x = 1920
 resolution_y = 1080
@@ -16,7 +20,7 @@ pas = 0.2
 dim = 32
 
 
-
+ecriture = None
 # ray_alpha = 0 desactive la transparence
 ray_alpha = 128
 
