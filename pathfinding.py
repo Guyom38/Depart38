@@ -1,3 +1,9 @@
+import fonctions as FCT
+import variables as VAR
+import pygame
+import time
+from queue import PriorityQueue
+
 class CNoeud:
     def __init__(self, parent=None, position=None):
         self.parent = parent
@@ -10,7 +16,27 @@ class CNoeud:
         return self.position == autre.position
     
 
-def astar(grille, depart, arrivee):
+def generer_grille(arrayBlocage):
+  
+    # Initialiser la grille de présence d'obstacles
+    grille_obstacles = []
+
+    # Parcourir le bitmap avec un décalage de 16 et un pas de 32
+    for y in range(16, len(arrayBlocage), 32):
+        ligne_obstacles = []
+        for x in range(16, len(arrayBlocage[y]), 32):
+            # Vérifier si la valeur du pixel est supérieure à 0            
+            ligne_obstacles.append(arrayBlocage[y][x] )
+        grille_obstacles.append(ligne_obstacles)
+
+    # La grille_obstacles contient maintenant la présence d'obstacles
+    return grille_obstacles
+ 
+ 
+
+def astar(depart, arrivee, grille):
+    
+     
     # Créer les nœuds de départ et d'arrivée
     noeud_depart = CNoeud(None, depart)
     noeud_arrivee = CNoeud(None, arrivee)
@@ -38,7 +64,8 @@ def astar(grille, depart, arrivee):
             while courant is not None:
                 chemin.append(courant.position)
                 courant = courant.parent
-            return chemin[::-1]  # Retourne le chemin inverse
+                
+            return chemin[::-1], liste_ouverte, liste_fermee  # Retourne le chemin inverse
 
         # Générer les enfants (voisins) du noeud actuel
         enfants = []
@@ -72,4 +99,93 @@ def astar(grille, depart, arrivee):
             # Ajouter l'enfant à la liste ouverte
             liste_ouverte.append(enfant)
 
-    return None  # Aucun chemin n'a été trouvé
+    return None, None, None  # Aucun chemin n'a été trouvé
+
+
+
+
+class CNoeud2:
+    def __init__(self, parent=None, position=None):
+        self.parent = parent
+        self.position = position
+        self.g = 0  # Coût depuis le départ
+
+    def __eq__(self, other):
+        return self.position == other.position
+
+    def __hash__(self):
+        return hash(self.position)
+
+    def __lt__(self, other):
+        return self.g < other.g
+
+from queue import PriorityQueue
+
+class CNoeud2:
+    def __init__(self, parent=None, position=None):
+        self.parent = parent
+        self.position = position
+        self.g = float("inf")
+
+    def __eq__(self, other):
+        return self.position == other.position
+
+    def __hash__(self):
+        return hash(self.position)
+
+    def __lt__(self, other):
+        return self.g < other.g
+
+def dijkstra(depart, arrivee, grille):
+    noeud_depart = CNoeud2(None, depart)
+    noeud_depart.g = 0
+    noeud_arrivee = CNoeud2(None, arrivee)
+
+    liste_ouverte = PriorityQueue()
+    liste_ouverte.put((noeud_depart.g, noeud_depart))
+    liste_ouverte_set = {noeud_depart}  # Pour visualisation
+
+    liste_fermee_set = set()  # Pour visualisation
+
+    while not liste_ouverte.empty():
+        _, noeud_actuel = liste_ouverte.get()
+        liste_ouverte_set.remove(noeud_actuel)
+        liste_fermee_set.add(noeud_actuel)
+
+        if noeud_actuel == noeud_arrivee:
+            chemin = []
+            courant = noeud_actuel
+            while courant is not None:
+                chemin.append(courant.position)
+                courant = courant.parent
+            return chemin[::-1], liste_ouverte_set, liste_fermee_set
+
+        for nouvelle_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+            position_noeud = (noeud_actuel.position[0] + nouvelle_position[0], noeud_actuel.position[1] + nouvelle_position[1])
+
+            if position_noeud[0] > (len(grille) - 1) or position_noeud[0] < 0 or position_noeud[1] > (len(grille[len(grille)-1]) -1) or position_noeud[1] < 0:
+                continue
+            if grille[position_noeud[0]][position_noeud[1]] != 0:
+                continue
+
+            nouveau_noeud = CNoeud2(noeud_actuel, position_noeud)
+
+            if nouveau_noeud in liste_fermee_set:
+                continue
+
+            cout_potentiel = noeud_actuel.g + 1
+            if cout_potentiel < nouveau_noeud.g:
+                nouveau_noeud.g = cout_potentiel
+                nouveau_noeud.parent = noeud_actuel
+                if nouveau_noeud not in liste_ouverte_set:
+                    liste_ouverte.put((nouveau_noeud.g, nouveau_noeud))
+                    liste_ouverte_set.add(nouveau_noeud)
+
+    return None, liste_ouverte_set, liste_fermee_set
+
+# Exemple d'utilisation avec une grille et des positions de départ et d'arrivée
+# grille = [[0, 0, 0, ...], [1, 0, 1, ...], ...]
+# depart = (x1, y1)
+# arrivee = (x2, y2)
+# chemin, ouverte_set, fermee_set = dijkstra(depart, arrivee, grille)
+

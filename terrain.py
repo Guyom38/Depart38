@@ -6,7 +6,7 @@ import tiled as T
 class CTerrain:
     def __init__(self, moteur):         
         self.MOTEUR = moteur
-        self.MOTEUR_TILED = T.map_tiled(moteur, ".ressources/map-vide.tmx")
+        self.MOTEUR_TILED = T.map_tiled(moteur, ".ressources/map.tmx")
         
         VAR.dimension_x = int(self.MOTEUR_TILED.root.attrib['width'].replace("'","")  )
         VAR.dimension_y = int(self.MOTEUR_TILED.root.attrib['height'].replace("'","")  )

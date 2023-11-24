@@ -43,8 +43,6 @@ class CObjets:
         if (index in LISTE_SCALE_OBJET) or force:  
             if force: etat = C_OBSTACLE                                     
             objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, etat)            
-            if index == 404:
-                print("kk")
         if not objet == None:
             key = "{:04d}{:04d}{:01d}".format(y * VAR.dim, x * VAR.dim, couche)
             self.liste[key] = objet 

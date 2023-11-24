@@ -10,11 +10,14 @@ class CRaytracing:
         self.MOTEUR = moteur
         self.rayons = []
         
+        self.demo = False
+        
         self.distance_max_ref = 300 
         self.amplitude_balancement_ref = 20
         
         self.generation_du_champ_de_vision360()    
-    
+
+        
     def generation_du_champ_de_vision360(self):         
         for angle in range(0, 360): 
             ligne = []               
@@ -33,6 +36,11 @@ class CRaytracing:
         precision = VAR.precision_champs
         plages = self.calculer_plage_angles(personnage, self.amplitude_balancement_ref, precision) 
         liste_joueurs_detectes, forme, rect_forme = self.generation_du_champs_de_vision(plages, personnage)
+        
+        if len(liste_joueurs_detectes) > 0:
+            couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)
+            
+                 
         self.dessiner_vision(forme, couleur_champ_vision, rect_forme)
     
     
@@ -55,23 +63,27 @@ class CRaytracing:
 
     def detection_joueurs_dans_le_champ(self, zone_du_champ):
         px2, py2 = zone_du_champ 
+        liste_joueurs_detectes_dans_cette_zone = []
         
-        liste_joueurs_detectes = []
         for joueur in self.MOTEUR.PERSONNAGES.JOUEURS:
             objet_zone_vision = (px2-2, py2-2, 4, 4)
             objet_joueur = (joueur.position_int_x(), joueur.position_int_y()-5, 20, 6)
             joueur_detecte = collision(objet_zone_vision, objet_joueur)
             
-            if joueur_detecte:
-                if not joueur in liste_joueurs_detectes:
-                    liste_joueurs_detectes.append(joueur)
-                    couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)
-                        
+            
+                         
             # --- demo --- detection (FACULTATIF)
-            if joueur_detecte:   
-                 pygame.draw.circle(VAR.fenetre, (255, 0, 0, 255), (px2, py2), 2)  
-            else:
-                pygame.draw.circle(VAR.fenetre, (255, 255, 255, 255), (px2, py2), 2)  
+            if self.demo: 
+                if joueur_detecte:   
+                    pygame.draw.circle(VAR.fenetre, (255, 0, 0, 255), zone_du_champ, 2)  
+                else:
+                    pygame.draw.circle(VAR.fenetre, (255, 255, 255, 255), zone_du_champ, 2)  
+                
+            if joueur_detecte:
+                liste_joueurs_detectes_dans_cette_zone.append(joueur)
+        
+        return liste_joueurs_detectes_dans_cette_zone
+
     
     def ajuste_dimension_de_la_forme(self, zone_du_champ, rect_figure):
         px2, py2 = zone_du_champ 
@@ -107,6 +119,8 @@ class CRaytracing:
     
                    
     def generation_du_champs_de_vision(self, plages, personnage):
+        liste_joueurs_detectes = []
+        
         x, y = personnage.x, personnage.y  
         px2, py2 = int(x * VAR.dim) +15 , int(y * VAR.dim) -4  
               
@@ -124,7 +138,11 @@ class CRaytracing:
                 zone_du_champ = (px2 - xx2, py2 - yy2)                     
                 x1, y1, x2, y2 = self.ajuste_dimension_de_la_forme(zone_du_champ, (x1, y1, x2, y2))    
                             
-                liste_joueurs_detectes = self.detection_joueurs_dans_le_champ(zone_du_champ)      
+                joueurs_detectes = self.detection_joueurs_dans_le_champ(zone_du_champ)  
+                for joueur in joueurs_detectes:
+                    if not joueur == None:
+                        liste_joueurs_detectes.append(joueur)
+                        
                 resultat = self.detection_decors(zone_du_champ, i, nb_zones)
                 
                 bord = (resultat > 0)
@@ -141,7 +159,7 @@ class CRaytracing:
         
         
         # --- retourne la liste des joueurs dans le champs de vision
-        return liste_joueurs_detectes, contour, (x1, y1, x2, y2)
+        return (liste_joueurs_detectes, contour, (x1, y1, x2, y2))
     
     
     

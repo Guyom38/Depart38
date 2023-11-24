@@ -13,6 +13,7 @@ from terrain import *
 
 from objets import *
 from personnages import *
+from pathfinding import *
 
 
 class CMoteur:
@@ -59,6 +60,10 @@ class CMoteur:
         
         
     def initialiser(self):  
+        self.pos_joueur, self.pos_pnj, self.chemin, self.ouverte, self.ferme = None, None, None, None, None
+        self.grille = None
+        
+        
         
         
         self.afficher_barre_progression(30, 100, "Empilage des dossiers ...")        
@@ -106,10 +111,44 @@ class CMoteur:
                     self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.BAS
                 if event.key == K_SPACE:
                     self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.AUCUN 
+    
+    
+    def pathfinding_demo(self):
+        if self.grille == None:
+            self.grille = generer_grille(self.TERRAIN.arrayBlocage)
+        pos_joueur = (int(self.PERSONNAGES.JOUEURS[0].x), int(self.PERSONNAGES.JOUEURS[0].y)) 
+        pos_pnj = (int(self.PERSONNAGES.PNJS[0].x), int(self.PERSONNAGES.PNJS[0].y))
+        
+        if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
+            self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
+              
+            #self.chemin, self.ouverte, self.ferme = astar( pos_joueur, pos_pnj, self.grille)   
+            self.chemin, self.ouverte, self.ferme = dijkstra( pos_joueur, pos_pnj, self.grille)   
+                  
+            if self.chemin == None:
+                print("Aucun chemin")
+                quit()
+            
+        ecriture = pygame.font.SysFont('arial', 20) 
+        for x, y in self.chemin:
+            pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 16, 0)
+            #image_texte = ecriture.render( ""  , True, (255,0,0)) 
+            #VAR.fenetre.blit(image_texte, ((x*VAR.dim)+16, (y*VAR.dim)+16))           
+        
+        # Dessiner les nœuds
+        for noeud in self.ouverte:
+            x, y = noeud.position
+            pygame.draw.circle(VAR.fenetre, (255, 0, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 8, 0)
+
+        for noeud in self.ferme:
+            x, y = noeud.position
+            pygame.draw.circle(VAR.fenetre, (0, 255, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 4, 0)
+
+        
                 
     def demarrer(self):       
-        cycle, som_t = 0,0
-         
+        ecriture = pygame.font.SysFont('arial', 20) 
+        
         VAR.boucle = True
         while VAR.boucle:
          
@@ -121,11 +160,11 @@ class CMoteur:
             #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
             #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
                  
-            self.PERSONNAGES.afficher_champs_de_vision()            
+        
             self.ELEMENTS_VISUELS.afficher()
+            self.pathfinding_demo()
             
-            ecriture = pygame.font.SysFont('arial', 20) 
-            image_texte = ecriture.render( str(int(VAR.timer_ray * 1000)) + "ms, elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
+            image_texte = ecriture.render( "elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 10))            
     
             image_texte = ecriture.render( str( (round(self.PERSONNAGES.PNJS[0].x, 2), round(self.PERSONNAGES.PNJS[0].y, 2)) ) , True, (255,0,0)) 
@@ -140,8 +179,6 @@ class CMoteur:
 
             # --- limite la fréquence de raffraichissement a 25 images seconde
             self.horloge.tick(30)
-            som_t += VAR.timer_ray
-            cycle += 1
 
         # --- en sortie de boucle, quitte le programme
         pygame.quit() 

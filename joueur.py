@@ -127,9 +127,19 @@ class CJoueur:
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
     
-    def afficher(self):          
+    def afficher(self):   
+        est_ordinateur = (not self.IA == None)
+               
         # --- affiche joueur
+        ombre = pygame.Surface((48,48), pygame.SRCALPHA).convert_alpha()
+        pygame.draw.circle(ombre, (0,0,0, 60), (16, 16), 16)
+        #pygame.draw.circle(ombre, (255,0,0, VAR.ray_alpha), (16, 16), 16, 2)
+        
+        VAR.fenetre.blit(ombre, (self.position_ecran_x(), self.position_ecran_y()+40))
         VAR.fenetre.blit(self.image, (self.position_ecran_x(), self.position_ecran_y()), self.coordonnees_image_animee())
+        
+        if est_ordinateur:
+            self.MOTEUR.PERSONNAGES.rays.afficher(self)
         
         # --- affiche nom
         VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-2))
