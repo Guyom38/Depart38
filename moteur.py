@@ -78,12 +78,7 @@ class CMoteur:
         
         self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
         self.TERRAIN = CTerrain(self) 
-        self.TERRAIN.initialisation_joueurs()  
-              
-        self.afficher_barre_progression(90, 100, "Optimisation des réseaux Wi-Fi pour transmissions télépathiques ...")  
-        self.PERSONNAGES.rays[0] = CRaytracing(self, 200, 20)
-        self.PERSONNAGES.rays[1] = CRaytracing(self, 128, 20)
-        self.PERSONNAGES.rays[2] = CRaytracing(self, 128, 20)
+        self.TERRAIN.initialisation_joueurs()                
         
         self.afficher_barre_progression(100, 100, "Démarrage du jeu")  
                     
@@ -126,7 +121,7 @@ class CMoteur:
             #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
             #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
                  
-            self.PERSONNAGES.afficher_visions()            
+            self.PERSONNAGES.afficher_champs_de_vision()            
             self.ELEMENTS_VISUELS.afficher()
             
             ecriture = pygame.font.SysFont('arial', 20) 
@@ -137,15 +132,9 @@ class CMoteur:
             VAR.fenetre.blit(image_texte, (50, 30))            
         
             image_texte = ecriture.render( str( (self.PERSONNAGES.PNJS[0].IA.objectifx, self.PERSONNAGES.PNJS[0].IA.objectify) ) , True, (255,0,0)) 
-            VAR.fenetre.blit(image_texte, (50, 50))
-            
-            cercle = self.PERSONNAGES.rays[0].calculer_points_cercle(500,500,400)
-            for index, xx, yy in cercle:
-                ligne = bresenham((500, 500), (xx, yy), 10).path
-                for xxx, yyy in ligne:
-                    pygame.draw.circle(VAR.fenetre, (255,255,0), (xxx, yyy), 2)
-                    
-                pygame.draw.circle(VAR.fenetre, (255,0,0), (xx, yy), 2)
+            VAR.fenetre.blit(image_texte, (50, 50))           
+           
+                
             # --- afficher le résultat
             pygame.display.update()
 

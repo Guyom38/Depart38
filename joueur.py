@@ -31,10 +31,12 @@ class CJoueur:
                 self.couleur_vision = (193,249,153, VAR.ray_alpha)
             elif fonction == 1:
                 self.vitesse = 0.1
+                self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/basile.png").convert_alpha()
                 self.couleur_vision = (255,255,255, VAR.ray_alpha)
             else:
                 self.vitesse = 0.05
+                self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/chef.png").convert_alpha()
                 self.couleur_vision = (239,231,129, VAR.ray_alpha)
             

@@ -27,7 +27,7 @@ web_socket = False
 web_socket_id_partie = generate_short_id()
 
 precision_distance = 10
-precision_champs = 2
+precision_champs = 10
 
 
 boucle = True

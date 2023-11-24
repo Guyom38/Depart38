@@ -6,120 +6,155 @@ import time
 from joueur import *
 
 class CRaytracing: 
-    def __init__(self, moteur, distance, precision):
+    def __init__(self, moteur):
         self.MOTEUR = moteur
         self.rayons = []
-        self.distance = distance
         
-        for index, xx, yy in self.calculer_points_cercle(0, 0, distance):
-            ligne = bresenham((0, 0), (xx, yy), precision).path
+        self.distance_max_ref = 300 
+        self.amplitude_balancement_ref = 20
+        
+        self.generation_du_champ_de_vision360()    
+    
+    def generation_du_champ_de_vision360(self):         
+        for angle in range(0, 360): 
+            ligne = []               
+            for rayon in range(0, self.distance_max_ref):                
+                angle2 = (angle*math.pi/180)
+                ligne.append( ( int(rayon*math.cos(angle2)), int(rayon*math.sin(angle2))) )
             self.rayons.append(ligne)
             
-    def calculer_points_cercle(self, centreX, centreY, rayon):
-        tmp = []
-        for index in range(0, 360):
-            angle = (index*math.pi/180)
-            tmp.append( (index, centreX + int(rayon*math.cos(angle)), centreY + int(rayon*math.sin(angle))) )
-        return tmp
-    
-    def calculer_plage_angles(self, angle, champs, amplitude_balancement, precision, tempo):        
-          
-        # Calcul du balancement basé sur le tempo et l'amplitude
-        balancement = int(amplitude_balancement * math.sin(tempo * math.pi / 10))
-
-        champsDIV2 = (champs // 2)
-        plage1 = list(range((angle - champsDIV2 - balancement) , angle, precision))
-        plage2 = list(range(angle, (angle + champsDIV2 - balancement), precision))       
-        return  [angle % 360 for angle in (plage1 + plage2)]
-    
-    
-
+            
     def afficher(self, personnage):
-        # --- rect de la forme a creer
-        x1, y1, x2, y2 = 9999, 9999, 0, 0
-        
-        x, y = personnage.x, personnage.y                
-        contour = []       
-        liste_joueurs_detectes = []
-        
-        precision = VAR.precision_champs
+        if personnage.direction == None : return
         couleur_champ_vision = personnage.couleur_vision
         
-        # exemple: 10 degrés de chaque côté
-        amplitude_balancement = 20
-        champ = personnage.IA.champ_vision   
+        # --- rect de la forme a creer
         
+        precision = VAR.precision_champs
+        plages = self.calculer_plage_angles(personnage, self.amplitude_balancement_ref, precision) 
+        liste_joueurs_detectes, forme, rect_forme = self.generation_du_champs_de_vision(plages, personnage)
+        self.dessiner_vision(forme, couleur_champ_vision, rect_forme)
+    
+    
+    
+    
+    def calculer_plage_angles(self, personnage, amplitude_balancement, precision):        
         
+        angle_champs = personnage.direction
+        champ_vision = personnage.IA.champ_vision   
+        tempo_champ = personnage.tempo
         
-        if personnage.direction == None : return
-        plages = self.calculer_plage_angles(personnage.direction, champ, amplitude_balancement, precision, personnage.tempo) 
-        
-        # --- recupere la zone
-        for i in plages: 
-            liste = self.rayons[i]
-            o, bord = 0, False              
- 
-            for xx2, yy2 in liste:
-                px2, py2 = int(round((x * VAR.dim) - xx2 +15, 0)), int(round((y * VAR.dim) - yy2 -4, 0))
-                     
-                if 1 == 1:
-                    for joueur in self.MOTEUR.PERSONNAGES.JOUEURS:
-                        objet_zone_vision = (px2-2, py2-2, 4, 4)
-                        objet_joueur = (joueur.position_int_x(), joueur.position_int_y()-5, 20, 6)
-                        if collision(objet_zone_vision, objet_joueur):
-                            if not joueur in liste_joueurs_detectes:
-                                liste_joueurs_detectes.append(joueur)
-                                couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)
-                            
-                        #    pygame.draw.circle(VAR.fenetre, (255, 0, 0, 255), (px2, py2), 2)  
-                        #else:
-                        #    pygame.draw.circle(VAR.fenetre, (255, 255, 255, 255), (px2, py2), 2)  
-                   
-                
-                if VAR.ray_alpha > 0:
-                    # --- deduction des dimensions de la forme
-                    if px2 < x1: x1 = px2
-                    if py2 < y1: y1 = py2
-                    if px2 > x2: x2 = px2
-                    if py2 > y2: y2 = py2
-                
-                # --- le champs de vision n'est plus dans les limites du terrain
-                # --- la zone est libre n'est pas libre
-                # --- c'est le dernier element de la liste
-                if px2 > -1 and px2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and py2 > -1 and py2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[1] :                    
-                    if self.MOTEUR.TERRAIN.arrayBlocage[px2, py2] == 0:                           
-                        if o == len(liste)-1:                               
-                            bord = True                                
-                    else:
-                        bord = True
-                        break
-                else:
-                    bord = True
+        # Calcul du balancement basé sur le tempo et l'amplitude
+        balancement = int(amplitude_balancement * math.sin(tempo_champ * math.pi / 10))
 
-                o=o+1
+        champsDIV2 = (champ_vision // 2)
+        plage1 = list(range((angle_champs - champsDIV2 - balancement) , angle_champs, precision))
+        plage2 = list(range(angle_champs, (angle_champs + champsDIV2 - balancement), precision))       
+        return  [angle % 360 for angle in (plage1 + plage2)]
+    
+
+    def detection_joueurs_dans_le_champ(self, zone_du_champ):
+        px2, py2 = zone_du_champ 
+        
+        liste_joueurs_detectes = []
+        for joueur in self.MOTEUR.PERSONNAGES.JOUEURS:
+            objet_zone_vision = (px2-2, py2-2, 4, 4)
+            objet_joueur = (joueur.position_int_x(), joueur.position_int_y()-5, 20, 6)
+            joueur_detecte = collision(objet_zone_vision, objet_joueur)
+            
+            if joueur_detecte:
+                if not joueur in liste_joueurs_detectes:
+                    liste_joueurs_detectes.append(joueur)
+                    couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)
+                        
+            # --- demo --- detection (FACULTATIF)
+            if joueur_detecte:   
+                 pygame.draw.circle(VAR.fenetre, (255, 0, 0, 255), (px2, py2), 2)  
+            else:
+                pygame.draw.circle(VAR.fenetre, (255, 255, 255, 255), (px2, py2), 2)  
+    
+    def ajuste_dimension_de_la_forme(self, zone_du_champ, rect_figure):
+        px2, py2 = zone_du_champ 
+        x1, y1, x2, y2 = rect_figure
+        
+        if VAR.ray_alpha > 0:
+            # --- deduction des dimensions de la forme
+            if px2 < x1: x1 = px2
+            if py2 < y1: y1 = py2
+            if px2 > x2: x2 = px2
+            if py2 > y2: y2 = py2     
+        
+        return x1, y1, x2, y2
+    
+    def detection_decors(self, zone_du_champ, position, maximum):
+        px2, py2 = zone_du_champ 
+        
+        # --- le champs de vision n'est plus dans les limites du terrain
+        # --- la zone est libre n'est pas libre
+        # --- c'est le dernier element de la liste
+        if px2 > -1 and px2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and py2 > -1 and py2 < self.MOTEUR.TERRAIN.arrayBlocage.shape[1] :                    
+            if self.MOTEUR.TERRAIN.arrayBlocage[px2, py2] == 0:                           
+                if position == maximum:                               
+                    return 1     # figure terminée                           
+            else:
+                return 2    # collision avec decors
+        else:
+            return 1   # en dehors du terrain
+        
+        return 0
+
+    
+    
+                   
+    def generation_du_champs_de_vision(self, plages, personnage):
+        x, y = personnage.x, personnage.y  
+        px2, py2 = int(x * VAR.dim) +15 , int(y * VAR.dim) -4  
+              
+        x1, y1, x2, y2 = 9999, 9999, 0, 0        
+        contour = []  
+        
+        liste_angles = range(0, personnage.distance_vision, VAR.precision_distance)
+        nb_zones = len(liste_angles) -1
+        for angle in plages: 
+ 
+            i, bord = 0, False         
+            for j in liste_angles:
+                xx2, yy2 = self.rayons[angle][j]
+                
+                zone_du_champ = (px2 - xx2, py2 - yy2)                     
+                x1, y1, x2, y2 = self.ajuste_dimension_de_la_forme(zone_du_champ, (x1, y1, x2, y2))    
+                            
+                liste_joueurs_detectes = self.detection_joueurs_dans_le_champ(zone_du_champ)      
+                resultat = self.detection_decors(zone_du_champ, i, nb_zones)
+                
+                bord = (resultat > 0)
+                if resultat == 2:                    
+                    break
+               
+                i += 1
               
             if bord: 
-                contour.append((px2 , py2))
+                contour.append(zone_du_champ)
                     
-        if len(contour) < 3 : 
-            return []
+        # --- ajoute la position du joueur comme dernier point de la figure (centre du cercle)        
+        contour.append((px2 , py2))            
         
-        # --- ajoute la position du joueur comme dernier point de la figure (centre du cercle)
-        px2, py2 = ( x * VAR.dim) +15 , ( y * VAR.dim -4) 
-        contour.append((px2 , py2))
-            
-        self.dessiner_vision(contour, couleur_champ_vision, x1, y1, x2, y2)
         
         # --- retourne la liste des joueurs dans le champs de vision
-        return liste_joueurs_detectes
+        return liste_joueurs_detectes, contour, (x1, y1, x2, y2)
     
     
     
-    def dessiner_vision(self, contour, couleur_vision, x1, y1, x2, y2):
+    def dessiner_vision(self, contour_forme, couleur_vision, rect_forme):
+        if len(contour_forme) <3:
+            return
+        
+        x1, y1, x2, y2 = rect_forme
+        
         # --- dessine avec la transparence
         if VAR.ray_alpha > 0:
             forme_reajustee = []
-            for xxx, yyy in contour:
+            for xxx, yyy in contour_forme:
                 forme_reajustee.append((xxx - x1, yyy - y1))
                          
                     
@@ -130,4 +165,4 @@ class CRaytracing:
         
         # --- dessine sans transparence    
         else:
-            pygame.draw.polygon(VAR.fenetre, couleur_vision, contour, 0) 
+            pygame.draw.polygon(VAR.fenetre, couleur_vision, contour_forme, 0) 
