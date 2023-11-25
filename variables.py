@@ -2,7 +2,7 @@ from fonctions import *
 from constantes import *
 
 
-demo = ENUM_DEMO.REPERES
+demo = ENUM_DEMO.DIJISKRA
 
 resolution_x = 1920
 resolution_y = 1080

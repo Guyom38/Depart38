@@ -7,6 +7,7 @@
     "expandedProjectPaths": [
         "."
     ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         "Interiors_32x32.tsx": {
             "scaleInDock": 1,
@@ -24,8 +25,8 @@
             "scale": 0.75,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 699.3333333333333,
-                "y": 550.6666666666665
+                "x": 697.9999999999999,
+                "y": 549.3333333333334
             }
         },
         "map.tmx": {

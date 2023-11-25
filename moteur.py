@@ -117,9 +117,7 @@ class CMoteur:
         if len(self.PERSONNAGES.PATHFINDING.grille_obstacles) == 0:
             self.PERSONNAGES.PATHFINDING.generer_matrice_obstacle(self.TERRAIN.arrayBlocage)        
         
-        self.PERSONNAGES.PATHFINDING.generer_reperes_sur_le_terrain()
-        self.PERSONNAGES.PATHFINDING.generer_chemin_entre_reperes()
-
+        self.PERSONNAGES.PATHFINDING.generer_tous_les_parcours()
 
         
 
@@ -127,8 +125,7 @@ class CMoteur:
         
                 
     def demarrer(self):       
-        ecriture = pygame.font.SysFont('arial', 20) 
-        
+        ecriture = pygame.font.SysFont('arial', 20)         
         
         VAR.boucle = True
         while VAR.boucle:
@@ -143,12 +140,12 @@ class CMoteur:
                  
         
             self.ELEMENTS_VISUELS.afficher()
+            
+            
             self.PERSONNAGES.PATHFINDING.calculer_pathfinding()
             self.PERSONNAGES.PATHFINDING.afficher()
             
-            for repere in self.PERSONNAGES.PATHFINDING.REPERES:                
-                pygame.draw.rect(VAR.fenetre, (255,255,255), (repere.x * VAR.dim, repere.y * VAR.dim,  VAR.dim, VAR.dim), 4)
-
+           
             
             image_texte = ecriture.render( "elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (50, 10))            

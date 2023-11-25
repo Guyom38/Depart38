@@ -14,10 +14,10 @@ class CTerrain:
         self.preparer_terrain()     
             
     def preparer_terrain(self):    
-        self.blocage = self.MOTEUR_TILED.generer_blocage() 
+        self.png_blocage = self.MOTEUR_TILED.generer_png_blocage() 
         
         self.planche = self.MOTEUR_TILED.generer_map()         
-        self.arrayBlocage = pygame.surfarray.array_blue(self.blocage)
+        self.arrayBlocage = pygame.surfarray.array_blue(self.png_blocage)
     
     def initialisation_joueurs(self):
         parcours = self.MOTEUR_TILED.generer_parcours_PNJ()

@@ -6,36 +6,9 @@ import time
 from queue import PriorityQueue
 from constantes import *
 
-matrices = []    
-matrices.append( ([ [0,0,0,0],
-                                 [1,0,0,1],
-                                 [1,0,0,1],
-                                 [0,0,0,0] ], (2, 1)) )    
-            
-matrices.append( ([ [1,0,0,1],
-                                 [0,0,0,0],
-                                 [0,0,0,0],
-                                 [1,1,1,1] ], (2, 1)) )    
-            
-matrices.append( ([ [0,1,2],
-                                 [0,0,0],
-                                 [0,0,0],
-                                 [0,1,0] ], (1, 1)) )   
-            
-matrices.append( ([ [2,0,0,1],
-                                 [1,0,0,0],
-                                 [1,0,0,0],
-                                 [2,0,0,1] ], (2, 1)) )
+import pickle
 
 
-
-class CRepere:
-    def __init__(self, moteur, index, position):
-        self.moteur = moteur
-        self.index = index
-        self.x, self.y = position
-
-        self.LISTE_REPERES_VOISINS = {} 
 
 
 class CNoeud:
@@ -52,18 +25,20 @@ class CNoeud:
 
     def __lt__(self, other):
         return self.g < other.g
-    
-    
+        
         
 class CPathfinding:
     def __init__(self, moteur):
         self.MOTEUR = moteur
-        self.REPERES = []        
+         
         self.grille_obstacles = []
         
+        self.ZONES = []
+        self.zones_libres = []      
         self.pos_joueur, self.pos_pnj, self.chemin, self.ouverte, self.ferme = None, None, None, None, None
         
-    def generer_matrice_obstacle(self, arrayBlocage):      
+        
+    def generer_matrice_obstacle2(self, arrayBlocage):      
         self.grille_obstacles = []
 
         # Parcourir le bitmap avec un décalage de 16 et un pas de 32
@@ -74,66 +49,112 @@ class CPathfinding:
                 # Vérifier si la valeur du pixel est supérieure à 0            
                 ligne_obstacles.append(1 if arrayBlocage[y][x] > 0 else 0)                
             self.grille_obstacles.append(ligne_obstacles)
-
     
-    def chercher_l_intersection(self, matrice, offset, x, y):
-        dimx = len(matrice[0])
-        dimy = len(matrice)
-            
-        ox, oy = offset
-        if x + dimx >= VAR.dimension_x or y + dimy >= VAR.dimension_y:
-            return None
-            
-        for yy in range(0, dimy):
-            for xx in range(0, dimx):
-                xxx = x + xx
-                yyy = y + yy
-                    
-                if matrice[yy][xx] != self.grille_obstacles[xxx][yyy] and matrice[yy][xx] != 2:
-                    return None
-                
-        return (x + ox, y + oy)   
-        
-    def generer_reperes_sur_le_terrain(self):
-        self.REPERES = []
-
-        for y in range(3, VAR.dimension_y -1):
-            for x in range(0, VAR.dimension_x):
-
-                    for matrice, offset in matrices:
-                        intersection = self.chercher_l_intersection(matrice, offset, x, y)
+   
                         
-                        if not intersection == None:
-                            compteur_reperes = len(self.REPERES)
-                            self.REPERES.append( CRepere(self.MOTEUR, compteur_reperes, intersection) )
+    def generer_matrice_obstacle(self, arrayBlocage):      
+        self.grille_obstacles = []
+        self.zones_libres = []
+              
+        offset = VAR.dim // 2
+        for x in range(0, VAR.dimension_x):        
+            ligne_obstacles = []
+            for y in range(0, VAR.dimension_y):       
+                xx, yy = (x * VAR.dim) + offset, (y * VAR.dim) + offset                  
+                 
+                ligne_obstacles.append(1 if arrayBlocage[xx][yy] > 0 else 0)    
+                
+                if arrayBlocage[xx][yy] == 0:
+                    self.zones_libres.append((x, y))        
+                       
+            self.grille_obstacles.append(ligne_obstacles)
+
+        print("PATHFINDING, zones libres : " + str(len(self.zones_libres)) + " => " + str(len(self.zones_libres)**2))
         
-        print("Pathfinding, " + str(len(self.REPERES)) + " trouves.")
 
-    
-    def generer_chemin_entre_reperes(self):
-        valeur = 70
-        pas = (30 / len(self.REPERES)+1)
-        i = 0
-        for repere1 in self.REPERES:
-            i+=1
-            pas += 1
-            self.MOTEUR.afficher_barre_progression(valeur + pas, 100, "Préparation de la carte routière :" + str(i) +" / "+str(len(self.REPERES)))  
-            position1 = (repere1.x, repere1.y)
-            
-            for repere2 in self.REPERES:
-                if not repere1 == repere2:
-                    ok1 = not (repere2.index in repere1.LISTE_REPERES_VOISINS)
-                    ok2 = not (repere1.index in repere2.LISTE_REPERES_VOISINS)
+    def generer_tous_les_parcours(self):
+        self.PARCOURS = {}
+        self.ZONES = {}
+        
+        index = 1
+        nb_ignores = 0
+        
+        delais, temps = 4, 5
+        t = time.time() - delais
+  
+        j = 0
+        for zoneA in self.zones_libres:
+            i = 0
+            for zoneB in self.zones_libres[::-1]:
+                aff = (time.time() - t > delais)
+                
+                if aff:
+                    VAR.fenetre.fill( (32,32,32) )
+                    VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
+                
+                chemin = []
+                if not zoneA == zoneB: 
+                    if not zoneA in self.ZONES: self.ZONES[zoneA] = {}
+                    if not zoneB in self.ZONES: self.ZONES[zoneB] = {}
+
+                    chemin, _, _ = self.algo_dijkstra(zoneA, zoneB)
                     
-                    if ok1 or ok2:       
-                        position2 = (repere2.x, repere2.y)
-                        chemin, _, _ = self.algo_dijkstra(position1, position2)
-                    if ok1:
-                        repere1.LISTE_REPERES_VOISINS[repere2.index] = chemin
-                    if ok2:
-                        repere2.LISTE_REPERES_VOISINS[repere1.index] = chemin[::-1]
+                    if aff:                    
+                        for z in chemin:
+                            x, y = z
+                            pygame.draw.circle(VAR.fenetre, (255,255,0), ((x * VAR.dim) + 16, (y * VAR.dim)+16), 16, 0)
+                    
+                    if len(chemin) > 0:
+                        self.PARCOURS[index] = chemin     
+                        self.ZONES[zoneA][zoneB] = index
+                        self.ZONES[zoneB][zoneA] = -index
+                        index += 1      
+                    else:
+                        nb_ignores +=1                   
+                  
+                else :
+                    nb_ignores +=1
+                
+                i+= 1
+                
+                if aff:           
+                    for zoneC in self.zones_libres:
+                        if zoneC in self.ZONES:
+                            x, y = zoneC
+                            x, y = (x * VAR.dim) , (y * VAR.dim)
+                            image_texte = VAR.ecriture.render( str(len(self.ZONES[zoneC])) , True, (255,255,255)) 
+                            VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
+                    
+                    time.sleep(0.0001)       
+                    pygame.display.update()
+                    
+                    if time.time() - t > temps:
+                        t = time.time()
+            
+            j += 1
+            if j > 10:
+                break
+            
+            
+        with open('parcours_zones_data.pkl', 'wb') as fichier:
+            pickle.dump({'PARCOURS': self.PARCOURS, 'ZONES': self.ZONES}, fichier, protocol=pickle.HIGHEST_PROTOCOL)
 
-
+            
+        print("parfait")
+        quit()
+                
+    def afficher_zones(self, zone):
+        matrice = self.ZONES[zone]
+        
+        for yy in range (0, VAR.dimension_y):
+            txt = ""
+            for xx in range (0, VAR.dimension_x):
+                if (xx, yy) in matrice:
+                    txt += "{:02d}".format(matrice[(xx,yy)])
+                else:
+                    txt += "--"
+            print(txt)
+            
     def algo_dijkstra(self, depart, arrivee):
         noeud_depart = CNoeud(None, depart)
         noeud_depart.g = 0
@@ -179,7 +200,7 @@ class CPathfinding:
                         liste_ouverte.put((nouveau_noeud.g, nouveau_noeud))
                         liste_ouverte_set.add(nouveau_noeud)
 
-        return None, liste_ouverte_set, liste_fermee_set
+        return [], liste_ouverte_set, liste_fermee_set
     
     
     
@@ -200,15 +221,9 @@ class CPathfinding:
             self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_joueur, pos_pnj)   
 
     
-    def afficher(self):
-        c = 4
-        for index, repere in self.REPERES[0].LISTE_REPERES_VOISINS.items():
-            for points in repere:
-                x, y = points            
-                pygame.draw.circle(VAR.fenetre, (255, 0, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 8, c)
-            c += 2
+    def afficher(self):     
             
-        if VAR.demo == ENUM_DEMO.DIJISKRA:    
+        if VAR.demo == ENUM_DEMO.DIJISKRA and not self.chemin == None:    
             VAR.ecriture = pygame.font.SysFont('arial', 20) 
             for x, y in self.chemin:
                 pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 16, 0)

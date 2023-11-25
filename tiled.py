@@ -174,7 +174,7 @@ class map_tiled:
             c+=1
         return self.planche
     
-    def generer_blocage(self):   
+    def generer_png_blocage(self):   
         for layer in self.root.findall('layer'):
             if layer.attrib['name'] == "Bloqué":
                 data = layer.find('data')
