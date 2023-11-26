@@ -148,14 +148,21 @@ class CMoteur:
            
             
             image_texte = ecriture.render( "elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
-            VAR.fenetre.blit(image_texte, (50, 10))            
+            VAR.fenetre.blit(image_texte, (800, 0))            
     
             image_texte = ecriture.render( str( (round(self.PERSONNAGES.PNJS[0].x, 2), round(self.PERSONNAGES.PNJS[0].y, 2)) ) , True, (255,0,0)) 
-            VAR.fenetre.blit(image_texte, (50, 30))            
+            VAR.fenetre.blit(image_texte, (800, 20))            
         
-            image_texte = ecriture.render( str( (self.PERSONNAGES.PNJS[0].IA.objectifx, self.PERSONNAGES.PNJS[0].IA.objectify) ) , True, (255,0,0)) 
-            VAR.fenetre.blit(image_texte, (50, 50))           
+            image_texte = ecriture.render( "ROUND : "+str( (round(self.PERSONNAGES.PNJS[0].x, 0), round(self.PERSONNAGES.PNJS[0].y, 0))) + " --- INT : "+ str((int(self.PERSONNAGES.PNJS[0].x), int(self.PERSONNAGES.PNJS[0].y))) , True, (255,0,0))
+            VAR.fenetre.blit(image_texte, (800, 40))            
+            
+            image_texte = ecriture.render( self.PERSONNAGES.PNJS[0].IA.txt , True, (255,0,0))
+            VAR.fenetre.blit(image_texte, (0, 0))            
            
+            image_texte = ecriture.render( str(self.PERSONNAGES.PNJS[0].IA.chemin_pathfinding) , True, (255,0,0))
+            VAR.fenetre.blit(image_texte, (0, 20))            
+           
+            
                 
             # --- afficher le résultat
             pygame.display.update()

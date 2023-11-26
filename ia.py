@@ -10,7 +10,8 @@ class CIA:
         self.MOTEUR = moteur
         self.PNJ = personnage
         self.parcours = []
-        
+        self.chemin_pathfinding = []
+        self.index_chemin = 0
         
         # Objectifs initiaux pour la position du PNJ
         self.objectifx = -1
@@ -20,7 +21,12 @@ class CIA:
         self.position_precedente = (-1, -1)
         self.champ_vision = 60
        
+        self.x, self.y, self.xInt, self.yInt = 0, 0, 0, 0
+        self.txt = ""
         
+    def traque_est_ce_que_je_poursuis_quelquun(self):
+        return len(self.chemin_pathfinding) > 0 
+    
     def est_ce_toujours_sur_le_terrain(self, x, y):
         return (0 <= x < VAR.dimension_x) and (0 <= y < VAR.dimension_y)  
 
@@ -62,16 +68,50 @@ class CIA:
         
     def je_reflechis(self):
         self.je_recupere_ma_position_sur_le_terrain()
-        self.je_note_mon_passage_si_nouveau_chemin()
         
-        if self.est_ce_que_je_suis_arrive_a_une_intersection():
-            directions_disponibles = self.quelles_sont_les_directions_disponibles_autour_de_moi()
-            direction_retenue = self.quelle_est_la_direction_la_moins_frequentee(directions_disponibles)
+        
+        # --- je suis mon parcours ...
+        if not self.traque_est_ce_que_je_poursuis_quelquun():
+            self.je_note_mon_passage_si_nouveau_chemin()
+        
+            if self.est_ce_que_je_suis_arrive_a_une_intersection():
+                directions_disponibles = self.quelles_sont_les_directions_disponibles_autour_de_moi()
+                direction_retenue = self.quelle_est_la_direction_la_moins_frequentee(directions_disponibles)
+                
+                self.je_me_reoriente_vers_la_nouvelle_intersection(direction_retenue)
+                self.objectifx, self.objectify = self.quelles_sont_les_coordonnees_de_l_intersection(direction_retenue)       
+        
+        # --- je me rend vers quelques choses
+        else:
+            self.traque_je_me_reoriente_vers_le_nouveau_point()     
+
+    def traque_je_me_reoriente_vers_le_nouveau_point(self):
+        
+        
+        # --- est ce que je suis a destination
+        if self.index_chemin > len(self.chemin_pathfinding)-1:
+            self.PNJ.direction = ENUM_DIR.AUCUN
+            return
+        
+        point_suivant = self.chemin_pathfinding[self.index_chemin]
+        x, y = self.xInt, self.yInt  # Position actuelle du PNJ
+        xNew, yNew = point_suivant
+        
+        if xNew > x:
+            self.PNJ.direction = ENUM_DIR.DROITE
+        if xNew < x:
+            self.PNJ.direction = ENUM_DIR.GAUCHE
+        if yNew > y:
+            self.PNJ.direction = ENUM_DIR.BAS
+        if yNew < y:
+            self.PNJ.direction = ENUM_DIR.HAUT
+        
+        self.txt = str(("x: " + str(x), "y: "+str(y), "xNew: "+str(xNew), "yNew: "+str(yNew), "direction: "+str(self.PNJ.direction))) 
+      
+        if (x, y) == (xNew, yNew):
+            self.index_chemin += 1
+
             
-            self.je_me_reoriente_vers_la_nouvelle_intersection(direction_retenue)
-            self.objectifx, self.objectify = self.quelles_sont_les_coordonnees_de_l_intersection(direction_retenue)        
-
-
     def je_me_reoriente_vers_la_nouvelle_intersection(self, direction_retenue):
         self.PNJ.direction = direction_retenue 
            

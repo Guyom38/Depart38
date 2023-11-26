@@ -38,17 +38,7 @@ class CPathfinding:
         self.pos_joueur, self.pos_pnj, self.chemin, self.ouverte, self.ferme = None, None, None, None, None
         
         
-    def generer_matrice_obstacle2(self, arrayBlocage):      
-        self.grille_obstacles = []
-
-        # Parcourir le bitmap avec un décalage de 16 et un pas de 32
-        offset = VAR.dim // 2
-        for y in range(offset, len(arrayBlocage), VAR.dim):
-            ligne_obstacles = []
-            for x in range(offset, len(arrayBlocage[y]), VAR.dim):
-                # Vérifier si la valeur du pixel est supérieure à 0            
-                ligne_obstacles.append(1 if arrayBlocage[y][x] > 0 else 0)                
-            self.grille_obstacles.append(ligne_obstacles)
+   
     
    
                         
@@ -131,9 +121,6 @@ class CPathfinding:
                                 else:
                                     ignore_deduction +=1    
 
-                            #if not zoneA == zoneB:
-                            #    self.ZONES[zoneA][zoneB] = index 
-                            #    self.ZONES[zoneB][zoneA] = -index
                         index +=1
                 else:
                     ignore_dij +=1
@@ -148,7 +135,6 @@ class CPathfinding:
                     
                     
                     total_secondes = ((time.time() - duree) / (index+ignore_dij)) * maximum # Exemple: 3665 secondes
-
                     heures = int(total_secondes // 3600)  # Convertit les secondes en heures
                     minutes = int((total_secondes % 3600) // 60)  # Convertit le reste en minutes
                     secondes = int(total_secondes % 60)  # Le reste sont les secondes
@@ -170,8 +156,7 @@ class CPathfinding:
                     pygame.display.update()
                     
                     if time.time() - t > temps:
-                        t = time.time()
-            
+                        t = time.time()            
 
             
         time.sleep(10)       
@@ -190,17 +175,6 @@ class CPathfinding:
             self.PARCOURS = donnees['PARCOURS']
             self.ZONES = donnees['ZONES'] 
                    
-    def afficher_zones(self, zone):
-        matrice = self.ZONES[zone]
-        
-        for yy in range (0, VAR.dimension_y):
-            txt = ""
-            for xx in range (0, VAR.dimension_x):
-                if (xx, yy) in matrice:
-                    txt += "{:02d}".format(matrice[(xx,yy)])
-                else:
-                    txt += "--"
-            print(txt)
             
     def algo_dijkstra(self, depart, arrivee):
         noeud_depart = CNoeud(None, depart)
@@ -263,23 +237,29 @@ class CPathfinding:
         
         if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
             self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
-              
-            #self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_joueur, pos_pnj)   
-            self.ouverte = []
-            self.ferme = []
             
-            if pos_joueur in self.ZONES and pos_pnj in self.ZONES[pos_joueur]:
-                index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.ZONES[pos_joueur][pos_pnj]
-                if index_chemin > 0:
-                    if sens_lecture == 1:
-                        self.chemin = self.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
-                    else:
-                        self.chemin = self.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]
-                else:
-                    print("pas de chemin")
+            if 1 == 1:  
+                self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_pnj, pos_joueur)   
             else:
-                self.chemin = []
-                print("pas de chemin calcule")
+                self.ouverte = []
+                self.ferme = []
+                
+                if pos_joueur in self.ZONES and pos_pnj in self.ZONES[pos_joueur]:
+                    index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.ZONES[pos_joueur][pos_pnj]
+                    if index_chemin > 0:
+                        if sens_lecture == 1:
+                            self.chemin = self.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
+                        else:
+                            self.chemin = self.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]   
+                    else:
+                        print("pas de chemin")
+                else:
+                    self.chemin = []
+                    print("pas de chemin calcule")
+                
+            if len(self.chemin) > 1:
+                self.MOTEUR.PERSONNAGES.PNJS[0].IA.chemin_pathfinding = self.chemin
+                self.MOTEUR.PERSONNAGES.PNJS[0].IA.index_chemin = 0
     
     def afficher(self):     
             
@@ -287,9 +267,7 @@ class CPathfinding:
             VAR.ecriture = pygame.font.SysFont('arial', 20) 
             for x, y in self.chemin:
                 pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 16, 0)
-                    #image_texte = ecriture.render( ""  , True, (255,0,0)) 
-                    #VAR.fenetre.blit(image_texte, ((x*VAR.dim)+16, (y*VAR.dim)+16))           
-                
+
                 # Dessiner les nœuds
             for noeud in self.ouverte:
                 x, y = noeud.position

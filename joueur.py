@@ -66,9 +66,9 @@ class CJoueur:
         return int(round((self.y * VAR.dim) + self.offsetY,0))
     
     def position_int_x(self):
-        return int(round((self.x * VAR.dim), 0))
+        return int((self.x * VAR.dim))
     def position_int_y(self):
-        return int(round((self.y * VAR.dim), 0))
+        return int((self.y * VAR.dim))
         
     def toujours_sur_le_terrain(self):
         return (    self.position_int_x() > -1 and self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] \
@@ -110,6 +110,7 @@ class CJoueur:
                 if self.collision_avec_decors():
                     self.x, self.y = xo, yo
                     #self.direction = ENUM_DIR.AUCUN
+
 
     
     def coordonnees_image_animee(self):
