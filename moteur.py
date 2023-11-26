@@ -117,8 +117,8 @@ class CMoteur:
         if len(self.PERSONNAGES.PATHFINDING.grille_obstacles) == 0:
             self.PERSONNAGES.PATHFINDING.generer_matrice_obstacle(self.TERRAIN.arrayBlocage)        
         
-        self.PERSONNAGES.PATHFINDING.generer_tous_les_parcours()
-
+        #self.PERSONNAGES.PATHFINDING.generer_tous_les_parcours()
+        self.PERSONNAGES.PATHFINDING.charger_pathfinding()
         
 
 

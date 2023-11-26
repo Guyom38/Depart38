@@ -9,7 +9,7 @@ class CIA:
         # Initialisation du PNJ avec le moteur de jeu et le personnage
         self.MOTEUR = moteur
         self.PNJ = personnage
-        self.parcours = None
+        self.parcours = []
         
         
         # Objectifs initiaux pour la position du PNJ
