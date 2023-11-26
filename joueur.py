@@ -57,13 +57,17 @@ class CJoueur:
         
         self.tempo,self.tempoTimer = 0, time.time()
         
+        self.timer_particules = time.time()
         
-        
-        
-    def position_ecran_x(self):
-        return int(round((self.x * VAR.dim) + self.offsetX,0))
-    def position_ecran_y(self):
-        return int(round((self.y * VAR.dim) + self.offsetY,0))
+    
+    def get_position(self):
+        return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))
+    
+               
+    def get_rect_collision(self):
+        pass
+       
+   
     
     def position_int_x(self):
         return int((self.x * VAR.dim))
@@ -105,6 +109,11 @@ class CJoueur:
         elif self.direction == ENUM_DIR.BAS:
             self.y = self.y + self.vitesse
 
+        # --- particules
+        if time.time() - self.timer_particules > 0.05:
+            self.timer_particules = time.time()
+            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x()+16, self.position_int_y(), (255,255,255))
+        
         if not est_ordinateur:
             if self.toujours_sur_le_terrain():                
                 if self.collision_avec_decors():
@@ -128,23 +137,28 @@ class CJoueur:
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
     
+    # --- affiche joueur
     def afficher(self):   
-        est_ordinateur = (not self.IA == None)
-               
-        # --- affiche joueur
-        ombre = pygame.Surface((48,48), pygame.SRCALPHA).convert_alpha()
-        pygame.draw.circle(ombre, (0,0,0, 60), (16, 16), 16)
-        #pygame.draw.circle(ombre, (255,0,0, VAR.ray_alpha), (16, 16), 16, 2)
+        est_ordinateur = (not self.IA == None)               
         
-        VAR.fenetre.blit(ombre, (self.position_ecran_x(), self.position_ecran_y()+40))
-        VAR.fenetre.blit(self.image, (self.position_ecran_x(), self.position_ecran_y()), self.coordonnees_image_animee())
+        # -- affiche ombre du joueur
+        ombre = pygame.Surface((32,32), pygame.SRCALPHA).convert_alpha()
+        pygame.draw.circle(ombre, (0,0,0, 60), (16, 16), 16)
+
+        x, y = self.get_position()
+        centre_ombrex, centre_ombrey = x - (ombre.get_width() // 2), y - (ombre.get_height() // 2)
+        VAR.fenetre.blit(ombre, (centre_ombrex, centre_ombrey))
+        
+        # --- affiche sprite joueur
+        xImg, yImg = x-16, y-56
+        VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
         
         if est_ordinateur:
             self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
         
         # --- affiche nom
-        VAR.fenetre.blit(self.image_ombre, (self.position_ecran_x()-2, self.position_ecran_y()-2))
-        VAR.fenetre.blit(self.image_texte, (self.position_ecran_x(), self.position_ecran_y()))
+        VAR.fenetre.blit(self.image_ombre, (xImg-2, yImg-2))
+        VAR.fenetre.blit(self.image_texte, (xImg, yImg))
 
     
         

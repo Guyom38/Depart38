@@ -4,7 +4,7 @@ from pygame.locals import *
 
 import time
 
-
+from particules import *
 
 import variables as VAR
 
@@ -53,13 +53,13 @@ class CMoteur:
         VAR.fenetre.blit(image_texte, (posx, posy))            
     
         pygame.display.flip()
-        #time.sleep(0.3)
+        time.sleep(0.3)
         
         
         
         
     def initialiser(self):  
-   
+        self.PARTICULES = CParticules(self)
         
         
         self.afficher_barre_progression(30, 100, "Empilage des dossiers ...")        
@@ -139,13 +139,13 @@ class CMoteur:
             #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
                  
         
+            self.PARTICULES.Afficher_Les_Particules()
             self.ELEMENTS_VISUELS.afficher()
             
             
             self.PERSONNAGES.PATHFINDING.calculer_pathfinding()
             self.PERSONNAGES.PATHFINDING.afficher()
             
-           
             
          
     

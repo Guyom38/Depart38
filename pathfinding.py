@@ -245,7 +245,7 @@ class CPathfinding:
             if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
                 self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
                 
-                if 1 == 1:  
+                if 1 == 2:  
                     self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_pnj, pos_joueur)   
                 else:
                     self.ouverte = []

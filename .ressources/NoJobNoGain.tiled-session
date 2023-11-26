@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map-vide.tmx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -25,16 +25,16 @@
             "scale": 0.75,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 697.9999999999999,
-                "y": 549.3333333333334
+                "x": 968.6666666666666,
+                "y": 551.3333333333333
             }
         },
         "map.tmx": {
             "scale": 0.75,
-            "selectedLayer": 11,
+            "selectedLayer": 10,
             "viewCenter": {
-                "x": 700.6666666666667,
-                "y": 552
+                "x": 1390,
+                "y": 548
             }
         },
         "test.tsx": {
@@ -48,13 +48,15 @@
     "map.width": 60,
     "openFiles": [
         "Interiors_32x32.tsx",
-        "map-vide.tmx"
+        "map-vide.tmx",
+        "map.tmx"
     ],
     "project": "NoJobNoGain.tiled-project",
     "recentFiles": [
         "Interiors_32x32.tsx",
         "map-vide.tmx",
         "map.tmx",
+        "map-path.tmx",
         "Room_Builder_Office_32x32.tsx",
         "Modern_Office_Black_Shadow_32x32.tsx",
         "test.tsx"
