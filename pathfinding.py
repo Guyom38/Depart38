@@ -233,33 +233,41 @@ class CPathfinding:
     
     def calculer_pathfinding(self):
         pos_joueur = (int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)) 
-        pos_pnj = (int(self.MOTEUR.PERSONNAGES.PNJS[0].x), int(self.MOTEUR.PERSONNAGES.PNJS[0].y))
         
-        if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
-            self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
+        i=0
+        for pnj in self.MOTEUR.PERSONNAGES.PNJS:
+            if i>0:
+                return
+            i+=1
             
-            if 1 == 1:  
-                self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_pnj, pos_joueur)   
-            else:
-                self.ouverte = []
-                self.ferme = []
+            pos_pnj = (int(pnj.x), int(pnj.y))
+            
+            if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
+                self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
                 
-                if pos_joueur in self.ZONES and pos_pnj in self.ZONES[pos_joueur]:
-                    index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.ZONES[pos_joueur][pos_pnj]
-                    if index_chemin > 0:
-                        if sens_lecture == 1:
-                            self.chemin = self.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
-                        else:
-                            self.chemin = self.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]   
-                    else:
-                        print("pas de chemin")
+                if 1 == 1:  
+                    self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_pnj, pos_joueur)   
                 else:
-                    self.chemin = []
-                    print("pas de chemin calcule")
-                
-            if len(self.chemin) > 1:
-                self.MOTEUR.PERSONNAGES.PNJS[0].IA.chemin_pathfinding = self.chemin
-                self.MOTEUR.PERSONNAGES.PNJS[0].IA.index_chemin = 0
+                    self.ouverte = []
+                    self.ferme = []
+                    
+                    if pos_joueur in self.ZONES and pos_pnj in self.ZONES[pos_joueur]:
+                        index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.ZONES[pos_pnj][pos_joueur]
+                        if index_chemin > 0:
+                            if sens_lecture == 1:
+                                self.chemin = self.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
+                            else:
+                                self.chemin = self.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]   
+                        else:
+                            print("pas de chemin")
+                    else:
+                        self.chemin = []
+                        print("pas de chemin calcule")
+                    
+                if len(self.chemin) > 1:
+                    pnj.IA.chemin_pathfinding = self.chemin
+                    pnj.IA.index_chemin = 0
+                    self.afficher()
     
     def afficher(self):     
             

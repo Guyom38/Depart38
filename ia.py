@@ -9,6 +9,7 @@ class CIA:
         # Initialisation du PNJ avec le moteur de jeu et le personnage
         self.MOTEUR = moteur
         self.PNJ = personnage
+        
         self.parcours = []
         self.chemin_pathfinding = []
         self.index_chemin = 0
@@ -24,8 +25,35 @@ class CIA:
         self.x, self.y, self.xInt, self.yInt = 0, 0, 0, 0
         self.txt = ""
         
+        
     def traque_est_ce_que_je_poursuis_quelquun(self):
         return len(self.chemin_pathfinding) > 0 
+    
+    
+    def traque_je_me_reoriente_vers_le_nouveau_point(self):
+        # --- est ce que je suis a destination
+        if self.index_chemin > len(self.chemin_pathfinding)-1:
+            self.PNJ.direction = ENUM_DIR.AUCUN
+            return
+        
+        point_suivant = self.chemin_pathfinding[self.index_chemin]
+        x, y = self.xInt, self.yInt  # Position actuelle du PNJ
+        xNew, yNew = point_suivant
+        
+        if xNew > x:
+            self.PNJ.direction = ENUM_DIR.DROITE
+        if xNew < x:
+            self.PNJ.direction = ENUM_DIR.GAUCHE
+        if yNew > y:
+            self.PNJ.direction = ENUM_DIR.BAS
+        if yNew < y:
+            self.PNJ.direction = ENUM_DIR.HAUT
+        
+        self.txt = str(("x: " + str(x), "y: "+str(y), "xNew: "+str(xNew), "yNew: "+str(yNew), "direction: "+str(self.PNJ.direction))) 
+      
+        if (x, y) == (xNew, yNew):
+            self.index_chemin += 1    
+    
     
     def est_ce_toujours_sur_le_terrain(self, x, y):
         return (0 <= x < VAR.dimension_x) and (0 <= y < VAR.dimension_y)  
@@ -85,31 +113,7 @@ class CIA:
         else:
             self.traque_je_me_reoriente_vers_le_nouveau_point()     
 
-    def traque_je_me_reoriente_vers_le_nouveau_point(self):
-        
-        
-        # --- est ce que je suis a destination
-        if self.index_chemin > len(self.chemin_pathfinding)-1:
-            self.PNJ.direction = ENUM_DIR.AUCUN
-            return
-        
-        point_suivant = self.chemin_pathfinding[self.index_chemin]
-        x, y = self.xInt, self.yInt  # Position actuelle du PNJ
-        xNew, yNew = point_suivant
-        
-        if xNew > x:
-            self.PNJ.direction = ENUM_DIR.DROITE
-        if xNew < x:
-            self.PNJ.direction = ENUM_DIR.GAUCHE
-        if yNew > y:
-            self.PNJ.direction = ENUM_DIR.BAS
-        if yNew < y:
-            self.PNJ.direction = ENUM_DIR.HAUT
-        
-        self.txt = str(("x: " + str(x), "y: "+str(y), "xNew: "+str(xNew), "yNew: "+str(yNew), "direction: "+str(self.PNJ.direction))) 
-      
-        if (x, y) == (xNew, yNew):
-            self.index_chemin += 1
+   
 
             
     def je_me_reoriente_vers_la_nouvelle_intersection(self, direction_retenue):

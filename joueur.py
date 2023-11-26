@@ -76,8 +76,8 @@ class CJoueur:
     
     def collision_avec_decors(self):
         x2, y2 = self.position_int_x(), self.position_int_y()
-        collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x2+4, y2] > 0)
-        collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x2+26, y2+4] > 0)
+        collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x2, y2] > 0)
+        collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x2+32, y2+4] > 0)
         
         #pygame.draw.rect(VAR.fenetre, (255,0,0), (x2+4,y2,22,6), 0)        
         return collision_coin1 or collision_coin2

@@ -147,13 +147,14 @@ class CMoteur:
             
            
             
-            image_texte = ecriture.render( "elements dynamiques : " + str(len(self.ELEMENTS_VISUELS.liste)) , True, (255,0,0)) 
-            VAR.fenetre.blit(image_texte, (800, 0))            
+         
     
             image_texte = ecriture.render( str( (round(self.PERSONNAGES.PNJS[0].x, 2), round(self.PERSONNAGES.PNJS[0].y, 2)) ) , True, (255,0,0)) 
+            VAR.fenetre.blit(image_texte, (800, 0))            
+            image_texte = ecriture.render( "JOUEUR => ROUND : "+str( (round(self.PERSONNAGES.JOUEURS[0].x, 0), round(self.PERSONNAGES.JOUEURS[0].y, 0))) + " --- INT : "+ str((int(self.PERSONNAGES.JOUEURS[0].x), int(self.PERSONNAGES.JOUEURS[0].y))) , True, (255,0,0))
             VAR.fenetre.blit(image_texte, (800, 20))            
-        
-            image_texte = ecriture.render( "ROUND : "+str( (round(self.PERSONNAGES.PNJS[0].x, 0), round(self.PERSONNAGES.PNJS[0].y, 0))) + " --- INT : "+ str((int(self.PERSONNAGES.PNJS[0].x), int(self.PERSONNAGES.PNJS[0].y))) , True, (255,0,0))
+            
+            image_texte = ecriture.render( "MECHANT => ROUND : "+str( (round(self.PERSONNAGES.PNJS[0].x, 0), round(self.PERSONNAGES.PNJS[0].y, 0))) + " --- INT : "+ str((int(self.PERSONNAGES.PNJS[0].x), int(self.PERSONNAGES.PNJS[0].y))) , True, (255,0,0))
             VAR.fenetre.blit(image_texte, (800, 40))            
             
             image_texte = ecriture.render( self.PERSONNAGES.PNJS[0].IA.txt , True, (255,0,0))
