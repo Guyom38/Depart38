@@ -130,8 +130,15 @@ class CIA:
             self.parcours[self.xInt][self.yInt]['UTILISE'] += 1
 
     def est_ce_que_je_suis_arrive_a_une_intersection(self):
-        xx, yy = int(self.PNJ.x + 0.5), int(self.PNJ.y + 0.5)
-         
+        xx, yy = int(self.PNJ.x ), int(self.PNJ.y )
+        
+        # --- atteint que joueur sois bien placé
+        if self.PNJ.x % 1 > 0.1 or self.PNJ.y % 1 > 0.4 :
+            return False
+        
+        if self.PNJ.index == 1:
+            print(((xx, yy), ("% : ", self.PNJ.x % 1, self.PNJ.y % 1))) 
+            
         intersection_non_definie = ( (self.objectifx, self.objectify) == (-1, -1) )
         arrive_sur_intersection = (self.objectifx == xx and self.objectify == yy)
         

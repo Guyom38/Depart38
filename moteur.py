@@ -71,11 +71,11 @@ class CMoteur:
         self.afficher_barre_progression(50, 100, "Configuration des tapis ...")  
         self.PERSONNAGES.JOUEURS.append(CJoueur(self, 0, 1.0, 5.0, "Guyom", False))
                 
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Vincent", True, 0))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Basile", True,2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Luc", True, 2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Emmanuel", True, 2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 0, 1.0, 5.0, "Stevan", True, 2))
+        self.PERSONNAGES.PNJS.append(CJoueur(self, 1, 1.0, 5.0, "Vincent", True, 0))
+        self.PERSONNAGES.PNJS.append(CJoueur(self, 2, 1.0, 5.0, "Basile", True,2))
+        self.PERSONNAGES.PNJS.append(CJoueur(self, 3, 1.0, 5.0, "Luc", True, 2))
+        self.PERSONNAGES.PNJS.append(CJoueur(self, 4, 1.0, 5.0, "Emmanuel", True, 2))
+        self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))
         
         self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
         self.TERRAIN = CTerrain(self) 
@@ -122,7 +122,11 @@ class CMoteur:
         
 
 
-        
+    def afficher_parcours_vincent(self):
+        for y in range(0, VAR.dimension_y):
+                for x in range(0, VAR.dimension_x):
+                    if self.PERSONNAGES.PNJS[0].IA.parcours[x][y]['CHEMIN']:
+                        pygame.draw.rect(VAR.fenetre, (32,32,32), (x * 32, y* 32, 32, 32), 0)         
                 
     def demarrer(self):       
         ecriture = pygame.font.SysFont('arial', 20)         
@@ -137,7 +141,8 @@ class CMoteur:
             
             #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
             #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
-                 
+            #self.afficher_parcours_vincent()
+            
         
             self.PARTICULES.Afficher_Les_Particules()
             self.ELEMENTS_VISUELS.afficher()

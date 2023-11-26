@@ -22,20 +22,20 @@ class CJoueur:
         
         if is_IA:
             
-            self.IA = CIA(moteur, self)
-            
+            self.IA = CIA(moteur, self)            
+
             if fonction == 0:
-                self.vitesse = 0.1
+                self.vitesse = 10
                 self.distance_vision = 200
                 self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
                 self.couleur_vision = (193,249,153, VAR.ray_alpha)
-            elif fonction == 1:
-                self.vitesse = 0.1
+            elif fonction == 2:
+                self.vitesse = 5
                 self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/basile.png").convert_alpha()
                 self.couleur_vision = (255,255,255, VAR.ray_alpha)
             else:
-                self.vitesse = 0.05
+                self.vitesse = 5
                 self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/chef.png").convert_alpha()
                 self.couleur_vision = (239,231,129, VAR.ray_alpha)
@@ -45,7 +45,7 @@ class CJoueur:
         else:
             self.image = pygame.image.load(".ressources/agent2.png").convert_alpha()
             self.IA = None
-            self.vitesse = VAR.pas
+            self.vitesse = 20
 
             
         ecriture = pygame.font.SysFont('arial', 24) 
@@ -55,24 +55,17 @@ class CJoueur:
         self.directionPrecedente = ENUM_DIR.AUCUN
         self.seTourne = 0  
         
-        self.tempo,self.tempoTimer = 0, time.time()
-        
+        self.tempo,self.tempoTimer = 0, time.time()        
         self.timer_particules = time.time()
         
     
     def get_position(self):
-        return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))
-    
+        return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))    
                
-    def get_rect_collision(self):
-        pass
-       
-   
-    
     def position_int_x(self):
-        return int((self.x * VAR.dim))
+        return round((self.x * VAR.dim))
     def position_int_y(self):
-        return int((self.y * VAR.dim))
+        return round((self.y * VAR.dim))
         
     def toujours_sur_le_terrain(self):
         return (    self.position_int_x() > -1 and self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] \
@@ -88,38 +81,41 @@ class CJoueur:
     
     
                                          
-        
-    def se_deplace(self):
-        est_ordinateur = (not self.IA == None)
-        
+    def afficher_fumee(self):
+        # --- particules
+        if time.time() - self.timer_particules > 0.1 and self.vitesse > 5:
+            self.timer_particules = time.time()
+            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x()+16, self.position_int_y(), (255,255,255))
+    
+    def reflechit(self):
+        est_ordinateur = (not self.IA == None)        
         # --- Si ordinateur suivre le chemin
         if est_ordinateur:
             if self.direction == ENUM_DIR.AUCUN:
-                self.IA.etablir_direction_initiale()
-                
-            self.IA.je_reflechis()
-            
+                self.IA.etablir_direction_initiale()                
+            self.IA.je_reflechis()        
+                     
+                     
+    def se_deplace(self):        
+           
         xo, yo = self.x, self.y
         if self.direction == ENUM_DIR.GAUCHE:
-            self.x = self.x - self.vitesse
+            self.x -= VAR.pas
         elif self.direction == ENUM_DIR.DROITE:
-            self.x = self.x + self.vitesse
+            self.x += VAR.pas
         elif self.direction == ENUM_DIR.HAUT:
-            self.y = self.y - self.vitesse
+            self.y -= VAR.pas
         elif self.direction == ENUM_DIR.BAS:
-            self.y = self.y + self.vitesse
+            self.y += VAR.pas
 
-        # --- particules
-        if time.time() - self.timer_particules > 0.05:
-            self.timer_particules = time.time()
-            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x()+16, self.position_int_y(), (255,255,255))
         
+        est_ordinateur = (not self.IA == None)    
         if not est_ordinateur:
             if self.toujours_sur_le_terrain():                
                 if self.collision_avec_decors():
                     self.x, self.y = xo, yo
                     #self.direction = ENUM_DIR.AUCUN
-
+    
 
     
     def coordonnees_image_animee(self):

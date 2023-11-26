@@ -16,7 +16,7 @@ images = {}
 fenetre = None
 boucle = True
 
-pas = 0.2
+pas = 0.01
 dim = 32
 
 

@@ -16,6 +16,10 @@ class CPersonnages:
     
     def se_deplacent(self):
         for personnage in self.JOUEURS + self.PNJS:
-            personnage.se_deplace()
+            personnage.reflechit()
+            for _ in range(0,personnage.vitesse):
+                personnage.se_deplace()
+            
+            personnage.afficher_fumee()
     
 
