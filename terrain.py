@@ -33,6 +33,9 @@ class CTerrain:
             pnj.IA.parcours = parcours[id_parcours]['GRILLE']
             compteurs_parcours[id_parcours] += 1
  
+    def recolorier_map_bloquee(self):
+        pass
+        
     def afficher(self):
         VAR.fenetre.fill((16,16,16))    
         VAR.fenetre.blit(self.planche, (0,0))

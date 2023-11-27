@@ -53,7 +53,7 @@ class CMoteur:
         VAR.fenetre.blit(image_texte, (posx, posy))            
     
         pygame.display.flip()
-        time.sleep(0.3)
+        time.sleep(0.01)
         
         
         
@@ -141,14 +141,17 @@ class CMoteur:
             
             #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
             #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
-            #self.afficher_parcours_vincent()
+            
+            if VAR.demo == ENUM_DEMO.CHEMIN_VINCENT:
+                self.afficher_parcours_vincent()
+                self.PERSONNAGES.PATHFINDING.afficher_destinations_possibles( ( int(self.PERSONNAGES.JOUEURS[0].x), int(self.PERSONNAGES.JOUEURS[0].y)))
             
         
             self.PARTICULES.Afficher_Les_Particules()
             self.ELEMENTS_VISUELS.afficher()
             
             
-            self.PERSONNAGES.PATHFINDING.calculer_pathfinding()
+            self.PERSONNAGES.PATHFINDING.course_poursuite_contre_le_joueur(0)
             self.PERSONNAGES.PATHFINDING.afficher()
             
             

@@ -67,10 +67,23 @@ class CPathfinding:
             if not zoneA in self.ZONES: self.ZONES[zoneA] = {}
             if not zoneB in self.ZONES: self.ZONES[zoneB] = {}
             
-            if not zoneA in self.ZONES[zoneB]: 
+            if not zoneB in self.ZONES[zoneA]: 
                 return True
         return False
     
+    def afficher_destinations_possibles(self, depart):
+        if depart in self.ZONES:
+            print("Aucune destination")
+            return
+        
+        for zone in self.ZONES[depart]:
+            x1, y1 = depart
+            x2, y2 = zone
+            
+            pygame.draw.line(VAR.fenetre, (255,255,0), (x1 * VAR.dim, y1*VAR.dim, x2 * VAR.dim, y2 * VAR.dim), 2)
+            pygame.display.update
+            time.sleep(0.5)
+                
     def generer_tous_les_parcours(self):
         self.PARCOURS = {}
         self.ZONES = {}
@@ -84,6 +97,7 @@ class CPathfinding:
         duree=time.time()
         
         maximum = len(self.zones_libres)**2
+        texte = ""
         
         for indexA, zoneA in enumerate(self.zones_libres):
             for indexB, zoneB in enumerate(self.zones_libres[::-1]):
@@ -165,7 +179,7 @@ class CPathfinding:
         with open('parcours_zones_data.pkl', 'wb') as fichier:
             pickle.dump({'PARCOURS': self.PARCOURS, 'ZONES': self.ZONES}, fichier, protocol=pickle.HIGHEST_PROTOCOL)
 
-            
+        print("texte")
         print("parfait")
         quit()
     
@@ -174,6 +188,9 @@ class CPathfinding:
             donnees = pickle.load(fichier)
             self.PARCOURS = donnees['PARCOURS']
             self.ZONES = donnees['ZONES'] 
+            
+            print(str(self.PARCOURS))
+            print(str(self.ZONES))
                    
             
     def algo_dijkstra(self, depart, arrivee):
@@ -231,12 +248,12 @@ class CPathfinding:
     
     
     
-    def calculer_pathfinding(self):
+    def course_poursuite_contre_le_joueur(self, nb_joueurs):
         pos_joueur = (int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)) 
         
         i=0
         for pnj in self.MOTEUR.PERSONNAGES.PNJS:
-            if i>0:
+            if i>nb_joueurs:
                 return
             i+=1
             

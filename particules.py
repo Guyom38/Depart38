@@ -28,7 +28,7 @@ class CParticules:
             particle[0][1] += particle[1][1]            
             if not particle[1][1] == 0:
                 particle[1][1] += 0.15
-            particle[2] -= 0.4
+            particle[2] -= 0.46
             pygame.draw.circle(VAR.fenetre, particle[3], [int(particle[0][0]), int(particle[0][1])], int(particle[2]))
 
             radius = particle[2] * 1.5

@@ -15,7 +15,9 @@ class ENUM_DEMO:
     DIJISKRA = 2
     CHAMP_VISION = 3
     REPERES = 4
-
+    COLLISION = 5
+    CHEMIN_VINCENT = 6
+    
 # --- Joueurs
 class ENUM_DIR:
     BAS = 270

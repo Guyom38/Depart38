@@ -71,19 +71,25 @@ class CJoueur:
         return (    self.position_int_x() > -1 and self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] \
                     and self.position_int_y() > -1 and self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
     
-    def collision_avec_decors(self):
-        x2, y2 = self.position_int_x(), self.position_int_y()
-        collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x2, y2] > 0)
-        collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x2+32, y2+4] > 0)
+    def collision_avec_decors(self): 
         
-        #pygame.draw.rect(VAR.fenetre, (255,0,0), (x2+4,y2,22,6), 0)        
+        x, y = self.position_int_x(), self.position_int_y()
+        x1, y1 = 2, 0
+        x2, y2 = 28, 4
+        collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x + x1, y + y1] > 0)
+        collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x + x2, y + y2] > 0)
+        
+        if VAR.demo == ENUM_DEMO.COLLISION:
+            pygame.draw.rect(VAR.fenetre, (255,0,0), (x + x1, y + y1, x1 + x2-1, y1 + y2-1), 0)  
+            pygame.display.update()
+            
         return collision_coin1 or collision_coin2
     
     
                                          
     def afficher_fumee(self):
         # --- particules
-        if time.time() - self.timer_particules > 0.1 and self.vitesse > 5:
+        if time.time() - self.timer_particules > (1 / self.vitesse) and self.vitesse > 5:
             self.timer_particules = time.time()
             self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x()+16, self.position_int_y(), (255,255,255))
     
@@ -98,22 +104,25 @@ class CJoueur:
                      
     def se_deplace(self):        
            
-        xo, yo = self.x, self.y
-        if self.direction == ENUM_DIR.GAUCHE:
-            self.x -= VAR.pas
-        elif self.direction == ENUM_DIR.DROITE:
-            self.x += VAR.pas
-        elif self.direction == ENUM_DIR.HAUT:
-            self.y -= VAR.pas
-        elif self.direction == ENUM_DIR.BAS:
-            self.y += VAR.pas
+        xo, yo = self.x, self.y        
+        for _ in range(0, self.vitesse):
+            if self.direction == ENUM_DIR.GAUCHE:
+                self.x -= VAR.pas
+            elif self.direction == ENUM_DIR.DROITE:
+                self.x += VAR.pas
+            elif self.direction == ENUM_DIR.HAUT:
+                self.y -= VAR.pas
+            elif self.direction == ENUM_DIR.BAS:
+                self.y += VAR.pas
 
-        
-        est_ordinateur = (not self.IA == None)    
-        if not est_ordinateur:
-            if self.toujours_sur_le_terrain():                
-                if self.collision_avec_decors():
-                    self.x, self.y = xo, yo
+            
+            est_ordinateur = (not self.IA == None)    
+            if not est_ordinateur:
+                if self.toujours_sur_le_terrain():                
+                    if self.collision_avec_decors():
+                        self.x, self.y = xo, yo
+                        return
+                    
                     #self.direction = ENUM_DIR.AUCUN
     
 
@@ -148,14 +157,14 @@ class CJoueur:
         # --- affiche sprite joueur
         xImg, yImg = x-16, y-56
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
-        
         if est_ordinateur:
             self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
-        
+            
         # --- affiche nom
+        pygame.draw.rect(VAR.fenetre, (0,0,0), (xImg-4, yImg-4, self.image_texte.get_width()+8, self.image_texte.get_height()+8), 0)
         VAR.fenetre.blit(self.image_ombre, (xImg-2, yImg-2))
         VAR.fenetre.blit(self.image_texte, (xImg, yImg))
 
-    
+        
         
     
