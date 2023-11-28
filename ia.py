@@ -40,7 +40,7 @@ class CIA:
             if not position_cible == self.pos_cible or not position_pnj == self.pos_pnj:
                 self.pos_cible, self.pos_pnj = position_cible, position_pnj     
                 
-                if 1 == 1:  
+                if 1 == 2:  
                     self.chemin, self.ouverte, self.ferme = AD.CDijkstra.algo_dijkstra( position_pnj, position_cible, self.PATHFINDING.grille_obstacles)   
                 else:
                     self.ouverte = []
@@ -60,9 +60,8 @@ class CIA:
                         print("pas de chemin calcule")
                         
                 if len(self.chemin) > 1:
-                    self.chemin_pathfinding = self.chemin
-            
-            self.index_chemin = 0
+                    self.chemin_pathfinding = self.chemin            
+                    self.index_chemin = 0
             self.afficher_chemin_jusqua_cible()
             
             

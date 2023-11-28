@@ -154,15 +154,9 @@ class CPathfinding:
                         for y, txt in enumerate(texte):
                             image_texte = VAR.ecriture.render( txt, True, (255,255,255)) 
                             VAR.fenetre.blit(image_texte, (10,y*20))   
-                            
-                        
                         
                         pygame.display.update()
                         t = time.time()    
-                    
-                    
-                              
-
             
         time.sleep(10)       
         pygame.display.update()  

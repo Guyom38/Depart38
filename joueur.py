@@ -48,7 +48,7 @@ class CJoueur:
             self.vitesse = 20
 
         self.image_nom = self.generer_image_nom()    
-        
+        self.ombre_joueur = self.generer_ombre_joueur()
         
         self.directionPrecedente = ENUM_DIR.AUCUN
         self.seTourne = 0  
@@ -61,6 +61,12 @@ class CJoueur:
         self.mask = pygame.mask.from_surface(image_mask)
         self.mask_rect = image_mask.get_rect(center = (0,0))
     
+    def generer_ombre_joueur(self):
+        self.ombre = pygame.Surface((VAR.dim,VAR.dim), pygame.SRCALPHA).convert_alpha()
+        
+        dim2 = VAR.dim // 2
+        pygame.draw.circle(self.ombre, (0,0,0, 60), (dim2, dim2), dim2)
+        
     def generer_image_nom(self):
         ecriture = pygame.font.SysFont('arial', 24) 
         image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
@@ -113,8 +119,9 @@ class CJoueur:
     def reflechit(self):
         est_ordinateur = (not self.IA == None)        
         # --- Si ordinateur suivre le chemin
+        
         if est_ordinateur:
-            #self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+            self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
             if self.direction == ENUM_DIR.AUCUN:
                 self.IA.etablir_direction_initiale()                
             self.IA.je_reflechis()        
@@ -165,12 +172,11 @@ class CJoueur:
         est_ordinateur = (not self.IA == None)               
         
         # -- affiche ombre du joueur
-        ombre = pygame.Surface((32,32), pygame.SRCALPHA).convert_alpha()
-        pygame.draw.circle(ombre, (0,0,0, 60), (16, 16), 16)
+        
 
         x, y = self.get_position()
-        centre_ombrex, centre_ombrey = x - (ombre.get_width() // 2), y - (ombre.get_height() // 2)
-        VAR.fenetre.blit(ombre, (centre_ombrex, centre_ombrey))
+        centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
+        VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
         
         if est_ordinateur:
             self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
