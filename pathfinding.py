@@ -17,7 +17,7 @@ class CPathfinding:
         self.zones_libres = []      
         
         self.PARCOURS = {}       
-        self.ZONES = {}        
+        self.ZONES = []        
         
         
     def charger_pathfinding(self):
@@ -80,7 +80,7 @@ class CPathfinding:
         ignore_dij = 0
         ignore_deduction = 0  
         nb_deduction = 0 
-        maximum = len(self.zones_libres)**2       
+        maximum = len(self.zones_libres)**2
         aff = True  
         
         # --- Boucle principale qui compare le premier avec le dernier
@@ -91,6 +91,10 @@ class CPathfinding:
                 
             for indexB, zoneB in enumerate(self.zones_libres[::-1]):
                 chemin = []
+                 
+                # --- affiche les zones bloquées                
+                if aff:
+                    self.afficher_destinations_possibles(zoneA)
                
                 # vérifie que B n'existe pas dans la dico
                 if self.preparation_AB( zoneA, zoneB):
@@ -113,7 +117,7 @@ class CPathfinding:
                             for arrive in range(len(chemin)-1, -1, -1):  
                                 zoneD = chemin[arrive]
                                     
-                                if self.preparation_AB(zoneC, zoneD):                    
+                                if self.preparation_AB( zoneC, zoneD):                    
                                     self.ZONES[zoneC][zoneD] = index, depart, arrive, 1
                                     self.ZONES[zoneD][zoneC] = index, depart, arrive, -1
                                     

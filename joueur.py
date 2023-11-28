@@ -47,10 +47,8 @@ class CJoueur:
             self.IA = None
             self.vitesse = 20
 
-            
-        ecriture = pygame.font.SysFont('arial', 24) 
-        self.image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
-        self.image_texte = ecriture.render( self.nom , True, (255,255,255)) 
+        self.image_nom = self.generer_image_nom()    
+        
         
         self.directionPrecedente = ENUM_DIR.AUCUN
         self.seTourne = 0  
@@ -62,7 +60,20 @@ class CJoueur:
         image_mask = pygame.Surface((20, 4))
         self.mask = pygame.mask.from_surface(image_mask)
         self.mask_rect = image_mask.get_rect(center = (0,0))
+    
+    def generer_image_nom(self):
+        ecriture = pygame.font.SysFont('arial', 24) 
+        image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
+        image_texte = ecriture.render( self.nom , True, (255,255,255)) 
         
+        image_nom = pygame.Surface( (image_ombre.get_width()+4, image_ombre.get_height()-4) ).convert_alpha()
+        
+        image_nom.fill( (0, 0, 0, 255) )
+        #image_nom.blit(image_ombre, (0, -4))
+        image_nom.blit(image_texte, (2, -2))
+        
+        return image_nom
+          
     def get_position(self):
         return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))    
                
@@ -170,9 +181,7 @@ class CJoueur:
        
             
         # --- affiche nom
-        pygame.draw.rect(VAR.fenetre, (0,0,0), (xImg-2, yImg+2, self.image_texte.get_width()+4, self.image_texte.get_height()-4), 0)
-        VAR.fenetre.blit(self.image_ombre, (xImg-2, yImg-2))
-        VAR.fenetre.blit(self.image_texte, (xImg, yImg))
+        VAR.fenetre.blit(self.image_nom, (xImg, yImg))
 
         
         
