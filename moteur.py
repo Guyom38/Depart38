@@ -117,9 +117,6 @@ class CMoteur:
         if len(self.PERSONNAGES.PATHFINDING.grille_obstacles) == 0:
             self.PERSONNAGES.PATHFINDING.generer_matrice_obstacle(self.TERRAIN.arrayBlocage)        
         
-        if VAR.demo == ENUM_DEMO.GENERER_PATHFINDING:
-            self.PERSONNAGES.PATHFINDING.generer_tous_les_parcours()
-            
         self.PERSONNAGES.PATHFINDING.charger_pathfinding()
         
 
@@ -138,29 +135,21 @@ class CMoteur:
          
             self.clavier()                
             
-            self.PERSONNAGES.se_deplacent()           
-            self.TERRAIN.afficher()
+                
+            self.TERRAIN.afficher()            
+            self.PERSONNAGES.se_deplacent()       
             
-            #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
-            
-            if VAR.demo == ENUM_DEMO.CHEMIN_VINCENT:
+            if ENUM_DEMO.CHEMIN_VINCENT in VAR.demo:
                 self.afficher_parcours_vincent()            
             #self.PERSONNAGES.PATHFINDING.afficher_destinations_possibles( ( int(round(self.PERSONNAGES.JOUEURS[0].x)), int(round(self.PERSONNAGES.JOUEURS[0].y))) )
             
         
-            self.PARTICULES.Afficher_Les_Particules()
-           
+            self.PARTICULES.Afficher_Les_Particules()           
             
-            if VAR.demo == ENUM_DEMO.BLOCAGE:
-                VAR.fenetre.blit(self.TERRAIN.png_blocage, (0,0))
                 
-            self.ELEMENTS_VISUELS.afficher()
+            self.ELEMENTS_VISUELS.afficher()           
             
-            #self.PERSONNAGES.PATHFINDING.course_poursuite_contre_le_joueur(0)
-            #self.PERSONNAGES.PATHFINDING.afficher()
-            
-            
-         
+
     
             image_texte = ecriture.render( str( (round(self.PERSONNAGES.PNJS[0].x, 2), round(self.PERSONNAGES.PNJS[0].y, 2)) ) , True, (255,0,0)) 
             VAR.fenetre.blit(image_texte, (800, 0))            

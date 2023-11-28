@@ -58,7 +58,6 @@ class CPathfinding:
                     self.zones_libres.append((x, y))        
                        
             self.grille_obstacles.append(ligne_obstacles)
-
         print("PATHFINDING, zones libres : " + str(len(self.zones_libres)) + " => " + str(len(self.zones_libres)**2))
         
     def preparation_AB(self, zoneA, zoneB):
@@ -196,15 +195,21 @@ class CPathfinding:
         time.sleep(10)       
         pygame.display.update()  
           
-        with open('parcours_zones_data.pkl', 'wb') as fichier:
+        with open('.caches/'+VAR.fichier_map+'.pkl', 'wb') as fichier:
             pickle.dump({'PARCOURS': self.PARCOURS, 'ZONES': self.ZONES}, fichier, protocol=pickle.HIGHEST_PROTOCOL)
 
         print(texte)
-        print("parfait")
+        print("Relancer le jeu, les chemins ont été calculés.")
         quit()
     
     def charger_pathfinding(self):
-        with open('parcours_zones_data.pkl', 'rb') as fichier:
+        fichier = '.caches/' + VAR.fichier_map + '.pkl'
+        
+        if not FCT.existe_fichier(fichier):
+            self.generer_tous_les_parcours()
+            return
+            
+        with open(fichier, 'rb') as fichier:
             donnees = pickle.load(fichier)
             self.PARCOURS = donnees['PARCOURS']
             self.ZONES = donnees['ZONES'] 
@@ -266,55 +271,55 @@ class CPathfinding:
     
     
     def course_poursuite_contre_le_joueur(self, nb_joueurs):
-        pos_joueur = (int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)) 
+        position_joueur = (int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)) 
         
-        i=0
-        for pnj in self.MOTEUR.PERSONNAGES.PNJS:
-            if i>nb_joueurs:
+
+        for i, pnj in enumerate(self.MOTEUR.PERSONNAGES.PNJS):
+            if i > nb_joueurs:
                 return
-            i+=1
             
-            pos_pnj = (int(pnj.x), int(pnj.y))
+            position_pnj = (int(pnj.x), int(pnj.y))
             
-            if not pos_joueur == self.pos_joueur or not pos_pnj == self.pos_pnj:
-                self.pos_joueur, self.pos_pnj = pos_joueur, pos_pnj     
+            #if not position_joueur == self.pos_joueur or not position_pnj == self.pos_pnj:
+            #    self.pos_joueur, self.pos_pnj = position_joueur, position_pnj     
                 
-                if 1 == 2:  
-                    self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( pos_pnj, pos_joueur)   
-                else:
-                    self.ouverte = []
-                    self.ferme = []
+            if 1 == 1:  
+                self.chemin, self.ouverte, self.ferme = self.algo_dijkstra( position_pnj, position_joueur)   
+            else:
+                self.ouverte = []
+                self.ferme = []
                     
-                    if pos_joueur in self.ZONES and pos_pnj in self.ZONES[pos_joueur]:
-                        index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.ZONES[pos_pnj][pos_joueur]
-                        if index_chemin > 0:
-                            if sens_lecture == 1:
-                                self.chemin = self.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
-                            else:
-                                self.chemin = self.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]   
+                if position_joueur in self.ZONES and position_pnj in self.ZONES[position_joueur]:
+                    index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.ZONES[position_pnj][position_joueur]
+                    if index_chemin > 0:
+                        if sens_lecture == 1:
+                            self.chemin = self.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
                         else:
-                            print("pas de chemin")
+                            self.chemin = self.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]   
                     else:
-                        self.chemin = []
-                        print("pas de chemin calcule")
+                        print("pas de chemin")
+                else:
+                    self.chemin = []
+                    print("pas de chemin calcule")
                     
-                if len(self.chemin) > 1:
-                    pnj.IA.chemin_pathfinding = self.chemin
-                    pnj.IA.index_chemin = 0
-                    self.afficher()
+            if len(self.chemin) > 1:
+                pnj.IA.chemin_pathfinding = self.chemin
+                pnj.IA.index_chemin = 0
+            self.afficher()
+   
     
     def afficher(self):     
             
-        if VAR.demo == ENUM_DEMO.DIJISKRA and not self.chemin == None:    
-            VAR.ecriture = pygame.font.SysFont('arial', 20) 
+        if ENUM_DEMO.DIJISKRA in VAR.demo and not self.chemin == None:    
             for x, y in self.chemin:
                 pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 16, 0)
 
+            if ENUM_DEMO.PATHFINDING_OUVERTFERME in VAR.demo:
                 # Dessiner les nœuds
-            for noeud in self.ouverte:
-                x, y = noeud.position
-                pygame.draw.circle(VAR.fenetre, (255, 0, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 8, 0)
+                for noeud in self.ouverte:
+                    x, y = noeud.position
+                    pygame.draw.circle(VAR.fenetre, (255, 0, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 8, 0)
 
-            for noeud in self.ferme:
-                x, y = noeud.position
-                pygame.draw.circle(VAR.fenetre, (0, 255, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 4, 0)
+                for noeud in self.ferme:
+                    x, y = noeud.position
+                    pygame.draw.circle(VAR.fenetre, (0, 255, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 4, 0)

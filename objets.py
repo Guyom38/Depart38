@@ -59,7 +59,7 @@ class CObjets:
             key = "{:04d}{:04d}{:01d}".format(y, x, 9)
             liste_personnages[key] = personnage
         
-        if not VAR.demo == ENUM_DEMO.BLOCAGE:    
+        if not ENUM_DEMO.BLOCAGE in VAR.demo:    
             listes_fusionnees = {**self.liste, **liste_personnages}        
         else:
             listes_fusionnees = liste_personnages

@@ -1,12 +1,15 @@
-from fonctions import *
+import fonctions as FCT
 import variables as VAR
+
+from constantes import *
+
 import pygame
 import tiled as T
 
 class CTerrain:
     def __init__(self, moteur):         
         self.MOTEUR = moteur
-        self.MOTEUR_TILED = T.map_tiled(moteur, ".ressources/map.tmx")
+        self.MOTEUR_TILED = T.map_tiled(moteur, ".ressources/" + VAR.fichier_map + ".tmx")
         
         VAR.dimension_x = int(self.MOTEUR_TILED.root.attrib['width'].replace("'","")  )
         VAR.dimension_y = int(self.MOTEUR_TILED.root.attrib['height'].replace("'","")  )
@@ -17,19 +20,22 @@ class CTerrain:
         self.png_blocage = self.MOTEUR_TILED.generer_png_blocage()               
         self.planche = self.MOTEUR_TILED.generer_map()   
         
-        self.recolorier_map_bloquee()  
+        self.charger_mask_blocage()  
         self.arrayBlocage = pygame.surfarray.array_blue(self.png_blocage)
         self.maskBlocage = pygame.mask.from_surface(self.png_blocage)        
         
-    def recolorier_map_bloquee(self):
-        for y in range(0, self.png_blocage.get_height()):
-            for x in range(0, self.png_blocage.get_width()):
-                couleur = self.png_blocage.get_at((x, y))
-                if not couleur == (0, 0, 0, 255):
-                    self.png_blocage.set_at((x,y), (176, 84, 105, 255))
-                    #self.png_blocage.set_at((x,y), (0, 0, 0, 255))
-                #else:
-                #    self.png_blocage.set_at((x,y), (0, 255, 255, 0)) 
+    def charger_mask_blocage(self):
+        fichier = '.caches/' + VAR.fichier_map + '.mask.png'
+        if not FCT.existe_fichier(fichier):
+            for y in range(0, self.png_blocage.get_height()):
+                for x in range(0, self.png_blocage.get_width()):
+                    couleur = self.png_blocage.get_at((x, y))
+                    if not couleur == (0, 0, 0, 255):
+                        self.png_blocage.set_at((x,y), (176, 84, 105, 255))
+            pygame.image.save(self.png_blocage, fichier)
+            return
+        
+        self.png_blocage = pygame.image.load(fichier).convert_alpha()
     
     def initialisation_joueurs(self):
         parcours = self.MOTEUR_TILED.generer_parcours_PNJ()
@@ -50,5 +56,9 @@ class CTerrain:
     def afficher(self):
         VAR.fenetre.fill((16,16,16))    
         VAR.fenetre.blit(self.planche, (0,0))
+        
+        if ENUM_DEMO.BLOCAGE in VAR.demo:
+            VAR.fenetre.blit(self.png_blocage, (0,0))
+        
 
    

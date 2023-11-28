@@ -1,6 +1,8 @@
 import string
 import random
 import pygame
+import os
+
 
 def GenereMat2D(dimX, dimY, valeurDefaut):
     return [[valeurDefaut for x in range(dimY)] for i in range(dimX)]
@@ -30,3 +32,6 @@ def collision(objet1, objet2):
         return False
     else:
         return True
+    
+def existe_fichier(chemin):
+    return (os.path.isfile(chemin))

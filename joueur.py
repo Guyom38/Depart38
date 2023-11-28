@@ -90,9 +90,9 @@ class CJoueur:
         #return False
         
         
-        if VAR.demo == ENUM_DEMO.BLOCAGE:
+        if ENUM_DEMO.BLOCAGE in VAR.demo :
             pygame.draw.rect(VAR.fenetre, (255,0,0), (x + x1, y + y1, x1 + x2-1, y1 + y2-1), 0)  
-            pygame.display.update()
+            #pygame.display.update()
             
         return collision_coin1 or collision_coin2
     
@@ -165,11 +165,13 @@ class CJoueur:
         centre_ombrex, centre_ombrey = x - (ombre.get_width() // 2), y - (ombre.get_height() // 2)
         VAR.fenetre.blit(ombre, (centre_ombrex, centre_ombrey))
         
+        if est_ordinateur:
+            self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
+            
         # --- affiche sprite joueur
         xImg, yImg = x-16, y-56
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
-        if est_ordinateur:
-            self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
+       
             
         # --- affiche nom
         pygame.draw.rect(VAR.fenetre, (0,0,0), (xImg-4, yImg-4, self.image_texte.get_width()+8, self.image_texte.get_height()+8), 0)

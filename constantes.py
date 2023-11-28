@@ -18,7 +18,8 @@ class ENUM_DEMO:
     COLLISION = 5
     CHEMIN_VINCENT = 6
     GENERER_PATHFINDING = 7
-    BLOCAGE = 8
+    PATHFINDING_OUVERTFERME = 8
+    BLOCAGE = 9
     
 # --- Joueurs
 class ENUM_DIR:

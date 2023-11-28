@@ -1,8 +1,7 @@
 from fonctions import *
 from constantes import *
 
-
-demo = ENUM_DEMO.GENERER_PATHFINDING
+demo = [ENUM_DEMO.BLOCAGE, ENUM_DEMO.DIJISKRA]
 
 resolution_x = 1920
 resolution_y = 1080
@@ -24,7 +23,7 @@ ecriture = None
 # ray_alpha = 0 desactive la transparence
 ray_alpha = 128
 
-
+fichier_map = 'map'
 
 urlWss = "wss://ws.ladnet.net"
 web_socket = False

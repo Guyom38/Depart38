@@ -15,9 +15,13 @@ class CPersonnages:
         self.PNJS = []
     
     def se_deplacent(self):
+        self.PATHFINDING.course_poursuite_contre_le_joueur(1)            
+            
         for personnage in self.JOUEURS + self.PNJS:
             personnage.reflechit()            
-            personnage.se_deplace()            
+            personnage.se_deplace()   
+            #personnage.PATHFINDING.afficher()         
             personnage.afficher_fumee()
+            
     
 
