@@ -3,16 +3,22 @@ import fonctions as FCT
 import variables as VAR
 from constantes import *
 import random
+import pathfinding as PF
+import algo_dijkstra as AD
+
 
 class CIA:
     def __init__(self, moteur, personnage):
         # Initialisation du PNJ avec le moteur de jeu et le personnage
         self.MOTEUR = moteur
         self.PNJ = personnage
+        self.PATHFINDING = self.MOTEUR.PERSONNAGES.PATHFINDING
         
         self.parcours = []
         self.chemin_pathfinding = []
         self.index_chemin = 0
+        self.coordonnees_cible_a_traquer = None
+        self.pos_cible, self.pos_pnj, self.chemin, self.ouverte, self.ferme = None, None, None, None, None
         
         # Objectifs initiaux pour la position du PNJ
         self.objectifx = -1
@@ -25,7 +31,58 @@ class CIA:
         self.x, self.y, self.xInt, self.yInt = 0, 0, 0, 0
         self.txt = ""
         
-        
+    
+    def calculer_le_chemin_jusqua(self, position_cible):
+            
+            position_pnj = (int(self.PNJ.x), int(self.PNJ.y))
+            #position_cible = self.coordonnees_cible_a_traquer
+            
+            if not position_cible == self.pos_cible or not position_pnj == self.pos_pnj:
+                self.pos_cible, self.pos_pnj = position_cible, position_pnj     
+                
+                if 1 == 1:  
+                    self.chemin, self.ouverte, self.ferme = AD.CDijkstra.algo_dijkstra( position_pnj, position_cible, self.PATHFINDING.grille_obstacles)   
+                else:
+                    self.ouverte = []
+                    self.ferme = []
+                        
+                    if position_cible in self.PATHFINDING.ZONES and position_pnj in self.PATHFINDING.ZONES[position_cible]:
+                        index_chemin, depart_chemin, arrivee_chemin, sens_lecture = self.PATHFINDING.ZONES[position_pnj][position_cible]
+                        if index_chemin > 0:
+                            if sens_lecture == 1:
+                                self.chemin = self.PATHFINDING.PARCOURS[index_chemin][depart_chemin:arrivee_chemin]
+                            else:
+                                self.chemin = self.PATHFINDING.PARCOURS[index_chemin][arrivee_chemin:depart_chemin:-1]   
+                        else:
+                            print("pas de chemin")
+                    else:
+                        self.chemin = []
+                        print("pas de chemin calcule")
+                        
+                if len(self.chemin) > 1:
+                    self.chemin_pathfinding = self.chemin
+            
+            self.index_chemin = 0
+            self.afficher_chemin_jusqua_cible()
+            
+            
+    def afficher_chemin_jusqua_cible(self):     
+            
+        if ENUM_DEMO.DIJISKRA in VAR.demo and not self.chemin == None:    
+            for x, y in self.chemin_pathfinding:
+                pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 16, 0)
+
+            if ENUM_DEMO.PATHFINDING_OUVERTFERME in VAR.demo:
+                # Dessiner les nœuds
+                for noeud in self.ouverte:
+                    x, y = noeud.position
+                    pygame.draw.circle(VAR.fenetre, (255, 0, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 8, 0)
+
+                for noeud in self.ferme:
+                    x, y = noeud.position
+                    pygame.draw.circle(VAR.fenetre, (0, 255, 0), ((x * VAR.dim) + 16, (y * VAR.dim) + 16), 4, 0)
+                    
+                            
     def traque_est_ce_que_je_poursuis_quelquun(self):
         return len(self.chemin_pathfinding) > 0 
     

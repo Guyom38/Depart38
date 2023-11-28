@@ -14,6 +14,8 @@ from terrain import *
 from objets import *
 from personnages import *
 from pathfinding import *
+from controlleurs import *
+
 
 class CMoteur:
     def __init__(self):
@@ -81,51 +83,23 @@ class CMoteur:
         self.TERRAIN = CTerrain(self) 
         self.TERRAIN.initialisation_joueurs()                
         
-        self.initialisation_pathfinding()
+        self.PERSONNAGES.PATHFINDING.generer_matrice_obstacles(self.TERRAIN.arrayBlocage)        
+        self.PERSONNAGES.PATHFINDING.charger_pathfinding()
         
         self.afficher_barre_progression(100, 100, "Démarrage du jeu")  
         self.grille_traitee = FCT.GenereMat2D(VAR.dimension_x, VAR.dimension_y, 0)            
+    
             
-    def clavier(self):
-        # --- récupére l'ensemble des évènements
-        for event in pygame.event.get():        
-            # --- si l'utilisateur clic sur la croix, ou appuie sur la touche ESCAPE
-            if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
-                VAR.boucle = False
-
-            # --- si l'utilisateur presse l'une des fleches de direction
-            if event.type == KEYDOWN:  
-                if event.key in [ENUM_DIR.GAUCHE, ENUM_DIR.DROITE, ENUM_DIR.HAUT, ENUM_DIR.BAS]:
-                    self.PERSONNAGES.JOUEURS[0].directionPrecedente  = self.PERSONNAGES.JOUEURS[0].direction
-                    self.PERSONNAGES.JOUEURS[0].seTourne = True
-                        
-                if event.key == K_LEFT:                         
-                    self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.GAUCHE
-                if event.key == K_RIGHT: 
-                    self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.DROITE
-                if event.key == K_UP: 
-                    self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.HAUT
-                if event.key == K_DOWN: 
-                    self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.BAS
-                if event.key == K_SPACE:
-                    self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.AUCUN 
+        self.CONTROLLEURS = CControlleurs(self)
     
-    
-
-
-    def initialisation_pathfinding(self):
-        if len(self.PERSONNAGES.PATHFINDING.grille_obstacles) == 0:
-            self.PERSONNAGES.PATHFINDING.generer_matrice_obstacle(self.TERRAIN.arrayBlocage)        
-        
-        self.PERSONNAGES.PATHFINDING.charger_pathfinding()
-        
 
 
     def afficher_parcours_vincent(self):
         for y in range(0, VAR.dimension_y):
                 for x in range(0, VAR.dimension_x):
                     if self.PERSONNAGES.PNJS[0].IA.parcours[x][y]['CHEMIN']:
-                        pygame.draw.rect(VAR.fenetre, (32,32,32), (x * 32, y* 32, 32, 32), 0)         
+                        pygame.draw.rect(VAR.fenetre, (32,32,32), (x * 32, y* 32, 32, 32), 0)      
+                           
                 
     def demarrer(self):       
         ecriture = pygame.font.SysFont('arial', 20)         
@@ -133,7 +107,7 @@ class CMoteur:
         VAR.boucle = True
         while VAR.boucle:
          
-            self.clavier()                
+            self.CONTROLLEURS.clavier()                
             
                 
             self.TERRAIN.afficher()            

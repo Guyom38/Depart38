@@ -108,6 +108,7 @@ class CJoueur:
         est_ordinateur = (not self.IA == None)        
         # --- Si ordinateur suivre le chemin
         if est_ordinateur:
+            #self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
             if self.direction == ENUM_DIR.AUCUN:
                 self.IA.etablir_direction_initiale()                
             self.IA.je_reflechis()        
