@@ -101,7 +101,7 @@ class CPathfinding:
                 if self.preparation_AB( zoneA, zoneB):
                  
                     # genere le chemin entre zoneA et zoneB
-                    chemin, _, _ = AD.CDijkstra(zoneA, zoneB, self.grille_obstacles)
+                    chemin, _, _ = AD.CDijkstra.algo_dijkstra(zoneA, zoneB, self.grille_obstacles)
                         
                     if aff:                    
                         for x, y in chemin:                                

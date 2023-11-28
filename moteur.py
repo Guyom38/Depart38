@@ -71,7 +71,7 @@ class CMoteur:
         self.PERSONNAGES = CPersonnages(self)
         
         self.afficher_barre_progression(50, 100, "Configuration des tapis ...")  
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 0, 1.0, 5.0, "Guyom", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 0, 2.0, 6.0, "Guyom", False))
                 
         self.PERSONNAGES.PNJS.append(CJoueur(self, 1, 1.0, 5.0, "Vincent", True, 0))
         self.PERSONNAGES.PNJS.append(CJoueur(self, 2, 1.0, 5.0, "Basile", True,2))
@@ -108,7 +108,7 @@ class CMoteur:
         while VAR.boucle:
          
             self.CONTROLLEURS.clavier()                
-            
+           
                 
             self.TERRAIN.afficher()            
             self.PERSONNAGES.se_deplacent()       

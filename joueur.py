@@ -18,7 +18,7 @@ class CJoueur:
         self.direction = ENUM_DIR.AUCUN
         self.fonction = fonction
         
-        self.offsetX, self.offsetY = 0, -60     
+        self.offsetX, self.offsetY = -16, -56     
         
         if is_IA:
             
@@ -56,13 +56,13 @@ class CJoueur:
         self.seTourne = 0  
         
         self.tempo,self.tempoTimer = 0, time.time()        
-        self.timer_particules = time.time()
+        self.timer_particules = time.time()        
         
-        
-        image_mask = pygame.Surface((32, 32))
-        image_mask.fill('red')
+        # --- Gestion du mask pour les collisions
+        image_mask = pygame.Surface((20, 4))
         self.mask = pygame.mask.from_surface(image_mask)
-    
+        self.mask_rect = image_mask.get_rect(center = (0,0))
+        
     def get_position(self):
         return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))    
                
@@ -76,25 +76,20 @@ class CJoueur:
                     and self.position_int_y() > -1 and self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
     
     def collision_avec_decors(self): 
-        x, y = self.position_int_x(), self.position_int_y()
-        x1, y1 = 2, 0
-        x2, y2 = 28, 4
-        collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x + x1, y + y1] > 0)
-        collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x + x2, y + y2] > 0)
+        self.mask_rect.center = self.position_int_x()+16, self.position_int_y() 
+       
+        offset_x = 0 - self.mask_rect.left 
+        offset_y = 0 - self.mask_rect.top 
+     
+        collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (offset_x, offset_y))
+        if collision:
+            if ENUM_DEMO.BLOCAGE in VAR.demo :
+                pygame.draw.rect(VAR.fenetre, (255,0,0), self.mask_rect, 0)  
+                print(("collision", str(collision)))
+            return True
+        return False
         
-        #collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (x+x1, y+y1))
-        #if collision:
-        #    print(("collision", (x+x1, y+y1)))
-        #    return True
-
-        #return False
-        
-        
-        if ENUM_DEMO.BLOCAGE in VAR.demo :
-            pygame.draw.rect(VAR.fenetre, (255,0,0), (x + x1, y + y1, x1 + x2-1, y1 + y2-1), 0)  
-            #pygame.display.update()
-            
-        return collision_coin1 or collision_coin2
+     
     
     
                                          
@@ -170,12 +165,12 @@ class CJoueur:
             self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
             
         # --- affiche sprite joueur
-        xImg, yImg = x-16, y-56
+        xImg, yImg = x+self.offsetX, y+self.offsetY
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
        
             
         # --- affiche nom
-        pygame.draw.rect(VAR.fenetre, (0,0,0), (xImg-4, yImg-4, self.image_texte.get_width()+8, self.image_texte.get_height()+8), 0)
+        pygame.draw.rect(VAR.fenetre, (0,0,0), (xImg-2, yImg+2, self.image_texte.get_width()+4, self.image_texte.get_height()-4), 0)
         VAR.fenetre.blit(self.image_ombre, (xImg-2, yImg-2))
         VAR.fenetre.blit(self.image_texte, (xImg, yImg))
 

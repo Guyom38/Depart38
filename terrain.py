@@ -22,8 +22,10 @@ class CTerrain:
         
         self.charger_mask_blocage()  
         self.arrayBlocage = pygame.surfarray.array_blue(self.png_blocage)
-        self.maskBlocage = pygame.mask.from_surface(self.png_blocage)        
-        
+        self.maskBlocage = pygame.mask.from_surface(self.png_blocage)   
+             
+    # --- noir opaque (0,0,0,255) est un obstacle 
+    # --- transparent (0,0,0,0) est libre   
     def charger_mask_blocage(self):
         fichier = '.caches/' + VAR.fichier_map + '.mask.png'
         if not FCT.existe_fichier(fichier):
@@ -31,7 +33,10 @@ class CTerrain:
                 for x in range(0, self.png_blocage.get_width()):
                     couleur = self.png_blocage.get_at((x, y))
                     if not couleur == (0, 0, 0, 255):
-                        self.png_blocage.set_at((x,y), (176, 84, 105, 255))
+                        self.png_blocage.set_at((x,y), (0,0,0,255)) #(176, 84, 105, 255))
+                    else:
+                        self.png_blocage.set_at((x,y), (0,0,0,0)) #(176, 84, 105, 255))
+
             pygame.image.save(self.png_blocage, fichier)
             return
         
