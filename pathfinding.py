@@ -64,54 +64,64 @@ class CPathfinding:
     def preparation_AB(self, zoneA, zoneB):
         if not zoneA == zoneB: 
             # --- si la zone de depart et d'arrivee (x,y) n'ont jamais été initialisées    
-            if not zoneA in self.ZONES: self.ZONES[zoneA] = {}
-            if not zoneB in self.ZONES: self.ZONES[zoneB] = {}
+            if not zoneA in self.ZONES: 
+                self.ZONES[zoneA] = {}
+                return True                            
+            elif not zoneB in self.ZONES: 
+                self.ZONES[zoneB] = {}
+                return True
             
-            if not zoneB in self.ZONES[zoneA]: 
+            if not zoneB in self.ZONES[zoneA] or not zoneA in self.ZONES[zoneB]: 
                 return True
         return False
     
     def afficher_destinations_possibles(self, depart):
-        if depart in self.ZONES:
+        if not depart in self.ZONES:
             print("Aucune destination")
             return
         
-        for zone in self.ZONES[depart]:
-            x1, y1 = depart
+        x1, y1 = depart        
+        pygame.draw.rect(VAR.fenetre, (255,0,0), (x1 * VAR.dim, y1 * VAR.dim, VAR.dim, VAR.dim), 0)
+        for zone, _ in self.ZONES[depart].items():
+
             x2, y2 = zone
+            pygame.draw.rect(VAR.fenetre, (0,128,128), (x2 * VAR.dim, y2 * VAR.dim, VAR.dim, VAR.dim), 0)
             
-            pygame.draw.line(VAR.fenetre, (255,255,0), (x1 * VAR.dim, y1*VAR.dim, x2 * VAR.dim, y2 * VAR.dim), 2)
-            pygame.display.update
-            time.sleep(0.5)
+
                 
     def generer_tous_les_parcours(self):
+        
+        # --- Initialisation des differentes variables
         self.PARCOURS = {}
         self.ZONES = {}
-        
-        index = 1
+                
         delais, temps = 4, 5
         t = time.time() - delais
-        ignore_dij = 0
-        ignore_deduction = 0
-        
         duree=time.time()
-        
+      
+        index = 1
+        ignore_dij = 0
+        ignore_deduction = 0  
+        nb_deduction = 0 
         maximum = len(self.zones_libres)**2
         texte = ""
+        aff, aff2 = True, False  
         
+        # --- Boucle principale qui compare le premier avec le dernier
         for indexA, zoneA in enumerate(self.zones_libres):
             for indexB, zoneB in enumerate(self.zones_libres[::-1]):
-                aff = True#(time.time() - t > delais)                
+                chemin = []
+                 
+                # --- affiche les zones bloquées                
                 if aff:
                     VAR.fenetre.fill( (32,32,32) )
                     VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
-                
-                chemin = []
-                # cree le chemin si le depart et l'arrivée sont differents.
+                    self.afficher_destinations_possibles(zoneA)
+               
+                # vérifie que B n'existe pas dans la dico
                 if self.preparation_AB( zoneA, zoneB):
-
                  
-                    # genere le chemin
+                    # genere le chemin entre zoneA et zoneB
                     chemin, _, _ = self.algo_dijkstra(zoneA, zoneB)
                         
                     if aff:                    
@@ -125,28 +135,37 @@ class CPathfinding:
                         self.PARCOURS[index] = chemin  
 
                         for depart in range(0, len(chemin)): 
-                            zoneA = chemin[depart]     
+                            zoneC = chemin[depart]     
                             for arrive in range(len(chemin)-1, -1, -1):  
-                                zoneB = chemin[arrive]
+                                zoneD = chemin[arrive]
                                     
-                                if self.preparation_AB( zoneA, zoneB):                    
-                                    self.ZONES[zoneA][zoneB] = index, depart, arrive, 1
-                                    self.ZONES[zoneB][zoneA] = index, depart, arrive, -1
+                                if self.preparation_AB( zoneC, zoneD):                    
+                                    self.ZONES[zoneC][zoneD] = index, depart, arrive, 1
+                                    self.ZONES[zoneD][zoneC] = index, depart, arrive, -1
+                                    
+                                    nb_deduction +=1
                                 else:
                                     ignore_deduction +=1    
 
                         index +=1
-                else:
+                else:   
+                    if aff2:
+                        if not zoneA == zoneB:  
+                            if zoneA in self.ZONES and zoneB in self.ZONES[zoneA]:  
+                                i, d, a, s = self.ZONES[zoneA][zoneB]
+                                for x, y in self.PARCOURS[i][d:a:s]:                                
+                                    pygame.draw.circle(VAR.fenetre, (255,0,0), ((x * VAR.dim) + 16, (y * VAR.dim)+16), 16, 0)
+                            
                     ignore_dij +=1
                 
-                if aff:           
-                    for zoneC in self.zones_libres:
-                        if zoneC in self.ZONES:
-                            x, y = zoneC
-                            x, y = (x * VAR.dim) , (y * VAR.dim)
-                            image_texte = VAR.ecriture.render( str(len(self.ZONES[zoneC])) , True, (0,255,255) if len(self.ZONES[zoneC]) == len(self.zones_libres)-1 else (255,255,255)) 
-                            VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
-                    
+                    if aff:           
+                        for zoneE in self.zones_libres:
+                            if zoneE in self.ZONES:
+                                x, y = zoneE
+                                x, y = (x * VAR.dim) , (y * VAR.dim)
+                                image_texte = VAR.ecriture.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
+                                VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
+                        
                     
                     total_secondes = ((time.time() - duree) / (index+ignore_dij)) * maximum # Exemple: 3665 secondes
                     heures = int(total_secondes // 3600)  # Convertit les secondes en heures
@@ -155,7 +174,7 @@ class CPathfinding:
 
                     texte = []
                     texte.append("IndexA : " + str(indexA) + " / " + "IndexB : " + str(indexB) + " / " + str(len(self.zones_libres)))
-                    texte.append("Nb Parcours : " + str(index))
+                    texte.append("Nb Parcours : " + str(index) +"  // Chemins deduis : " + str(nb_deduction))
                     texte.append("Ignore Pathfinding : " + str(ignore_dij))
                     texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
                     texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
@@ -166,8 +185,9 @@ class CPathfinding:
                         VAR.fenetre.blit(image_texte, (10,y*20))   
                     
                     
-                    time.sleep(0.0001)       
                     pygame.display.update()
+                    time.sleep(0.0001)       
+                    
                     
                     if time.time() - t > temps:
                         t = time.time()            
@@ -179,7 +199,7 @@ class CPathfinding:
         with open('parcours_zones_data.pkl', 'wb') as fichier:
             pickle.dump({'PARCOURS': self.PARCOURS, 'ZONES': self.ZONES}, fichier, protocol=pickle.HIGHEST_PROTOCOL)
 
-        print("texte")
+        print(texte)
         print("parfait")
         quit()
     
@@ -188,10 +208,7 @@ class CPathfinding:
             donnees = pickle.load(fichier)
             self.PARCOURS = donnees['PARCOURS']
             self.ZONES = donnees['ZONES'] 
-            
-            print(str(self.PARCOURS))
-            print(str(self.ZONES))
-                   
+
             
     def algo_dijkstra(self, depart, arrivee):
         noeud_depart = CNoeud(None, depart)

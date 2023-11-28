@@ -58,6 +58,10 @@ class CJoueur:
         self.tempo,self.tempoTimer = 0, time.time()        
         self.timer_particules = time.time()
         
+        
+        image_mask = pygame.Surface((32, 32))
+        image_mask.fill('red')
+        self.mask = pygame.mask.from_surface(image_mask)
     
     def get_position(self):
         return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))    
@@ -72,14 +76,21 @@ class CJoueur:
                     and self.position_int_y() > -1 and self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
     
     def collision_avec_decors(self): 
-        
         x, y = self.position_int_x(), self.position_int_y()
         x1, y1 = 2, 0
         x2, y2 = 28, 4
         collision_coin1 = (self.MOTEUR.TERRAIN.arrayBlocage[x + x1, y + y1] > 0)
         collision_coin2 = (self.MOTEUR.TERRAIN.arrayBlocage[x + x2, y + y2] > 0)
         
-        if VAR.demo == ENUM_DEMO.COLLISION:
+        #collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (x+x1, y+y1))
+        #if collision:
+        #    print(("collision", (x+x1, y+y1)))
+        #    return True
+
+        #return False
+        
+        
+        if VAR.demo == ENUM_DEMO.BLOCAGE:
             pygame.draw.rect(VAR.fenetre, (255,0,0), (x + x1, y + y1, x1 + x2-1, y1 + y2-1), 0)  
             pygame.display.update()
             

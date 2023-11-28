@@ -2,7 +2,7 @@ from fonctions import *
 from constantes import *
 
 
-demo = ENUM_DEMO.CHEMIN_VINCENT
+demo = ENUM_DEMO.GENERER_PATHFINDING
 
 resolution_x = 1920
 resolution_y = 1080

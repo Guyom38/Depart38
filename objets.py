@@ -58,8 +58,14 @@ class CObjets:
             y = personnage.position_int_y() - 1
             key = "{:04d}{:04d}{:01d}".format(y, x, 9)
             liste_personnages[key] = personnage
+        
+        if not VAR.demo == ENUM_DEMO.BLOCAGE:    
+            listes_fusionnees = {**self.liste, **liste_personnages}        
+        else:
+            listes_fusionnees = liste_personnages
             
-        listes_fusionnees = {**self.liste, **liste_personnages}        
         liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
+        
+        
         for cle_coordonnees, objet in liste_objets_tries:   
             objet.afficher()

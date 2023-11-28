@@ -14,10 +14,22 @@ class CTerrain:
         self.preparer_terrain()     
             
     def preparer_terrain(self):    
-        self.png_blocage = self.MOTEUR_TILED.generer_png_blocage() 
+        self.png_blocage = self.MOTEUR_TILED.generer_png_blocage()               
+        self.planche = self.MOTEUR_TILED.generer_map()   
         
-        self.planche = self.MOTEUR_TILED.generer_map()         
+        self.recolorier_map_bloquee()  
         self.arrayBlocage = pygame.surfarray.array_blue(self.png_blocage)
+        self.maskBlocage = pygame.mask.from_surface(self.png_blocage)        
+        
+    def recolorier_map_bloquee(self):
+        for y in range(0, self.png_blocage.get_height()):
+            for x in range(0, self.png_blocage.get_width()):
+                couleur = self.png_blocage.get_at((x, y))
+                if not couleur == (0, 0, 0, 255):
+                    self.png_blocage.set_at((x,y), (176, 84, 105, 255))
+                    #self.png_blocage.set_at((x,y), (0, 0, 0, 255))
+                #else:
+                #    self.png_blocage.set_at((x,y), (0, 255, 255, 0)) 
     
     def initialisation_joueurs(self):
         parcours = self.MOTEUR_TILED.generer_parcours_PNJ()
@@ -33,8 +45,7 @@ class CTerrain:
             pnj.IA.parcours = parcours[id_parcours]['GRILLE']
             compteurs_parcours[id_parcours] += 1
  
-    def recolorier_map_bloquee(self):
-        pass
+    
         
     def afficher(self):
         VAR.fenetre.fill((16,16,16))    

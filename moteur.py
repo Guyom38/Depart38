@@ -117,7 +117,9 @@ class CMoteur:
         if len(self.PERSONNAGES.PATHFINDING.grille_obstacles) == 0:
             self.PERSONNAGES.PATHFINDING.generer_matrice_obstacle(self.TERRAIN.arrayBlocage)        
         
-        #self.PERSONNAGES.PATHFINDING.generer_tous_les_parcours()
+        if VAR.demo == ENUM_DEMO.GENERER_PATHFINDING:
+            self.PERSONNAGES.PATHFINDING.generer_tous_les_parcours()
+            
         self.PERSONNAGES.PATHFINDING.charger_pathfinding()
         
 
@@ -140,19 +142,22 @@ class CMoteur:
             self.TERRAIN.afficher()
             
             #if self.JOUEURS[0].direction == ENUM_DIR.AUCUN:
-            #    VAR.fenetre.blit(self.TERRAIN.blocage, (0,0))
             
             if VAR.demo == ENUM_DEMO.CHEMIN_VINCENT:
-                self.afficher_parcours_vincent()
-                self.PERSONNAGES.PATHFINDING.afficher_destinations_possibles( ( int(self.PERSONNAGES.JOUEURS[0].x), int(self.PERSONNAGES.JOUEURS[0].y)))
+                self.afficher_parcours_vincent()            
+            #self.PERSONNAGES.PATHFINDING.afficher_destinations_possibles( ( int(round(self.PERSONNAGES.JOUEURS[0].x)), int(round(self.PERSONNAGES.JOUEURS[0].y))) )
             
         
             self.PARTICULES.Afficher_Les_Particules()
+           
+            
+            if VAR.demo == ENUM_DEMO.BLOCAGE:
+                VAR.fenetre.blit(self.TERRAIN.png_blocage, (0,0))
+                
             self.ELEMENTS_VISUELS.afficher()
             
-            
-            self.PERSONNAGES.PATHFINDING.course_poursuite_contre_le_joueur(0)
-            self.PERSONNAGES.PATHFINDING.afficher()
+            #self.PERSONNAGES.PATHFINDING.course_poursuite_contre_le_joueur(0)
+            #self.PERSONNAGES.PATHFINDING.afficher()
             
             
          

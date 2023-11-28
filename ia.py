@@ -136,9 +136,7 @@ class CIA:
         if self.PNJ.x % 1 > 0.1 or self.PNJ.y % 1 > 0.4 :
             return False
         
-        if self.PNJ.index == 1:
-            print(((xx, yy), ("% : ", self.PNJ.x % 1, self.PNJ.y % 1))) 
-            
+              
         intersection_non_definie = ( (self.objectifx, self.objectify) == (-1, -1) )
         arrive_sur_intersection = (self.objectifx == xx and self.objectify == yy)
         

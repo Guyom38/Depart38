@@ -17,6 +17,8 @@ class ENUM_DEMO:
     REPERES = 4
     COLLISION = 5
     CHEMIN_VINCENT = 6
+    GENERER_PATHFINDING = 7
+    BLOCAGE = 8
     
 # --- Joueurs
 class ENUM_DIR:
