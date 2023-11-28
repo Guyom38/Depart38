@@ -44,8 +44,7 @@ class CPathfinding:
             for y in range(0, VAR.dimension_y):       
                 xx, yy = (x * VAR.dim) + offset, (y * VAR.dim) + offset                  
                  
-                ligne_obstacles.append(1 if arrayBlocage[xx][yy] > 0 else 0)    
-                
+                ligne_obstacles.append(1 if arrayBlocage[xx][yy] == 255 else 0)    
                 if arrayBlocage[xx][yy] == 0:
                     self.zones_libres.append((x, y))        
                        
@@ -93,7 +92,7 @@ class CPathfinding:
                  
                 # --- affiche les zones bloquées                
                 if aff:
-                    VAR.fenetre.fill( (32,32,32) )
+                    VAR.fenetre.fill( (200,200,200) )
                     VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
                     self.afficher_destinations_possibles(zoneA)
                

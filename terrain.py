@@ -21,7 +21,7 @@ class CTerrain:
         self.planche = self.MOTEUR_TILED.generer_map()   
         
         self.charger_mask_blocage()  
-        self.arrayBlocage = pygame.surfarray.array_blue(self.png_blocage)
+        self.arrayBlocage = pygame.surfarray.array_alpha(self.png_blocage)
         self.maskBlocage = pygame.mask.from_surface(self.png_blocage)   
              
     # --- noir opaque (0,0,0,255) est un obstacle 

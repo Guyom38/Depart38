@@ -95,9 +95,9 @@ class CJoueur:
                                          
     def afficher_fumee(self):
         # --- particules
-        if time.time() - self.timer_particules > (1 / self.vitesse) and self.vitesse > 5:
-            self.timer_particules = time.time()
+        if time.time() - self.timer_particules > (1 / self.vitesse) and self.vitesse > 5:            
             self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x()+16, self.position_int_y(), (255,255,255))
+            self.timer_particules = time.time()
     
     def reflechit(self):
         est_ordinateur = (not self.IA == None)        
