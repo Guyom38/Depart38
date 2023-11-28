@@ -17,7 +17,7 @@ class CPathfinding:
         self.zones_libres = []      
         
         self.PARCOURS = {}       
-        self.ZONES = []        
+        self.ZONES = {}        
         
         
     def charger_pathfinding(self):
@@ -73,28 +73,24 @@ class CPathfinding:
         self.PARCOURS = {}
         self.ZONES = {}
                 
-        delais, temps = 4, 5
-        t = time.time() - delais
+        t = time.time() 
         duree=time.time()
       
         index = 1
         ignore_dij = 0
         ignore_deduction = 0  
         nb_deduction = 0 
-        maximum = len(self.zones_libres)**2
-        texte = ""
-        aff, aff2 = True, False  
+        maximum = len(self.zones_libres)**2       
+        aff = True  
         
         # --- Boucle principale qui compare le premier avec le dernier
         for indexA, zoneA in enumerate(self.zones_libres):
+            if aff:
+                VAR.fenetre.fill( (200,200,200) )
+                VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
+                
             for indexB, zoneB in enumerate(self.zones_libres[::-1]):
                 chemin = []
-                 
-                # --- affiche les zones bloquées                
-                if aff:
-                    VAR.fenetre.fill( (200,200,200) )
-                    VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
-                    self.afficher_destinations_possibles(zoneA)
                
                 # vérifie que B n'existe pas dans la dico
                 if self.preparation_AB( zoneA, zoneB):
@@ -117,7 +113,7 @@ class CPathfinding:
                             for arrive in range(len(chemin)-1, -1, -1):  
                                 zoneD = chemin[arrive]
                                     
-                                if self.preparation_AB( zoneC, zoneD):                    
+                                if self.preparation_AB(zoneC, zoneD):                    
                                     self.ZONES[zoneC][zoneD] = index, depart, arrive, 1
                                     self.ZONES[zoneD][zoneC] = index, depart, arrive, -1
                                     
@@ -127,13 +123,6 @@ class CPathfinding:
 
                         index +=1
                 else:   
-                    if aff2:
-                        if not zoneA == zoneB:  
-                            if zoneA in self.ZONES and zoneB in self.ZONES[zoneA]:  
-                                i, d, a, s = self.ZONES[zoneA][zoneB]
-                                for x, y in self.PARCOURS[i][d:a:s]:                                
-                                    pygame.draw.circle(VAR.fenetre, (255,0,0), ((x * VAR.dim) + 16, (y * VAR.dim)+16), 16, 0)
-                            
                     ignore_dij +=1
                 
                     if aff:           
@@ -143,32 +132,32 @@ class CPathfinding:
                                 x, y = (x * VAR.dim) , (y * VAR.dim)
                                 image_texte = VAR.ecriture.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
                                 VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
-                        
                     
-                    total_secondes = ((time.time() - duree) / (index+ignore_dij)) * maximum # Exemple: 3665 secondes
-                    heures = int(total_secondes // 3600)  # Convertit les secondes en heures
-                    minutes = int((total_secondes % 3600) // 60)  # Convertit le reste en minutes
-                    secondes = int(total_secondes % 60)  # Le reste sont les secondes
+                    if time.time() - t > 0.5:
+                        total_secondes = ((time.time() - duree) / (index+ignore_dij)) * maximum # Exemple: 3665 secondes
+                        heures = int(total_secondes // 3600)  # Convertit les secondes en heures
+                        minutes = int((total_secondes % 3600) // 60)  # Convertit le reste en minutes
+                        secondes = int(total_secondes % 60)  # Le reste sont les secondes
 
-                    texte = []
-                    texte.append("IndexA : " + str(indexA) + " / " + "IndexB : " + str(indexB) + " / " + str(len(self.zones_libres)))
-                    texte.append("Nb Parcours : " + str(index) +"  // Chemins deduis : " + str(nb_deduction))
-                    texte.append("Ignore Pathfinding : " + str(ignore_dij))
-                    texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
-                    texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
+                        texte = []
+                        texte.append("IndexA : " + str(indexA) + " / " + "IndexB : " + str(indexB) + " / " + str(len(self.zones_libres)))
+                        texte.append("Nb Parcours : " + str(index) +"  // Chemins deduis : " + str(nb_deduction))
+                        texte.append("Ignore Pathfinding : " + str(ignore_dij))
+                        texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
+                        texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
+                        
+                        pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
+                        for y, txt in enumerate(texte):
+                            image_texte = VAR.ecriture.render( txt, True, (255,255,255)) 
+                            VAR.fenetre.blit(image_texte, (10,y*20))   
+                            
+                        
+                        
+                        pygame.display.update()
+                        t = time.time()    
                     
                     
-                    for y, txt in enumerate(texte):
-                        image_texte = VAR.ecriture.render( txt, True, (255,255,255)) 
-                        VAR.fenetre.blit(image_texte, (10,y*20))   
-                    
-                    
-                    pygame.display.update()
-                    time.sleep(0.0001)       
-                    
-                    
-                    if time.time() - t > temps:
-                        t = time.time()            
+                              
 
             
         time.sleep(10)       
