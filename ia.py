@@ -84,7 +84,7 @@ class CIA:
                             
     def traque_est_ce_que_je_poursuis_quelquun(self):
         return len(self.chemin_pathfinding) > 0 
-    
+        
     
     def traque_je_me_reoriente_vers_le_nouveau_point(self):
         # --- est ce que je suis a destination
@@ -96,19 +96,18 @@ class CIA:
         x, y = self.xInt, self.yInt  # Position actuelle du PNJ
         xNew, yNew = point_suivant
         
-        if xNew > x:
-            self.PNJ.direction = ENUM_DIR.DROITE
-        if xNew < x:
-            self.PNJ.direction = ENUM_DIR.GAUCHE
-        if yNew > y:
-            self.PNJ.direction = ENUM_DIR.BAS
-        if yNew < y:
-            self.PNJ.direction = ENUM_DIR.HAUT
-        
-        self.txt = str(("x: " + str(x), "y: "+str(y), "xNew: "+str(xNew), "yNew: "+str(yNew), "direction: "+str(self.PNJ.direction))) 
-      
-        if (x, y) == (xNew, yNew):
-            self.index_chemin += 1    
+        if self.je_continue_tant_que_je_suis_pas_au_centre_de_la_zone():
+            if xNew > x:
+                self.PNJ.direction = ENUM_DIR.DROITE
+            if xNew < x:
+                self.PNJ.direction = ENUM_DIR.GAUCHE
+            if yNew > y:
+                self.PNJ.direction = ENUM_DIR.BAS
+            if yNew < y:
+                self.PNJ.direction = ENUM_DIR.HAUT
+            
+            if (x, y) == (xNew, yNew):
+                self.index_chemin += 1    
     
     
     def est_ce_toujours_sur_le_terrain(self, x, y):
@@ -185,13 +184,32 @@ class CIA:
             self.position_precedente = (self.xInt, self.yInt)
             self.parcours[self.xInt][self.yInt]['UTILISE'] += 1
 
+    def je_continue_tant_que_je_suis_pas_au_centre_de_la_zone(self):
+        direction = self.PNJ.direction
+        etat = True
+
+        if direction == ENUM_DIR.BAS:
+            if self.PNJ.y % 1 < 0.48:
+                etat = False
+        elif direction == ENUM_DIR.HAUT:
+            if self.PNJ.y % 1 > 0.48:
+                etat = False
+        elif direction == ENUM_DIR.DROITE:            
+            if self.PNJ.x % 1 < 0.015:                
+                etat = False
+        elif direction == ENUM_DIR.GAUCHE:
+            if (self.PNJ.x) % 1 > 0.015 :
+                etat = False 
+                     
+        return etat
+    
     def est_ce_que_je_suis_arrive_a_une_intersection(self):
         xx, yy = int(self.PNJ.x ), int(self.PNJ.y )
         
         # --- atteint que joueur sois bien placé
-        if self.PNJ.x % 1 > 0.1 or self.PNJ.y % 1 > 0.4 :
-            return False
         
+        if not self.je_continue_tant_que_je_suis_pas_au_centre_de_la_zone():
+            return False
               
         intersection_non_definie = ( (self.objectifx, self.objectify) == (-1, -1) )
         arrive_sur_intersection = (self.objectifx == xx and self.objectify == yy)

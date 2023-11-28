@@ -14,7 +14,7 @@ class CJoueur:
                 
         self.index = index
         self.nom = nom
-        self.x, self.y = x, y
+        self.x, self.y = x, y+0.5
         self.direction = ENUM_DIR.AUCUN
         self.fonction = fonction
         
@@ -117,15 +117,12 @@ class CJoueur:
             self.timer_particules = time.time()
     
     def reflechit(self):
-        est_ordinateur = (not self.IA == None)        
-        # --- Si ordinateur suivre le chemin
-        
-        if est_ordinateur:
-            self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
-            if self.direction == ENUM_DIR.AUCUN:
-                self.IA.etablir_direction_initiale()                
-            self.IA.je_reflechis()        
+        self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+        if self.direction == ENUM_DIR.AUCUN:
+            self.IA.etablir_direction_initiale()                
+        self.IA.je_reflechis()        
                      
+    
                      
     def se_deplace(self):        
            
@@ -146,10 +143,10 @@ class CJoueur:
                 if self.toujours_sur_le_terrain():                
                     if self.collision_avec_decors():
                         self.x, self.y = xo, yo
-                        return
-                    
-                    #self.direction = ENUM_DIR.AUCUN
-    
+                        break
+            
+            else:
+                self.reflechit()  
 
     
     def coordonnees_image_animee(self):
@@ -171,9 +168,7 @@ class CJoueur:
     def afficher(self):   
         est_ordinateur = (not self.IA == None)               
         
-        # -- affiche ombre du joueur
-        
-
+        # -- affiche ombre du joueur    
         x, y = self.get_position()
         centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
         VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
@@ -184,8 +179,7 @@ class CJoueur:
         # --- affiche sprite joueur
         xImg, yImg = x+self.offsetX, y+self.offsetY
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
-       
-            
+                   
         # --- affiche nom
         VAR.fenetre.blit(self.image_nom, (xImg, yImg))
 
