@@ -15,8 +15,8 @@ class map_tiled:
         self.fichiers_image = []
         self.objets = {}
         
-        self.planche = pygame.Surface((1920, 1080))
-        self.bloquage = pygame.Surface((1920, 1080)).convert_alpha()
+        self.planche = pygame.Surface((VAR.resolution_x, VAR.resolution_y))
+        self.bloquage = pygame.Surface((VAR.resolution_x, VAR.resolution_y)).convert_alpha()
         
         # --- Charge les fichiers contenant les images du jeu
         self.chargement_des_fichiers_images()    
@@ -32,14 +32,14 @@ class map_tiled:
         for tileset in tilesets:         
             
             source = tileset.attrib.get('source')         
-            xml_fichier_tsx = XML.parse(".ressources/"+source)
+            xml_fichier_tsx = XML.parse(".ressources/" + source)
             root_fichier_tsx = xml_fichier_tsx.getroot()
             
             firstgid = int(tileset.attrib.get('firstgid'))
             nombre_colonnes = int(root_fichier_tsx.attrib['columns'])
             nombre_tiles = int(root_fichier_tsx.attrib['tilecount'])
             fichier = root_fichier_tsx.find('image').get('source')                                    
-            image = pygame.image.load(".ressources/"+fichier).convert_alpha()
+            image = pygame.image.load(".ressources/32/" + fichier).convert_alpha()
             
             self.fichiers_image.append((firstgid, nombre_tiles, nombre_colonnes, image))
                
@@ -84,16 +84,22 @@ class map_tiled:
                 indexN = index - debut
                 y = (indexN // colonnes)
                 x = (indexN % colonnes)   
-                dimX, dimY = VAR.dim, VAR.dim
-                                
+                dimXSrc, dimYSrc = VAR.dimOrigine, VAR.dimOrigine
+                dimXDst, dimYDst = VAR.dim, VAR.dim                    
+                    
                 if index in LISTE_SCALE_OBJET:
                     coeffX, coeffY, etat = LISTE_SCALE_OBJET[index]
                     if coeffX > 1 or coeffY > 1:
                         y -= (coeffY - 1)                        
-                        dimX = (coeffX * VAR.dim)
-                        dimY = (coeffY * VAR.dim)                             
+                        dimXSrc = (coeffX * VAR.dimOrigine)
+                        dimYSrc = (coeffY * VAR.dimOrigine) 
+                        
+                        dimXDst = (coeffX * VAR.dim)
+                        dimYDst = (coeffY * VAR.dim)                             
 
-                return (image.subsurface( (x * VAR.dim, y * VAR.dim, dimX, dimY)), etat)
+                image = image.subsurface( (x * VAR.dimOrigine, y * VAR.dimOrigine, dimXSrc, dimYSrc))
+                imageDim = pygame.transform.smoothscale(image, (dimXDst, dimYDst))
+                return (imageDim, etat)
         
         return "index introuvable"
 

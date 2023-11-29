@@ -5,15 +5,18 @@ import os
 import time
 
 perfs = {}
-def Performance(key, timer):
+def Performance(key, timer, couleur = (255,0,0)):
     valeur = (time.time() - timer)
+    if valeur == 0:
+        valeur = 0.000001
     if not key in perfs:
-        perfs[key] = valeur, 0
-    _ , maximum = perfs[key]
+        perfs[key] = valeur, 0, 0, 0, couleur
+    _ , maximum, somme, compteur, _ = perfs[key]
     
     if valeur > maximum:
         maximum = valeur
-    perfs[key] = valeur, maximum
+        
+    perfs[key] = valeur, maximum, (somme + valeur), compteur+1, couleur
     
     return perfs
 

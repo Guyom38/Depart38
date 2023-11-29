@@ -79,18 +79,9 @@ class CMoteur:
         self.PERSONNAGES.PNJS.append(CJoueur(self, 2, 1.0, 5.0, "Basile", True,2))
         self.PERSONNAGES.PNJS.append(CJoueur(self, 3, 1.0, 5.0, "Luc", True, 2))
         self.PERSONNAGES.PNJS.append(CJoueur(self, 4, 1.0, 5.0, "Emmanuel", True, 2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))
-        
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 6, 1.0, 5.0, "Azzedine", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 7, 2.0, 5.0, "Alexandre", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 8, 3.0, 5.0, "Isabelle", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 9, 4.0, 5.0, "Sylvie", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 10, 1.0, 6.0, "Fabien", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 11, 2.0, 6.0, "Camille", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 12, 3.0, 6.0, "Claire", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 13, 1.0, 7.0, "Olivier", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 14, 2.0, 7.0, "Denis", False))
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 15, 3.0, 7.0, "Cédric", False))
+        self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))        
+
+
         
         self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
         self.TERRAIN = CTerrain(self) 
@@ -111,53 +102,48 @@ class CMoteur:
         for y in range(0, VAR.dimension_y):
                 for x in range(0, VAR.dimension_x):
                     if self.PERSONNAGES.PNJS[0].IA.parcours[x][y]['CHEMIN']:
-                        pygame.draw.rect(VAR.fenetre, (32,32,32), (x * 32, y* 32, 32, 32), 0)      
+                        pygame.draw.rect(VAR.fenetre, (32,32,32), (x * VAR.dim, y* VAR.dim, VAR.dim, VAR.dim), 0)      
                            
+    
+    def afficher_performances(self):
+        for index, valeurs in enumerate(FCT.perfs.items()):
+            x = index // 4
+            y = index % 4
                 
+            key, valeur = valeurs
+            resultat = ""
+            if ( int(1.0 / valeur[0]) < VAR.fps_max  ):
+                resultat = " /!\\"
+            vv = "{:.04f}ms, {:.04f}ms, {:.04f}ms".format(round(valeur[0],4), round(valeur[1],4), round(valeur[2] / valeur[3],4)) + resultat
+                                
+            image_texte = VAR.ecriture.render( key , True, valeur[4])
+            VAR.fenetre.blit(image_texte, ((600 * x), (y * 18)-2))     
+            image_texte = VAR.ecriture.render( vv , True, valeur[4])
+            VAR.fenetre.blit(image_texte, ((600 * x)+300, (y * 18)-2))   
+            
+                            
     def demarrer(self):       
-      
-        
         VAR.boucle = True
         while VAR.boucle:
             t = time.time()
-            self.CONTROLLEURS.clavier()                
-           
+            self.CONTROLLEURS.clavier()   
                 
             self.TERRAIN.afficher()            
             self.PERSONNAGES.se_deplacent()       
             
             if ENUM_DEMO.CHEMIN_VINCENT in VAR.demo:
-                self.afficher_parcours_vincent()            
-            #self.PERSONNAGES.PATHFINDING.afficher_destinations_possibles( ( int(round(self.PERSONNAGES.JOUEURS[0].x)), int(round(self.PERSONNAGES.JOUEURS[0].y))) )
-            
+                self.afficher_parcours_vincent()  
         
-            self.PARTICULES.Afficher_Les_Particules()           
-            
-                
-            self.ELEMENTS_VISUELS.afficher()           
-            
+            self.PARTICULES.Afficher_Les_Particules()    
+            self.ELEMENTS_VISUELS.afficher()   
 
-    
-
-            
-
-            for index, valeurs in enumerate(FCT.perfs.items()):
-                x = index // 5
-                y = index % 5
-                key, valeur = valeurs
-                vv = "{:.04f}ms, {:.04f}ms".format(round(valeur[0],4), round(valeur[1],4))
-                
-                image_texte = VAR.ecriture.render( vv , True, (255,0,0))
-                VAR.fenetre.blit(image_texte, ((600 * x)+300, y * 20))     
-                image_texte = VAR.ecriture.render( key , True, (255,0,0))
-                VAR.fenetre.blit(image_texte, ((600 * x), y * 20))     
-    
+            self.afficher_performances()
                 
             # --- afficher le résultat
             pygame.display.update()
-            FCT.Performance('MOTEUR.boucle()', t)
-            # --- limite la fréquence de raffraichissement a 25 images seconde
-            self.horloge.tick(30)
+            FCT.Performance('MOTEUR.boucle()', t, (255,255,255))
+            
+            self.horloge.tick( VAR.fps_max )
 
         # --- en sortie de boucle, quitte le programme
         pygame.quit() 

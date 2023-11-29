@@ -14,11 +14,11 @@ class CJoueur:
                 
         self.index = index
         self.nom = nom
-        self.x, self.y = x, y+0.5
+        self.x, self.y = x, y + 0.5
         self.direction = ENUM_DIR.AUCUN
         self.fonction = fonction
         
-        self.offsetX, self.offsetY = -16, -56     
+        self.offsetX, self.offsetY = -VAR.dimDiv2, -VAR.dimOffY     
         
         if is_IA:
             
@@ -27,26 +27,27 @@ class CJoueur:
             if fonction == 0:
                 self.vitesse = 10
                 self.distance_vision = 200
-                self.image = pygame.image.load(".ressources/agent.png").convert_alpha()
+                self.image = pygame.image.load(".ressources/32/agent.png").convert_alpha()
                 self.couleur_vision = (193,249,153, VAR.ray_alpha)
             elif fonction == 2:
                 self.vitesse = 5
                 self.distance_vision = 120
-                self.image = pygame.image.load(".ressources/basile.png").convert_alpha()
+                self.image = pygame.image.load(".ressources/32/basile.png").convert_alpha()
                 self.couleur_vision = (255,255,255, VAR.ray_alpha)
             else:
                 self.vitesse = 5
                 self.distance_vision = 120
-                self.image = pygame.image.load(".ressources/chef.png").convert_alpha()
+                self.image = pygame.image.load(".ressources/32/chef.png").convert_alpha()
                 self.couleur_vision = (239,231,129, VAR.ray_alpha)
             
             
    
         else:
-            self.image = pygame.image.load(".ressources/agent2.png").convert_alpha()
+            self.image = pygame.image.load(".ressources/32/agent2.png").convert_alpha()
             self.IA = None
             self.vitesse = 20
 
+        self.image = pygame.transform.smoothscale(self.image, (1344, 960))
         self.image_nom = self.generer_image_nom()    
         self.ombre_joueur = self.generer_ombre_joueur()
         
@@ -57,7 +58,7 @@ class CJoueur:
         self.timer_particules = time.time()        
         
         # --- Gestion du mask pour les collisions
-        image_mask = pygame.Surface((20, 4))
+        image_mask = pygame.Surface((VAR.dimMask, 4)) # 32 pixel => 20
         self.mask = pygame.mask.from_surface(image_mask)
         self.mask_rect = image_mask.get_rect(center = (0,0))
     
@@ -68,20 +69,21 @@ class CJoueur:
         pygame.draw.circle(self.ombre, (0,0,0, 60), (dim2, dim2), dim2)
         
     def generer_image_nom(self):
-        ecriture = pygame.font.SysFont('arial', 24) 
-        image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
+        ecriture = pygame.font.SysFont('arial', 20) 
+        
+        #image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
         image_texte = ecriture.render( self.nom , True, (255,255,255)) 
         
-        image_nom = pygame.Surface( (image_ombre.get_width()+4, image_ombre.get_height()-4) ).convert_alpha()
-        
+        image_nom = pygame.Surface( (image_texte.get_width()+4, image_texte.get_height()-4) ).convert_alpha()
         image_nom.fill( (0, 0, 0, 255) )
+        
         #image_nom.blit(image_ombre, (0, -4))
         image_nom.blit(image_texte, (2, -2))
         
         return image_nom
           
     def get_position(self):
-        return (int((self.x * VAR.dim) +16), int((self.y * VAR.dim)))    
+        return (int((self.x * VAR.dim) + VAR.dimDiv2), int((self.y * VAR.dim)))    
                
     def position_int_x(self):
         return round((self.x * VAR.dim))
@@ -92,8 +94,10 @@ class CJoueur:
         return (    self.position_int_x() > -1 and self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] \
                     and self.position_int_y() > -1 and self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
     
+    
+    
     def collision_avec_decors(self): 
-        self.mask_rect.center = self.position_int_x()+16, self.position_int_y() 
+        self.mask_rect.center = self.position_int_x()+VAR.dimDiv2, self.position_int_y() 
        
         offset_x = 0 - self.mask_rect.left 
         offset_y = 0 - self.mask_rect.top 
@@ -113,11 +117,11 @@ class CJoueur:
     def afficher_fumee(self):
         # --- particules
         if time.time() - self.timer_particules > (1 / self.vitesse) and self.vitesse > 5:            
-            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x()+16, self.position_int_y(), (255,255,255))
+            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x() + VAR.dimDiv2, self.position_int_y(), (255,255,255))
             self.timer_particules = time.time()
     
     def reflechit(self):
-        self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+        #self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
         if self.direction == ENUM_DIR.AUCUN:
             self.IA.etablir_direction_initiale()                
         self.IA.je_reflechis()        
@@ -177,7 +181,7 @@ class CJoueur:
         if est_ordinateur:
             t = time.time() 
             self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
-            FCT.Performance('JOUEURS(' + self.nom + ').afficher()', t)
+            FCT.Performance('JOUEURS(' + self.nom + ').afficher()', t, (200,200,200))
             
         # --- affiche sprite joueur
         xImg, yImg = x+self.offsetX, y+self.offsetY

@@ -35,16 +35,18 @@ for objet in objets:
 class CObjets:        
     def __init__(self, moteur):
         self.MOTEUR = moteur
-        self.liste = {}   
+        self.liste = {}  
         
              
         
     def traitement_objet(self, index, x, y, couche, force = False):
-        objet = None        
+        objet = None  
+              
         image, etat = VAR.images[index]          
         if (index in LISTE_SCALE_OBJET) or force:  
             if force: etat = C_OBSTACLE                                     
-            objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, etat)            
+            objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, etat)  
+                      
         if not objet == None:
             key = "{:04d}{:04d}{:01d}".format(y * VAR.dim, x * VAR.dim, couche)
             self.liste[key] = objet 
@@ -55,6 +57,8 @@ class CObjets:
       
     def afficher(self): 
         t = time.time()       
+        
+        # --- genere une liste de joueurs et de pnjs
         liste_personnages = {}
         for personnage in self.MOTEUR.PERSONNAGES.JOUEURS + self.MOTEUR.PERSONNAGES.PNJS:
             x = personnage.position_int_x() 
@@ -62,15 +66,16 @@ class CObjets:
             key = "{:04d}{:04d}{:01d}".format(y, x, 9)
             liste_personnages[key] = personnage
         
+        # --- fusionne la liste des objets et des joueurs
         if not ENUM_DEMO.BLOCAGE in VAR.demo:    
             listes_fusionnees = {**self.liste, **liste_personnages}        
         else:
-            listes_fusionnees = liste_personnages
-            
+            listes_fusionnees = liste_personnages            
         liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
-        FCT.Performance('OBJETS.afficher( - creation liste)', t)
         
-        for cle_coordonnees, objet in liste_objets_tries:   
+        # --- affiche chaque objets
+        FCT.Performance('OBJETS.afficher( - creation liste)', t)        
+        for _, objet in liste_objets_tries:   
             objet.afficher()
             
         FCT.Performance('OBJETS.afficher()', t)

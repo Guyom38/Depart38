@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="26" nextobjectid="1">
- <tileset firstgid="1" source="Room_Builder_Office_32x32.tsx"/>
- <tileset firstgid="225" source="Modern_Office_Black_Shadow_32x32.tsx"/>
- <tileset firstgid="1073" source="Interiors_32x32.tsx"/>
+ <tileset firstgid="1" source="32/Room_Builder_Office_32x32.tsx"/>
+ <tileset firstgid="225" source="32/Modern_Office_Black_Shadow_32x32.tsx"/>
+ <tileset firstgid="1073" source="32/Interiors_32x32.tsx"/>
  <layer id="8" name="Sol" width="60" height="34">
   <data encoding="csv">
 5125,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5126,5127,

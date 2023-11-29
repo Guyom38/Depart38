@@ -9,6 +9,15 @@
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
+        "32/Interiors_32x32.tsx": {
+            "scaleInDock": 1
+        },
+        "32/Modern_Office_Black_Shadow_32x32.tsx": {
+            "scaleInDock": 1
+        },
+        "32/Room_Builder_Office_32x32.tsx": {
+            "scaleInDock": 1
+        },
         "Interiors_32x32.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -33,8 +42,8 @@
             "scale": 0.75,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 375.33333333333326,
-                "y": 546.6666666666665
+                "x": 372.66666666666663,
+                "y": 544
             }
         },
         "test.tsx": {
@@ -47,15 +56,14 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 60,
     "openFiles": [
-        "Interiors_32x32.tsx",
         "map-vide.tmx",
         "map.tmx"
     ],
     "project": "NoJobNoGain.tiled-project",
     "recentFiles": [
-        "Interiors_32x32.tsx",
         "map-vide.tmx",
         "map.tmx",
+        "Interiors_32x32.tsx",
         "map-path.tmx",
         "Room_Builder_Office_32x32.tsx",
         "Modern_Office_Black_Shadow_32x32.tsx",
