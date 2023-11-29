@@ -27,7 +27,9 @@ class CMoteur:
         self.titre = pygame.image.load(".ressources/titre.jpg")
         self.titre = pygame.transform.scale(self.titre, (VAR.resolution_x, VAR.resolution_y))
         
-        VAR.ecriture = pygame.font.SysFont('arial', 20) 
+        VAR.ecriture = pygame.font.SysFont('arial', 20)         
+        VAR.ecriture10 = pygame.font.SysFont('arial', 10)    
+            
         VAR.fenetre.blit(self.titre, (0, 0))
         pygame.display.flip()
         
@@ -79,6 +81,17 @@ class CMoteur:
         self.PERSONNAGES.PNJS.append(CJoueur(self, 4, 1.0, 5.0, "Emmanuel", True, 2))
         self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))
         
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 6, 1.0, 5.0, "Azzedine", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 7, 2.0, 5.0, "Alexandre", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 8, 3.0, 5.0, "Isabelle", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 9, 4.0, 5.0, "Sylvie", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 10, 1.0, 6.0, "Fabien", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 11, 2.0, 6.0, "Camille", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 12, 3.0, 6.0, "Claire", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 13, 1.0, 7.0, "Olivier", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 14, 2.0, 7.0, "Denis", False))
+        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 15, 3.0, 7.0, "Cédric", False))
+        
         self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
         self.TERRAIN = CTerrain(self) 
         self.TERRAIN.initialisation_joueurs()                
@@ -102,11 +115,11 @@ class CMoteur:
                            
                 
     def demarrer(self):       
-        ecriture = pygame.font.SysFont('arial', 20)         
+      
         
         VAR.boucle = True
         while VAR.boucle:
-         
+            t = time.time()
             self.CONTROLLEURS.clavier()                
            
                 
@@ -125,25 +138,24 @@ class CMoteur:
             
 
     
-            image_texte = ecriture.render( str( (round(self.PERSONNAGES.PNJS[0].x, 2), round(self.PERSONNAGES.PNJS[0].y, 2)) ) , True, (255,0,0)) 
-            VAR.fenetre.blit(image_texte, (800, 0))            
-            image_texte = ecriture.render( "JOUEUR => ROUND : "+str( (round(self.PERSONNAGES.JOUEURS[0].x, 0), round(self.PERSONNAGES.JOUEURS[0].y, 0))) + " --- INT : "+ str((int(self.PERSONNAGES.JOUEURS[0].x), int(self.PERSONNAGES.JOUEURS[0].y))) , True, (255,0,0))
-            VAR.fenetre.blit(image_texte, (800, 20))            
+
             
-            image_texte = ecriture.render( "MECHANT => ROUND : "+str( (round(self.PERSONNAGES.PNJS[0].x, 0), round(self.PERSONNAGES.PNJS[0].y, 0))) + " --- INT : "+ str((int(self.PERSONNAGES.PNJS[0].x), int(self.PERSONNAGES.PNJS[0].y))) , True, (255,0,0))
-            VAR.fenetre.blit(image_texte, (800, 40))            
-            
-            image_texte = ecriture.render( self.PERSONNAGES.PNJS[0].IA.txt , True, (255,0,0))
-            VAR.fenetre.blit(image_texte, (0, 0))            
-           
-            image_texte = ecriture.render( str(self.PERSONNAGES.PNJS[0].IA.chemin_pathfinding) , True, (255,0,0))
-            VAR.fenetre.blit(image_texte, (0, 20))            
-           
-            
+
+            for index, valeurs in enumerate(FCT.perfs.items()):
+                x = index // 5
+                y = index % 5
+                key, valeur = valeurs
+                vv = "{:.04f}ms, {:.04f}ms".format(round(valeur[0],4), round(valeur[1],4))
+                
+                image_texte = VAR.ecriture.render( vv , True, (255,0,0))
+                VAR.fenetre.blit(image_texte, ((600 * x)+300, y * 20))     
+                image_texte = VAR.ecriture.render( key , True, (255,0,0))
+                VAR.fenetre.blit(image_texte, ((600 * x), y * 20))     
+    
                 
             # --- afficher le résultat
             pygame.display.update()
-
+            FCT.Performance('MOTEUR.boucle()', t)
             # --- limite la fréquence de raffraichissement a 25 images seconde
             self.horloge.tick(30)
 

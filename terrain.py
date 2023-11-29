@@ -5,6 +5,7 @@ from constantes import *
 
 import pygame
 import tiled as T
+import time
 
 class CTerrain:
     def __init__(self, moteur):         
@@ -59,11 +60,12 @@ class CTerrain:
     
         
     def afficher(self):
+        t = time.time()
         VAR.fenetre.fill((16,16,16))    
         VAR.fenetre.blit(self.planche, (0,0))
         
         if ENUM_DEMO.BLOCAGE in VAR.demo:
             VAR.fenetre.blit(self.png_blocage, (0,0))
-        
+        FCT.Performance('TERRAIN.afficher()', t)
 
    

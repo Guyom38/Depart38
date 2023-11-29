@@ -165,7 +165,8 @@ class CJoueur:
     
     
     # --- affiche joueur
-    def afficher(self):   
+    def afficher(self):  
+        
         est_ordinateur = (not self.IA == None)               
         
         # -- affiche ombre du joueur    
@@ -174,7 +175,9 @@ class CJoueur:
         VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
         
         if est_ordinateur:
+            t = time.time() 
             self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
+            FCT.Performance('JOUEURS(' + self.nom + ').afficher()', t)
             
         # --- affiche sprite joueur
         xImg, yImg = x+self.offsetX, y+self.offsetY
@@ -182,7 +185,7 @@ class CJoueur:
                    
         # --- affiche nom
         VAR.fenetre.blit(self.image_nom, (xImg, yImg))
-
+        
         
         
     

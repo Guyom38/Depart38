@@ -3,6 +3,7 @@ from constantes import *
 
 demo = []
 
+
 resolution_x = 1920
 resolution_y = 1080
 
@@ -15,11 +16,12 @@ images = {}
 fenetre = None
 boucle = True
 
-pas = 0.01
+pas = 0.005
 dim = 32
 
 
 ecriture = None
+ecriture10 = None
 # ray_alpha = 0 desactive la transparence
 ray_alpha = 128
 

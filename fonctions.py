@@ -2,6 +2,20 @@ import string
 import random
 import pygame
 import os
+import time
+
+perfs = {}
+def Performance(key, timer):
+    valeur = (time.time() - timer)
+    if not key in perfs:
+        perfs[key] = valeur, 0
+    _ , maximum = perfs[key]
+    
+    if valeur > maximum:
+        maximum = valeur
+    perfs[key] = valeur, maximum
+    
+    return perfs
 
 
 def GenereMat2D(dimX, dimY, valeurDefaut):

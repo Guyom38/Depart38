@@ -1,8 +1,10 @@
 import variables as VAR
 import objet as OBJ
 import pygame
+import time
 
 from constantes import *
+import fonctions as FCT
 
 # Définition des constantes (index, coeffX, coeffY, traversable)
 
@@ -51,7 +53,8 @@ class CObjets:
     
     
       
-    def afficher(self):        
+    def afficher(self): 
+        t = time.time()       
         liste_personnages = {}
         for personnage in self.MOTEUR.PERSONNAGES.JOUEURS + self.MOTEUR.PERSONNAGES.PNJS:
             x = personnage.position_int_x() 
@@ -65,7 +68,9 @@ class CObjets:
             listes_fusionnees = liste_personnages
             
         liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
-        
+        FCT.Performance('OBJETS.afficher( - creation liste)', t)
         
         for cle_coordonnees, objet in liste_objets_tries:   
             objet.afficher()
+            
+        FCT.Performance('OBJETS.afficher()', t)
