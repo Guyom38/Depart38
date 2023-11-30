@@ -9,6 +9,7 @@ C_ROOM = 1
 C_MODERN = 225
 C_INTERIOR = 1073
 
+
 class ENUM_DEMO:
     DESACTIVER = 0
     ASTAR = 1
@@ -30,11 +31,11 @@ class ENUM_DIR:
     AUCUN = None
 
 class ENUM_ANIMATION:
-    ARRETER = 0
-    IDEAL = 1
-    MARCHER = 2
-    ASSIS = 4
-    JOUER_TELEPHONE = 6
-    BOUQUINER = 7
-    COURIR = 8
-    TOUCHER = 19
+    ARRETER = (0, 1)
+    IDEAL = (1, 6)
+    MARCHER = (2, 6)
+    ASSIS = (4, 6)
+    JOUER_TELEPHONE = (6, 6)
+    BOUQUINER = (7, 6)
+    COURIR = (8, 6)
+    TOUCHER = (19, 6)

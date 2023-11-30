@@ -11,14 +11,14 @@ dimension_x = 10
 dimension_y = 10
 
 images = {}
-
+dimOrigine = 32 # --- dimension des sprites PNG
        
 fenetre = None
 boucle = True
 
 pas = 0.010
 dim = 24
-dimOrigine = 32 # --- dimension des sprites PNG
+
 fps_max = 25
 
 dimDiv2 = dim // 2

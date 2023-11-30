@@ -137,7 +137,7 @@ class CMoteur:
             self.PARTICULES.Afficher_Les_Particules()    
             self.ELEMENTS_VISUELS.afficher()   
 
-            self.afficher_performances()
+            #self.afficher_performances()
                 
             # --- afficher le résultat
             pygame.display.update()

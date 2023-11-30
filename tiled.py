@@ -4,6 +4,7 @@ import xml.etree.ElementTree as XML
 import fonctions as FCT
 import variables as VAR
 from objets import *
+import os
 
 class map_tiled:
     def __init__(self, moteur, fichier):
@@ -39,9 +40,16 @@ class map_tiled:
             nombre_colonnes = int(root_fichier_tsx.attrib['columns'])
             nombre_tiles = int(root_fichier_tsx.attrib['tilecount'])
             fichier = root_fichier_tsx.find('image').get('source')                                    
-            image = pygame.image.load(".ressources/32/" + fichier).convert_alpha()
             
-            self.fichiers_image.append((firstgid, nombre_tiles, nombre_colonnes, image))
+            fichier_image = ".ressources/32/" + fichier
+            image = pygame.image.load(fichier_image).convert_alpha()
+            image_mask = None
+            
+            fichier_mask = fichier_image.replace(".png", "_mask.png")
+            if os.path.exists(fichier_mask):
+                image_mask = pygame.image.load(fichier_mask).convert_alpha()
+                
+            self.fichiers_image.append((firstgid, nombre_tiles, nombre_colonnes, image, image_mask))
                
                
                
@@ -77,7 +85,7 @@ class map_tiled:
             
             
     def retourne_images_index(self, index):
-        for debut, nombre, colonnes, image in self.fichiers_image:
+        for debut, nombre, colonnes, image, image_mask in self.fichiers_image:
             etat = C_AUCUN
             
             if debut <= index < debut+nombre:   
@@ -97,9 +105,16 @@ class map_tiled:
                         dimXDst = (coeffX * VAR.dim)
                         dimYDst = (coeffY * VAR.dim)                             
 
+                
                 image = image.subsurface( (x * VAR.dimOrigine, y * VAR.dimOrigine, dimXSrc, dimYSrc))
                 imageDim = pygame.transform.smoothscale(image, (dimXDst, dimYDst))
-                return (imageDim, etat)
+                
+                imageDim_mask = None
+                if not image_mask == None:
+                    image_mask = image_mask.subsurface( (x * VAR.dimOrigine, y * VAR.dimOrigine, dimXSrc, dimYSrc))
+                    imageDim_mask = pygame.transform.smoothscale(image_mask, (dimXDst, dimYDst))
+                    
+                return (imageDim, imageDim_mask, etat)
         
         return "index introuvable"
 
@@ -164,7 +179,7 @@ class map_tiled:
                                 if index > 0:  
                                     
                                     if layer.attrib['name'] in ("Sol", "Mur"): 
-                                        image, traversable = VAR.images[index]                                                                                                        
+                                        image, image_mask, traversable = VAR.images[index]                                                                                                        
                                         self.planche.blit(image, (x * VAR.dim, y * VAR.dim))  
                                          
                                     else:
@@ -175,11 +190,16 @@ class map_tiled:
                                         if (not objet == None) and (objet.etat == C_OBSTACLE):
                                             objet.afficher(self.bloquage)
                                             
+                                
+                                            
                             x += 1                             
                         y+=1
             c+=1
         return self.planche
     
+    # --- l'objectif est de creer une bitmap contenant tous les obstacles.
+    # --- on colle a l'image les images mask si elle existe.
+    # --- en cas d'absence on colle images d'origine
     def generer_png_blocage(self):   
         for layer in self.root.findall('layer'):
             if layer.attrib['name'] == "Bloqué":
@@ -198,8 +218,13 @@ class map_tiled:
                             if not index == "":
                                 index = int(index)   
                                 if index > 0:
-                                    image, traversable = VAR.images[index]                                    
-                                    self.bloquage.blit(image, (x * VAR.dim, y * VAR.dim))   
+                                    image, image_mask, traversable = VAR.images[index] 
+                                    image_a_utilisee = image if image_mask == None else image_mask                                   
+                                    self.bloquage.blit(image_a_utilisee, (x * VAR.dim, y * VAR.dim))   
+                                    
+                                    #VAR.fenetre.blit(self.bloquage, (0,0))
+                                    #pygame.display.update()
+                                    #time.sleep(0.01)
                             x += 1                             
                         y+=1
         

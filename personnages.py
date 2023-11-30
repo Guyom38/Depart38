@@ -17,8 +17,10 @@ class CPersonnages:
     def se_deplacent(self):
         t = time.time()
         for personnage in self.JOUEURS + self.PNJS:
-            personnage.se_deplace()                    
-            personnage.afficher_fumee()
+            personnage.se_deplace() 
+            
+            if personnage.action == ENUM_ANIMATION.COURIR:                   
+                personnage.afficher_fumee()
             
         FCT.Performance('JOUEURS.se_deplacent()', t)
             

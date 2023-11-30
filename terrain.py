@@ -24,11 +24,23 @@ class CTerrain:
         self.charger_mask_blocage()  
         self.arrayBlocage = pygame.surfarray.array_alpha(self.png_blocage)
         self.maskBlocage = pygame.mask.from_surface(self.png_blocage)   
+         
+         
+    def afficher(self):
+        t = time.time()
+        VAR.fenetre.fill((16,16,16))    
+        VAR.fenetre.blit(self.planche, (0,0))
+        
+        if ENUM_DEMO.BLOCAGE in VAR.demo:
+            VAR.fenetre.blit(self.png_blocage, (0,0))
+        FCT.Performance('TERRAIN.afficher()', t)     
+         
+         
              
     # --- noir opaque (0,0,0,255) est un obstacle 
     # --- transparent (0,0,0,0) est libre   
     def charger_mask_blocage(self):
-        fichier = '.caches/' + VAR.fichier_map + '.mask.png'
+        fichier = '.caches/' + VAR.fichier_map + '_' + str(VAR.dim) + '.mask.png'
         if not FCT.existe_fichier(fichier):
             for y in range(0, self.png_blocage.get_height()):
                 for x in range(0, self.png_blocage.get_width()):
@@ -59,13 +71,6 @@ class CTerrain:
  
     
         
-    def afficher(self):
-        t = time.time()
-        VAR.fenetre.fill((16,16,16))    
-        VAR.fenetre.blit(self.planche, (0,0))
-        
-        if ENUM_DEMO.BLOCAGE in VAR.demo:
-            VAR.fenetre.blit(self.png_blocage, (0,0))
-        FCT.Performance('TERRAIN.afficher()', t)
+    
 
    

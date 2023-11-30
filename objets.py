@@ -19,7 +19,7 @@ OBJ_CHAISE_DER =  (C_MODERN + 179, 1, 2, C_OBSTACLE)
 OBJ_TRACE1 = (17106, 1, 1, C_TRAVERSABLE)
 OBJ_TRACE2 = (17105, 1, 1, C_TRAVERSABLE)
 # Liste de tous les objets
-objets = [OBJ_EXTINCTEUR, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_CHAISE_DER, OBJ_CHAISE_DEV] #, OBJ_TRACE1, OBJ_TRACE2]
+objets = [] #, OBJ_TRACE1, OBJ_TRACE2]
 
 # Création du dictionnaire avec une boucle for
 LISTE_SCALE_OBJET = {}
@@ -42,10 +42,10 @@ class CObjets:
     def traitement_objet(self, index, x, y, couche, force = False):
         objet = None  
               
-        image, etat = VAR.images[index]          
+        image, image_mask, etat = VAR.images[index]          
         if (index in LISTE_SCALE_OBJET) or force:  
             if force: etat = C_OBSTACLE                                     
-            objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, etat)  
+            objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, image_mask, etat)  
                       
         if not objet == None:
             key = "{:04d}{:04d}{:01d}".format(y * VAR.dim, x * VAR.dim, couche)
@@ -63,7 +63,7 @@ class CObjets:
         for personnage in self.MOTEUR.PERSONNAGES.JOUEURS + self.MOTEUR.PERSONNAGES.PNJS:
             x = personnage.position_int_x() 
             y = personnage.position_int_y() - 1
-            key = "{:04d}{:04d}{:01d}".format(y, x, 9)
+            key = "{:04d}{:04d}{:01d}".format(y, x, 0)
             liste_personnages[key] = personnage
         
         # --- fusionne la liste des objets et des joueurs
@@ -73,9 +73,23 @@ class CObjets:
             listes_fusionnees = liste_personnages            
         liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
         
+        
         # --- affiche chaque objets
-        FCT.Performance('OBJETS.afficher( - creation liste)', t)        
-        for _, objet in liste_objets_tries:   
+        FCT.Performance('OBJETS.afficher( - creation liste)', t)  
+        i = 0      
+        for key, objet in liste_objets_tries:   
             objet.afficher()
-            
+                      
+            if 2 < objet.x < 10 and 17 < objet.y < 23:
+                nombre1 = int(key[0:4])  # Convertit "0123" en entier
+                nombre2 = int(key[4:8])  # Convertit "4567" en entier
+                nombre3 = int(key[8])    # Convertit "0" en entier
+
+                key1 = "y:" + str(nombre1//VAR.dim)+" x:" + str(nombre2//VAR.dim)+" c:" + str(nombre3)
+                key2 = key
+                
+                txt = key1 + " (" + str(objet.index) +") " + str(key2)
+                image_texte = VAR.ecriture.render( txt , True, (255,0,0))
+                VAR.fenetre.blit(image_texte, (1400, (i * 18)))     
+                i+=1
         FCT.Performance('OBJETS.afficher()', t)

@@ -14,8 +14,12 @@ class CJoueur:
                 
         self.index = index
         self.nom = nom
+        
         self.x, self.y = x, y + 0.5
         self.direction = ENUM_DIR.AUCUN
+        self.en_mouvement = True
+        self.action = ENUM_ANIMATION.ARRETER
+        
         self.fonction = fonction
         
         self.offsetX, self.offsetY = -VAR.dimDiv2, -VAR.dimOffY     
@@ -47,7 +51,9 @@ class CJoueur:
             self.IA = None
             self.vitesse = 20
 
-        self.image = pygame.transform.smoothscale(self.image, (1344, 960))
+        dimension_image = (56 * VAR.dim, 40 * VAR.dim)
+        
+        self.image = pygame.transform.smoothscale(self.image, dimension_image)
         self.image_nom = self.generer_image_nom()    
         self.ombre_joueur = self.generer_ombre_joueur()
         
@@ -58,7 +64,7 @@ class CJoueur:
         self.timer_particules = time.time()        
         
         # --- Gestion du mask pour les collisions
-        image_mask = pygame.Surface((VAR.dimMask, 4)) # 32 pixel => 20
+        image_mask = pygame.Surface((VAR.dimMask, 2)) # 32 pixel => 20
         self.mask = pygame.mask.from_surface(image_mask)
         self.mask_rect = image_mask.get_rect(center = (0,0))
     
@@ -116,7 +122,7 @@ class CJoueur:
                                          
     def afficher_fumee(self):
         # --- particules
-        if time.time() - self.timer_particules > (1 / self.vitesse) and self.vitesse > 5:            
+        if time.time() - self.timer_particules > (2 / self.vitesse) and self.vitesse > 5:            
             self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x() + VAR.dimDiv2, self.position_int_y(), (255,255,255))
             self.timer_particules = time.time()
     
@@ -129,7 +135,9 @@ class CJoueur:
     
                      
     def se_deplace(self):        
-           
+        if not self.en_mouvement:
+            return
+        
         xo, yo = self.x, self.y        
         for _ in range(0, self.vitesse):
             if self.direction == ENUM_DIR.GAUCHE:
@@ -165,6 +173,15 @@ class CJoueur:
         elif self.direction == ENUM_DIR.DROITE: position_x = 0
         else: position_y, nombre_images = 7, 12
         
+        if self.en_mouvement:
+            self.action = ENUM_ANIMATION.MARCHER
+        else:
+            self.action = ENUM_ANIMATION.ARRETER
+            
+        position_y = self.action[0]
+        nombre_images = self.action[1]   
+       
+            
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
     
