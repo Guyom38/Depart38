@@ -22,8 +22,7 @@ class CObjet:
             self.offsetY = self.offsetY - (image.get_height() - VAR.dim)
         
         self.rect = image.get_rect()
-        print(str(self.rect))
-            
+             
     def position_ecran_x(self):
         return int(round((self.x * VAR.dim) + self.offsetX,0))
     def position_ecran_y(self):

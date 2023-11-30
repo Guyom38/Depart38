@@ -64,10 +64,10 @@ class CJoueur:
         self.timer_particules = time.time()        
         
         # --- Gestion du mask pour les collisions
-        image_mask = pygame.Surface((VAR.dimMask, 2)) # 32 pixel => 20
-        self.mask = pygame.mask.from_surface(image_mask)
-        self.mask_rect = image_mask.get_rect(center = (0,0))
-    
+        self.image_mask = pygame.Surface((VAR.dimMask, 2)) # 32 pixel => 20
+        self.mask = pygame.mask.from_surface(self.image_mask)
+        self.mask_rect = self.image_mask.get_rect(center = (0,0))
+
     def generer_ombre_joueur(self):
         self.ombre = pygame.Surface((VAR.dim,VAR.dim), pygame.SRCALPHA).convert_alpha()
         

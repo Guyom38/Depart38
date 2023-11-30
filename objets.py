@@ -13,13 +13,14 @@ OBJ_EXTINCTEUR =  (C_INTERIOR + 5213, 1, 2, C_OBSTACLE)
 OBJ_ARB1x2_GRIS = (C_INTERIOR + 9713, 1, 3, C_TRAVERSABLE)
 OBJ_ARB1x3_GRIS = (C_INTERIOR + 9714, 1, 3, C_TRAVERSABLE)
 OBJ_ARB2x3_GRIS = (C_INTERIOR + 9715, 2, 3, C_TRAVERSABLE)
+OBJ_ARB1x3_GRIS2 = (C_MODERN + 150, 1, 3, C_TRAVERSABLE)
 OBJ_CHAISE_DEV =  (C_MODERN + 177, 1, 2, C_OBSTACLE)
 OBJ_CHAISE_DER =  (C_MODERN + 179, 1, 2, C_OBSTACLE)
 
 OBJ_TRACE1 = (17106, 1, 1, C_TRAVERSABLE)
 OBJ_TRACE2 = (17105, 1, 1, C_TRAVERSABLE)
 # Liste de tous les objets
-objets = [] #, OBJ_TRACE1, OBJ_TRACE2]
+objets = [OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2] #, OBJ_TRACE1, OBJ_TRACE2]
 
 # Création du dictionnaire avec une boucle for
 LISTE_SCALE_OBJET = {}
@@ -48,7 +49,7 @@ class CObjets:
             objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, image_mask, etat)  
                       
         if not objet == None:
-            key = "{:04d}{:04d}{:01d}".format(y * VAR.dim, x * VAR.dim, couche)
+            key = "{:04d}{:04d}{:01d}".format((y * VAR.dim) + VAR.dim, x * VAR.dim, couche)
             self.liste[key] = objet 
             
         return objet
@@ -62,7 +63,7 @@ class CObjets:
         liste_personnages = {}
         for personnage in self.MOTEUR.PERSONNAGES.JOUEURS + self.MOTEUR.PERSONNAGES.PNJS:
             x = personnage.position_int_x() 
-            y = personnage.position_int_y() - 1
+            y = personnage.position_int_y()+16
             key = "{:04d}{:04d}{:01d}".format(y, x, 0)
             liste_personnages[key] = personnage
         
@@ -80,7 +81,7 @@ class CObjets:
         for key, objet in liste_objets_tries:   
             objet.afficher()
                       
-            if 2 < objet.x < 10 and 17 < objet.y < 23:
+            if 2 < objet.x < 10 and 10 < objet.y < 16:
                 nombre1 = int(key[0:4])  # Convertit "0123" en entier
                 nombre2 = int(key[4:8])  # Convertit "4567" en entier
                 nombre3 = int(key[8])    # Convertit "0" en entier

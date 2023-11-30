@@ -3,20 +3,21 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map.tmx",
+    "activeFile": "map24.tmx",
     "expandedProjectPaths": [
+        "32",
         "."
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         "32/Interiors_32x32.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 0.75
         },
         "32/Modern_Office_Black_Shadow_32x32.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 0.75
         },
         "32/Room_Builder_Office_32x32.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 0.75
         },
         "Interiors_32x32.tsx": {
             "scaleInDock": 1,
@@ -46,6 +47,14 @@
                 "y": 544
             }
         },
+        "map24.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 9,
+            "viewCenter": {
+                "x": 537.3333333333333,
+                "y": 853.3333333333333
+            }
+        },
         "test.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -57,11 +66,12 @@
     "map.width": 60,
     "openFiles": [
         "map-vide.tmx",
-        "map.tmx"
+        "map24.tmx"
     ],
     "project": "NoJobNoGain.tiled-project",
     "recentFiles": [
         "map-vide.tmx",
+        "map24.tmx",
         "map.tmx",
         "Interiors_32x32.tsx",
         "map-path.tmx",
