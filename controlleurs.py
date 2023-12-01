@@ -7,6 +7,7 @@ import variables as VAR
 from fonctions import *
 
 from constantes import *
+from classes.actions.courrir import *
 
 
 class CControlleurs:
@@ -22,6 +23,11 @@ class CControlleurs:
             if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
                 VAR.boucle = False
 
+            if event.type == KEYDOWN:        
+                if event.key == K_SPACE:            
+                    action_a_entreprendre = CCourir(self.PERSONNAGES.JOUEURS[0])           
+                    self.PERSONNAGES.JOUEURS[0].MECANIQUE_ACTION.demarrer(action_a_entreprendre)
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP] == 1:
             self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.HAUT
@@ -35,7 +41,7 @@ class CControlleurs:
         elif keys[pygame.K_RIGHT] == 1:
             self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.DROITE
             self.PERSONNAGES.JOUEURS[0].en_mouvement = True
-        
+            
         if keys[pygame.K_SPACE] == 1:
             VAR.demo = [ENUM_DEMO.BLOCAGE]
         else:

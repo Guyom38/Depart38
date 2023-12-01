@@ -3,8 +3,8 @@ import fonctions as FCT
 import variables as VAR
 from constantes import *
 import random
-import pathfinding as PF
-import algo_dijkstra as AD
+import classes.joueurs.pathfinding as PF
+import classes.joueurs.algo_dijkstra as AD
 
 
 class CIA:

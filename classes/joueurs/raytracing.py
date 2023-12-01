@@ -1,9 +1,8 @@
 import math
 import pygame
 import variables as VAR
-from bresenham import *
 import time
-from joueur import *
+from classes.joueurs.joueur import *
 
 class CRaytracing: 
     def __init__(self, moteur):

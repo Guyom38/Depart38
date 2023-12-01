@@ -1,6 +1,6 @@
-from joueur import *
-from raytracing import *
-from pathfinding import *
+from classes.joueurs.joueur import *
+from classes.joueurs.raytracing import *
+from classes.joueurs.pathfinding import *
 
 import variables as VAR
 
@@ -19,7 +19,7 @@ class CPersonnages:
         for personnage in self.JOUEURS + self.PNJS:
             personnage.se_deplace() 
             
-            if personnage.action == ENUM_ANIMATION.COURIR:                   
+            if personnage.animation == ENUM_ANIMATION.COURIR:                   
                 personnage.afficher_fumee()
             
         FCT.Performance('JOUEURS.se_deplacent()', t)

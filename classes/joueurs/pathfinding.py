@@ -3,7 +3,7 @@ import fonctions as FCT
 import pygame
 import random
 import time
-import algo_dijkstra as AD
+import classes.joueurs.algo_dijkstra as AD
 from constantes import *
 
 import pickle

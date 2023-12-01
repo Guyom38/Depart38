@@ -4,24 +4,24 @@ import variables as VAR
 from fonctions import *
 import time
 
-from ia import *
-
-
-    
+from classes.joueurs.ia import *
+from classes.joueurs.action import *
+            
 class CJoueur:
     def __init__(self, moteur, index, x, y, nom, is_IA, fonction = -1):
         self.MOTEUR = moteur
-                
+        self.MECANIQUE_ACTION = CAction(self)
+               
         self.index = index
         self.nom = nom
         
         self.x, self.y = x, y + 0.5
         self.direction = ENUM_DIR.AUCUN
         self.en_mouvement = True
-        self.action = ENUM_ANIMATION.ARRETER
         
-        self.fonction = fonction
+        self.animation = ENUM_ANIMATION.MARCHER
         
+        self.fonction = fonction        
         self.offsetX, self.offsetY = -VAR.dimDiv2, -VAR.dimOffY     
         
         if is_IA:
@@ -29,17 +29,17 @@ class CJoueur:
             self.IA = CIA(moteur, self)            
 
             if fonction == 0:
-                self.vitesse = 10
+                self.vitesse = 7
                 self.distance_vision = 200
                 self.image = pygame.image.load(".ressources/32/agent.png").convert_alpha()
                 self.couleur_vision = (193,249,153, VAR.ray_alpha)
             elif fonction == 2:
-                self.vitesse = 5
+                self.vitesse = 4
                 self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/32/basile.png").convert_alpha()
                 self.couleur_vision = (255,255,255, VAR.ray_alpha)
             else:
-                self.vitesse = 5
+                self.vitesse = 4
                 self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/32/chef.png").convert_alpha()
                 self.couleur_vision = (239,231,129, VAR.ray_alpha)
@@ -49,7 +49,7 @@ class CJoueur:
         else:
             self.image = pygame.image.load(".ressources/32/agent2.png").convert_alpha()
             self.IA = None
-            self.vitesse = 20
+            self.vitesse = 10
 
         dimension_image = (56 * VAR.dim, 40 * VAR.dim)
         
@@ -166,6 +166,7 @@ class CJoueur:
             self.tempo += 1
             self.tempoTimer = time.time()
         
+        
         position_x, position_y, nombre_images = 0, 8, 6
         if self.direction == ENUM_DIR.HAUT: position_x = 1
         elif self.direction == ENUM_DIR.BAS: position_x = 3
@@ -174,13 +175,12 @@ class CJoueur:
         else: position_y, nombre_images = 7, 12
         
         if self.en_mouvement:
-            self.action = ENUM_ANIMATION.MARCHER
+            animation = self.animation
         else:
-            self.action = ENUM_ANIMATION.ARRETER
+            animation = ENUM_ANIMATION.ARRETER
             
-        position_y = self.action[0]
-        nombre_images = self.action[1]   
-       
+        position_y = animation[0]
+        nombre_images = animation[1]          
             
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
@@ -207,6 +207,8 @@ class CJoueur:
         # --- affiche nom
         VAR.fenetre.blit(self.image_nom, (xImg, yImg))
         
+        # --- affiche la barre de temps (PROGRESSION)
+        self.MECANIQUE_ACTION.afficher(xImg, yImg)
         
         
     

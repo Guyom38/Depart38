@@ -13,7 +13,7 @@ from terrain import *
 
 from objets import *
 from personnages import *
-from pathfinding import *
+from classes.joueurs.pathfinding import *
 from controlleurs import *
 
 
