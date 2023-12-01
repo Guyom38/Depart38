@@ -112,7 +112,6 @@ class CJoueur:
         if collision:
             if ENUM_DEMO.BLOCAGE in VAR.demo :
                 pygame.draw.rect(VAR.fenetre, (255,0,0), self.mask_rect, 0)  
-                print(("collision", str(collision)))
             return True
         return False
         

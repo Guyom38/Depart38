@@ -14,8 +14,8 @@ class CCourir:
         self.reference_vitesse_du_joueur = self.PERSONNAGE.vitesse
         
         # --- parametres
-        self.endurance = 10
-        self.repos = 10
+        self.endurance = 3
+        self.repos = 5
         
         self.couleur1 = (97, 185, 110)
         self.couleur2 = (57, 112, 164)
@@ -30,6 +30,10 @@ class CCourir:
             self.PERSONNAGE.animation = ENUM_ANIMATION.COURIR
             self.PERSONNAGE.vitesse = self.PERSONNAGE.vitesse * 2
             
+    
+    def cycle(self):
+        pass
+    
             
     def terminer(self):        
         # --- parametrage

@@ -49,6 +49,10 @@ class CAction:
         if not self.etape:
             return
         
+        # --- cycle
+        if not self.ACTION == None:
+            self.ACTION.cycle()
+        
         # --- calcul le temps passé
         if self.etape == ENUM_PROGRESSION_ETAT.SE_DECHARGE:
             position = self.temps - (time.time() - self.timer)

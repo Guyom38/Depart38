@@ -3,6 +3,8 @@ import pygame
 import variables as VAR
 import time
 from classes.joueurs.joueur import *
+from classes.actions.pourchasser import *
+
 
 class CRaytracing: 
     def __init__(self, moteur):
@@ -35,7 +37,8 @@ class CRaytracing:
         liste_joueurs_detectes, forme, rect_forme = self.generation_du_champs_de_vision(plages, personnage)
         
         if len(liste_joueurs_detectes) > 0:
-            couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)
+            couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)            
+            personnage.MECANIQUE_ACTION.demarrer(CPourchasser(personnage, liste_joueurs_detectes[0]))
             
                  
         self.dessiner_vision(forme, couleur_champ_vision, rect_forme)

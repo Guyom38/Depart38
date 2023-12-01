@@ -25,8 +25,7 @@ class CControlleurs:
 
             if event.type == KEYDOWN:        
                 if event.key == K_SPACE:            
-                    action_a_entreprendre = CCourir(self.PERSONNAGES.JOUEURS[0])           
-                    self.PERSONNAGES.JOUEURS[0].MECANIQUE_ACTION.demarrer(action_a_entreprendre)
+                    self.PERSONNAGES.JOUEURS[0].MECANIQUE_ACTION.demarrer(CCourir(self.PERSONNAGES.JOUEURS[0]))
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP] == 1:
@@ -42,9 +41,6 @@ class CControlleurs:
             self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.DROITE
             self.PERSONNAGES.JOUEURS[0].en_mouvement = True
             
-        if keys[pygame.K_SPACE] == 1:
-            VAR.demo = [ENUM_DEMO.BLOCAGE]
-        else:
-            VAR.demo = []
+
 
                 
