@@ -159,11 +159,13 @@ class CJoueur:
             else:
                 self.reflechit()  
 
-    
-    def coordonnees_image_animee(self):
+    def rythme_animation(self):
         if time.time() - self.tempoTimer > 0.1: 
             self.tempo += 1
             self.tempoTimer = time.time()
+                
+    def coordonnees_image_animee(self):
+        self.rythme_animation()
         
         
         position_x, position_y, nombre_images = 0, 8, 6

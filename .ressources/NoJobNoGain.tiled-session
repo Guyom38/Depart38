@@ -48,11 +48,11 @@
             }
         },
         "map24.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 9,
+            "scale": 0.5,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 537.3333333333333,
-                "y": 853.3333333333333
+                "x": 812,
+                "y": 906
             }
         },
         "test.tsx": {

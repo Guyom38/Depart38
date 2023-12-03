@@ -28,32 +28,19 @@ class CAction:
         self.temps = temps
         self.couleur = couleur        
              
-        
-           
     def demarrer(self, action):  
         if not self.etape:
             self.ACTION = action 
             self.ACTION.demarrer()
-             
-           
-        
-    
-    
+                 
     def arreter(self):
         self.ACTION = None
         self.etape = ENUM_PROGRESSION_ETAT.AUCUN
         
-           
-    def afficher(self,x ,y):
-        # --- sort si il n'y a pas de progression dans le temps
-        if not self.etape:
-            return
         
-        # --- cycle
-        if not self.ACTION == None:
-            self.ACTION.cycle()
         
-        # --- calcul le temps passé
+    def calcul_largeur_barre_progression(self):
+         # --- calcul le temps passé
         if self.etape == ENUM_PROGRESSION_ETAT.SE_DECHARGE:
             position = self.temps - (time.time() - self.timer)
             est_arrive_au_bout = (position < 0)
@@ -62,18 +49,34 @@ class CAction:
             position = (time.time() - self.timer)
             est_arrive_au_bout = (position >= self.temps)
             
-            
+        return position, est_arrive_au_bout
+    
+    def traitement(self):
+        # --- cycle de l'action
+        if not self.ACTION == None:
+            self.ACTION.cycle()
+        
+        position, est_arrive_au_bout = self.calcul_largeur_barre_progression()
+        
+        # --- action terminée              
         if est_arrive_au_bout:                        
-            # --- lance la méthode associé
             if not self.ACTION == None:
-                self.ACTION.terminer()
-                
+                self.ACTION.terminer()                
             self.timer = time.time()
-
+            
+        return position
+    
+    
+    def afficher(self,x ,y):
+        # --- sort si il n'y a pas de progression dans le temps
+        if not self.etape:
+            return        
+        
+        position_progressîon = self.traitement()
             
         # --- déduit les valeurs pour le graphisme
         dimx = self.PERSONNAGE.image_nom.get_width()
-        valeurx = int((dimx / self.temps) * position)
+        valeurx = int((dimx / self.temps) * position_progressîon)
         y -= self.hauteur_cadre
         
         # --- dessine fond du cadre   

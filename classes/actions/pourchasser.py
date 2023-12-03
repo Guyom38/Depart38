@@ -54,7 +54,9 @@ class CPourchasser:
         self.PERSONNAGE.animation = ENUM_ANIMATION.MARCHER
         self.PERSONNAGE.vitesse = self.reference_vitesse_du_joueur
         
-        x, y = self.reference_position
-        self.PERSONNAGE.IA.calculer_le_chemin_jusqua((x, y))  
+        # --- retourne a la position ou le pnj était
+        if not self.reference_position == None:
+            x, y = self.reference_position
+            self.PERSONNAGE.IA.calculer_le_chemin_jusqua((x, y))  
         
         #self.chemin_pathfinding = []
