@@ -19,10 +19,10 @@ class CObjet:
         self.image = liste_images
         self.image_mask = image_mask
         
-        if liste_images[0].get_height() > VAR.dim:
-            self.offsetY = self.offsetY - (liste_images[0].get_height() - VAR.dim)
+        #if self.image[0].get_height() > VAR.dim:
+        #    self.offsetY = self.offsetY - (self.image[0].get_height() - VAR.dim)
         
-        self.rect = liste_images[0].get_rect()
+        self.rect = self.image[0].get_rect()
              
     def position_ecran_x(self):
         return int(round((self.x * VAR.dim) + self.offsetX,0))
@@ -35,7 +35,7 @@ class CObjet:
         return int(round((self.y * VAR.dim), 0))
     
     def rythme_animation(self):
-        if time.time() - self.tempoTimer > 0.1: 
+        if time.time() - self.tempoTimer > 0.5: 
             self.tempo += 1
             self.tempoTimer = time.time()
             
@@ -43,11 +43,11 @@ class CObjet:
         self.rythme_animation() 
  
         if fenetre == None:
-
-            index = ((self.tempo + self.tempoRnd) % len(self.image)) 
-            if len(self.image) > 1:
-                print(index)          
-            VAR.fenetre.blit(self.image[index], (self.position_ecran_x(), self.position_ecran_y()))
+            if len(self.image) < 11:
+                index = ((self.tempo + self.tempoRnd) % len(self.image)) 
+                VAR.fenetre.blit(self.image[index], (self.position_ecran_x(), self.position_ecran_y()))
+            
+        
         else:            
             image_a_utlisee = self.image[0] if self.image_mask == None else self.image_mask
             fenetre.blit(image_a_utlisee, (self.position_ecran_x(), self.position_ecran_y()))

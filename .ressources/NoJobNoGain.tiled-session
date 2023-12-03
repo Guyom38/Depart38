@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map24.tmx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
         "32",
         "."
@@ -41,10 +41,10 @@
         },
         "map.tmx": {
             "scale": 0.75,
-            "selectedLayer": 11,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 372.66666666666663,
-                "y": 544
+                "x": 370.66666666666663,
+                "y": 541.3333333333334
             }
         },
         "map24.tmx": {
@@ -66,7 +66,8 @@
     "map.width": 60,
     "openFiles": [
         "map-vide.tmx",
-        "map24.tmx"
+        "map24.tmx",
+        "map.tmx"
     ],
     "project": "NoJobNoGain.tiled-project",
     "recentFiles": [

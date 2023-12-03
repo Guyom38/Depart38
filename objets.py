@@ -1,7 +1,7 @@
 import variables as VAR
 import objet as OBJ
 import pygame
-import time
+import time, os
 
 from constantes import *
 import fonctions as FCT
@@ -13,16 +13,16 @@ import fonctions as FCT
 #   - obstacle ou traversable
 #   - Animation
 
-OBJ_EXTINCTEUR =  ((C_INTERIOR, 5213), (1, 2), C_OBSTACLE, None)
-OBJ_ARB1x2_GRIS = ((C_INTERIOR, 9713), (1, 3), C_TRAVERSABLE, None)
-OBJ_ARB1x3_GRIS = ((C_INTERIOR, 9714), (1, 3), C_TRAVERSABLE, None)
-OBJ_ARB2x3_GRIS = ((C_INTERIOR, 9715), (2, 3), C_TRAVERSABLE, None)
-OBJ_ARB1x3_GRIS2 = ((C_MODERN, 150), (1, 3), C_TRAVERSABLE, None)
-OBJ_CHAISE_DEV =  ((C_MODERN, 177), (1, 2), C_OBSTACLE, None)
-OBJ_CHAISE_DER =  ((C_MODERN, 179), (1, 2), C_OBSTACLE, None)
+OBJ_EXTINCTEUR =  ((C_INTERIOR, 5197), (1, 2), C_OBSTACLE, None)
+OBJ_ARB1x2_GRIS = ((C_INTERIOR, 9697), (1, 3), C_TRAVERSABLE, None)
+OBJ_ARB1x3_GRIS = ((C_INTERIOR, 9682), (1, 3), C_TRAVERSABLE, None)
+OBJ_ARB2x3_GRIS = ((C_INTERIOR, 9683), (2, 3), C_TRAVERSABLE, None)
+OBJ_ARB1x3_GRIS2 = ((C_MODERN, 118), (1, 3), C_TRAVERSABLE, None)
+OBJ_CHAISE_DEV =  ((C_MODERN, 161), (1, 2), C_OBSTACLE, None)
+OBJ_CHAISE_DER =  ((C_MODERN, 163), (1, 2), C_OBSTACLE, None)
 
-OBJ_BAIE_INFORMATIQUE = ((C_INTERIOR, 8441), (1, 3), C_OBSTACLE, True)
-OBJ_4x4_MONITEURS = ((C_INTERIOR, 8404), (4, 3), C_TRAVERSABLE, True)
+OBJ_BAIE_INFORMATIQUE = ((C_INTERIOR, 8409), (1, 3), C_OBSTACLE, True)
+OBJ_4x4_MONITEURS = ((C_INTERIOR, 8372), (4, 3), C_TRAVERSABLE, True)
 
 OBJ_TRACE1 = ((0, 17106), (1, 1), C_TRAVERSABLE, None)
 OBJ_TRACE2 = ((0, 17105), (1, 1), C_TRAVERSABLE, None)
@@ -38,7 +38,12 @@ for objet in objets:
     index = index_offset_plaquette + index_sur_plaquette
     DICO_OBJETS_PARTICULIERS[index] = objet
 
+# Création d'une liste d'images indésirables (car déjà affichées avec un objet plus grand)
 LISTE_IMAGES_IGNOREES = []
+
+
+
+
 
 
 class CObjets:        
@@ -46,8 +51,12 @@ class CObjets:
         self.MOTEUR = moteur
         self.liste = {}  
         
+  
     
-        
+    
+    
+    
+       
     def traitement_objet(self, index, x, y, couche, force = False):
         objet = None  
               
@@ -57,7 +66,7 @@ class CObjets:
             objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, image_mask, etat)  
                       
         if not objet == None:
-            key = "{:04d}{:04d}{:01d}".format((y * VAR.dim) + VAR.dim, x * VAR.dim, couche)
+            key = "{:04d}{:04d}{:01d}".format((y * VAR.dim) + image[0].get_height(), x * VAR.dim, couche)
             self.liste[key] = objet 
             
         return objet
@@ -87,16 +96,17 @@ class CObjets:
     
             
     def afficher(self):  
-        t = time.time() 
-        
+        t, i = time.time(), 0
+
+        # --- tri les listes
         liste_objets_tries = self.fusionne_les_listes_objets_et_personnages()
         
         # --- affiche chaque objets
-        FCT.Performance('OBJETS.afficher( - creation liste)', t)  
-        i = 0      
+        FCT.Performance('OBJETS.afficher( - creation liste)', t)             
         for key, objet in liste_objets_tries:   
-            objet.afficher()
-                      
+            objet.afficher()    
+            
+            # // --- test                  
             i = self.afficher_test_priorite(i, key, objet)            
         FCT.Performance('OBJETS.afficher()', t)
         

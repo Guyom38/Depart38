@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = [ENUM_DEMO.DIJISKRA, ENUM_DEMO.CHEMIN_VINCENT]
+demo = []
 
 
 resolution_x = 1920

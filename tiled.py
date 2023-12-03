@@ -18,7 +18,8 @@ class map_tiled:
         
         self.planche = pygame.Surface((VAR.resolution_x, VAR.resolution_y))
         self.bloquage = pygame.Surface((VAR.resolution_x, VAR.resolution_y)).convert_alpha()
-        
+    
+    def initialiser(self):
         # --- Charge les fichiers contenant les images du jeu
         self.etape1_chargement_des_fichiers_images()    
         # --- Cree le terrain pour connaitre les sprites a recuperer
@@ -72,27 +73,31 @@ class map_tiled:
                     for index in ligne.split(','):   
                         
                         if not index == "":
-                            index = int(index)           
-                            if not index in VAR.images:
+                            index = int(index)     
+                            image_jamais_stockee = ( not index in VAR.images )   
+                            image_pas_ignoree = ( not index in LISTE_IMAGES_IGNOREES )
+                            if not image_pas_ignoree:
+                                print ("Image ignorée #" + str(index))
+                                
+                            if image_jamais_stockee and image_pas_ignoree:
                                 VAR.images[index] = self.recupere_liste_images_de_l_objet(index)
                               
     
-    
-    
-    
-            
-            
     def recupere_liste_images_de_l_objet(self, index):
+        fichiers_image = self.fichiers_image
         liste_images = []
-        for debut, nombre, colonnes, image_plaquette, image_mask in self.fichiers_image:
+        
+        for debut, nombre, colonnes, image_plaquette, image_mask in fichiers_image:
             etat = C_AUCUN
             
             if debut <= index < debut+nombre:
                 largX = 1
-                   
+                
+                # --- determine position de l'image sur la plaquette PNG   
                 indexN = index - debut
                 y = (indexN // colonnes)
-                x = (indexN % colonnes)   
+                x = (indexN % colonnes) 
+                  
                 dimXSrc, dimYSrc = VAR.dimOrigine, VAR.dimOrigine
                 dimXDst, dimYDst = VAR.dim, VAR.dim                    
                     
@@ -106,8 +111,7 @@ class map_tiled:
                     est_ce_une_animation = parametres[3]                    
                   
                         
-                    if largX > 1 or hautY > 1:
-                        y -= (hautY - 1)                        
+                    if largX > 1 or hautY > 1:                                             
                         dimXSrc = (largX * VAR.dimOrigine) # 32
                         dimYSrc = (hautY * VAR.dimOrigine) 
                         
@@ -117,8 +121,10 @@ class map_tiled:
                         # --- ajout en images ignorées les images qui composent l'objet
                         for y_ign in range(0, hautY):
                             for x_ign in range(0, largX):
-                                if not (x_ign == x and y_ign == y):
-                                    LISTE_IMAGES_IGNOREES.append( (y_ign * colonnes) + x_ign)
+                                xx = x + x_ign
+                                yy = y + y_ign
+                                if not (xx == x and yy == y):
+                                    LISTE_IMAGES_IGNOREES.append( (yy * colonnes) + xx)
                                 
                     fichier_animation = '.ressources/32/animations/' + str(index_sur_plaquette) + '.png'
                     existe_t_il_un_fichier_animation = os.path.exists(fichier_animation)
@@ -129,9 +135,16 @@ class map_tiled:
                     image_animation = pygame.image.load(fichier_animation).convert_alpha()
                     nombre_images = (image_animation.get_width() // dimXSrc)
                     for i in range(0, nombre_images) :
-                        image = image_animation.subsurface( (i * VAR.dimOrigine, 0, dimXSrc, dimYSrc))
+                        image = image_animation.subsurface( (i * dimXSrc, 0, dimXSrc, dimYSrc))
                         imageDim = pygame.transform.smoothscale(image, (dimXDst, dimYDst))
                         liste_images.append(imageDim)
+                        
+                        print(str((i * dimXSrc, 0, dimXSrc, dimYSrc)))
+                        VAR.fenetre.fill((16,16,16))    
+                        pygame.draw.rect(VAR.fenetre, (128,128,128), (0,0,dimXDst, dimYDst), 0)
+                        VAR.fenetre.blit(liste_images[i], (0,0))
+                        pygame.display.update()
+                        time.sleep(2)
                         
                 # --- traitement, si objet banal
                 else:
@@ -147,7 +160,12 @@ class map_tiled:
                     
                 return (liste_images, imageDim_mask, etat)
         
-        return "index introuvable"
+        return "index introuvable" 
+    
+    
+            
+            
+   
 
         
   

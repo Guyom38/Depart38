@@ -15,9 +15,9 @@ class CTerrain:
         VAR.dimension_x = int(self.MOTEUR_TILED.root.attrib['width'].replace("'","")  )
         VAR.dimension_y = int(self.MOTEUR_TILED.root.attrib['height'].replace("'","")  )
         
-        self.preparer_terrain()     
-            
-    def preparer_terrain(self):    
+
+    def preparer_terrain(self):  
+        self.MOTEUR_TILED.initialiser()  
         self.png_blocage = self.MOTEUR_TILED.generer_png_blocage()               
         self.planche = self.MOTEUR_TILED.generer_map()   
         

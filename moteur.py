@@ -85,6 +85,7 @@ class CMoteur:
         
         self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
         self.TERRAIN = CTerrain(self) 
+        self.TERRAIN.preparer_terrain()     
         self.TERRAIN.initialisation_joueurs()                
         
         self.PERSONNAGES.PATHFINDING.generer_matrice_obstacles(self.TERRAIN.arrayBlocage)        
