@@ -29,17 +29,7 @@ OBJ_TRACE2 = ((0, 17105), (1, 1), C_TRAVERSABLE, None)
 
 # Liste de tous les objets
 objets = [OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
-          OBJ_BAIE_INFORMATIQUE] #, OBJ_TRACE1, OBJ_TRACE2]
-
-# Création du dictionnaire avec une boucle for
-DICO_OBJETS_PARTICULIERS = {}
-for objet in objets:
-    index_offset_plaquette, index_sur_plaquette = objet[0]
-    index = index_offset_plaquette + index_sur_plaquette
-    DICO_OBJETS_PARTICULIERS[index] = objet
-
-# Création d'une liste d'images indésirables (car déjà affichées avec un objet plus grand)
-LISTE_IMAGES_IGNOREES = []
+          OBJ_4x4_MONITEURS, OBJ_BAIE_INFORMATIQUE] #, OBJ_TRACE1, OBJ_TRACE2]
 
 
 
@@ -51,7 +41,10 @@ class CObjets:
         self.MOTEUR = moteur
         self.liste = {}  
         
-  
+        for objet in objets:
+            index_offset_plaquette, index_sur_plaquette = objet[0]
+            index = index_offset_plaquette + index_sur_plaquette
+            VAR.DICO_OBJETS_PARTICULIERS[index] = objet
     
     
     
@@ -61,12 +54,12 @@ class CObjets:
         objet = None  
               
         image, image_mask, etat = VAR.images[index]          
-        if (index in DICO_OBJETS_PARTICULIERS) or force:  
+        if (index in VAR.DICO_OBJETS_PARTICULIERS) or force:  
             if force: etat = C_OBSTACLE                                     
             objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, image_mask, etat)  
                       
         if not objet == None:
-            key = "{:04d}{:04d}{:01d}".format((y * VAR.dim) + image[0].get_height(), x * VAR.dim, couche)
+            key = "{:04d}{:04d}{:01d}".format((y * VAR.dim) + image[0].get_height(), (x * VAR.dim) + image[0].get_width(), couche)
             self.liste[key] = objet 
             
         return objet
@@ -114,7 +107,7 @@ class CObjets:
     
     
     def afficher_test_priorite(self, i, key, objet):
-        if 2 < objet.x < 10 and 10 < objet.y < 16:
+        if 2 < objet.x < 15 and 10 < objet.y < 16:
             nombre1 = int(key[0:4])  # Convertit "0123" en entier
             nombre2 = int(key[4:8])  # Convertit "4567" en entier
             nombre3 = int(key[8])    # Convertit "0" en entier

@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = []
+demo = [ENUM_DEMO.BLOCAGE]
 
 
 resolution_x = 1920
@@ -42,3 +42,7 @@ precision_champs = 10
 
 
 boucle = True
+
+FICHIERS_IMAGES_DECORS = []
+LISTE_IMAGES_IGNOREES = []
+DICO_OBJETS_PARTICULIERS = {}

@@ -39,15 +39,10 @@ class CObjet:
             self.tempo += 1
             self.tempoTimer = time.time()
             
-    def afficher(self, fenetre = None):
+    def afficher(self):
         self.rythme_animation() 
- 
-        if fenetre == None:
-            if len(self.image) < 11:
-                index = ((self.tempo + self.tempoRnd) % len(self.image)) 
-                VAR.fenetre.blit(self.image[index], (self.position_ecran_x(), self.position_ecran_y()))
+
+        index = ((self.tempo + self.tempoRnd) % len(self.image)) 
+        VAR.fenetre.blit(self.image[index], (self.position_ecran_x(), self.position_ecran_y()))
             
         
-        else:            
-            image_a_utlisee = self.image[0] if self.image_mask == None else self.image_mask
-            fenetre.blit(image_a_utlisee, (self.position_ecran_x(), self.position_ecran_y()))

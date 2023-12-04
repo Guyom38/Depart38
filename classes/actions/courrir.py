@@ -14,8 +14,8 @@ class CCourir:
         self.reference_vitesse_du_joueur = self.PERSONNAGE.vitesse
         
         # --- parametres
-        self.endurance = 3
-        self.repos = 5
+        self.endurance = 6
+        self.repos = 4
         
         self.couleur1 = (97, 185, 110)
         self.couleur2 = (57, 112, 164)
