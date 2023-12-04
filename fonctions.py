@@ -52,3 +52,4 @@ def collision(objet1, objet2):
     
 def existe_fichier(chemin):
     return (os.path.isfile(chemin))
+

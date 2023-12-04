@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = []
+demo = [ENUM_DEMO.BLOCAGE]
 
 
 resolution_x = 1920
@@ -46,3 +46,11 @@ boucle = True
 FICHIERS_IMAGES_DECORS = []
 LISTE_IMAGES_IGNOREES = []
 DICO_OBJETS_PARTICULIERS = {}
+
+
+cellule_image = pygame.Surface((dim, dim)) # 32 pixel => 20
+cellule_mask = pygame.mask.from_surface(cellule_image)
+cellule_rect = cellule_mask.get_rect(center = (0,0))
+
+
+image_zone = [[], []]

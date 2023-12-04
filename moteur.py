@@ -96,9 +96,7 @@ class CMoteur:
     
             
         self.CONTROLLEURS = CControlleurs(self)
-    
-
-
+            
     def afficher_parcours_vincent(self):
         for y in range(0, VAR.dimension_y):
                 for x in range(0, VAR.dimension_x):
@@ -122,11 +120,14 @@ class CMoteur:
             image_texte = VAR.ecriture.render( vv , True, valeur[4])
             VAR.fenetre.blit(image_texte, ((600 * x)+300, (y * 18)-2))   
             
-                            
+    
+
+                                            
     def demarrer(self):       
         VAR.boucle = True
         while VAR.boucle:
             t = time.time()
+             
             self.CONTROLLEURS.clavier()   
                 
             self.TERRAIN.afficher()            
@@ -139,7 +140,7 @@ class CMoteur:
             self.ELEMENTS_VISUELS.afficher()   
 
             #self.afficher_performances()
-                
+  
             # --- afficher le résultat
             pygame.display.update()
             FCT.Performance('MOTEUR.boucle()', t, (255,255,255))

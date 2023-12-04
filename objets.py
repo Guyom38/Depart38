@@ -91,7 +91,12 @@ class CObjets:
     
     
     
-            
+    def controle_proximites(self):
+        t, i = time.time(), 0
+        for key, objet in liste_objets_tries:   
+            if objet.objet_utilisable:
+                objet.afficher_zone_selection()
+        FCT.Performance('OBJETS.afficher()', t)        
     def afficher(self):  
         t, i = time.time(), 0
 
@@ -99,7 +104,9 @@ class CObjets:
         liste_objets_tries = self.fusionne_les_listes_objets_et_personnages()
         
         # --- affiche chaque objets
-        FCT.Performance('OBJETS.afficher( - creation liste)', t)             
+        FCT.Performance('OBJETS.afficher( - creation liste)', t)  
+        
+                       
         for key, objet in liste_objets_tries:   
             objet.afficher()    
             
