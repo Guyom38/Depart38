@@ -13,22 +13,20 @@ import fonctions as FCT
 #   - obstacle ou traversable
 #   - Animation
 
-OBJ_EXTINCTEUR =  ((C_INTERIOR, 5197), (1, 2), C_OBSTACLE, None)
-OBJ_ARB1x2_GRIS = ((C_INTERIOR, 9697), (1, 3), C_TRAVERSABLE, None)
-OBJ_ARB1x3_GRIS = ((C_INTERIOR, 9682), (1, 3), C_TRAVERSABLE, None)
-OBJ_ARB2x3_GRIS = ((C_INTERIOR, 9683), (2, 3), C_TRAVERSABLE, None)
-OBJ_ARB1x3_GRIS2 = ((C_MODERN, 118), (1, 3), C_TRAVERSABLE, None)
-OBJ_CHAISE_DEV =  ((C_MODERN, 161), (1, 2), C_OBSTACLE, None)
-OBJ_CHAISE_DER =  ((C_MODERN, 163), (1, 2), C_OBSTACLE, None)
+OBJ_EXTINCTEUR =  ((C_INTERIOR, 5197), (1, 2), C_OBSTACLE, None, True)
+OBJ_ARB1x2_GRIS = ((C_INTERIOR, 9697), (1, 3), C_TRAVERSABLE, None, False)
+OBJ_ARB1x3_GRIS = ((C_INTERIOR, 9682), (1, 3), C_TRAVERSABLE, None, False)
+OBJ_ARB2x3_GRIS = ((C_INTERIOR, 9683), (2, 3), C_TRAVERSABLE, None, False)
+OBJ_ARB1x3_GRIS2 = ((C_MODERN, 118), (1, 3), C_TRAVERSABLE, None, False)
+OBJ_CHAISE_DEV =  ((C_MODERN, 161), (1, 2), C_OBSTACLE, None, False)
+OBJ_CHAISE_DER =  ((C_MODERN, 163), (1, 2), C_OBSTACLE, None, False)
 
-OBJ_BAIE_INFORMATIQUE = ((C_INTERIOR, 8409), (1, 3), C_OBSTACLE, True)
-OBJ_4x4_MONITEURS = ((C_INTERIOR, 8372), (4, 3), C_TRAVERSABLE, True)
-
-OBJ_TRACE1 = ((0, 17106), (1, 1), C_TRAVERSABLE, None)
-OBJ_TRACE2 = ((0, 17105), (1, 1), C_TRAVERSABLE, None)
+OBJ_BAIE_INFORMATIQUE = ((C_INTERIOR, 8409), (1, 3), C_OBSTACLE, True, False)
+OBJ_4x4_MONITEURS = ((C_INTERIOR, 8372), (4, 3), C_TRAVERSABLE, True, False)
 
 # Liste de tous les objets
-objets = [OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
+objets = [OBJ_EXTINCTEUR,
+          OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
           OBJ_4x4_MONITEURS, OBJ_BAIE_INFORMATIQUE] #, OBJ_TRACE1, OBJ_TRACE2]
 
 
@@ -52,11 +50,17 @@ class CObjets:
        
     def traitement_objet(self, index, x, y, couche, force = False):
         objet = None  
+        parametres_objet = None
               
-        image, image_mask, etat = VAR.images[index]          
-        if (index in VAR.DICO_OBJETS_PARTICULIERS) or force:  
+        image, image_mask, etat = VAR.images[index]    
+        objet_particulier = (index in VAR.DICO_OBJETS_PARTICULIERS) 
+        
+        if objet_particulier or force:
+            if objet_particulier:
+                parametres_objet = VAR.DICO_OBJETS_PARTICULIERS[index]
+              
             if force: etat = C_OBSTACLE                                     
-            objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, image_mask, etat)  
+            objet = OBJ.CObjet(self.MOTEUR, index, x, y, 0, 0, image, image_mask, etat, parametres_objet)  
                       
         if not objet == None:
             key = "{:04d}{:04d}{:01d}".format((y * VAR.dim) + image[0].get_height(), (x * VAR.dim) + image[0].get_width(), couche)

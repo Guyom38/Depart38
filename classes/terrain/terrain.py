@@ -31,7 +31,7 @@ class CTerrain:
         couleur_obstacle = (0, 0, 0, 255)
         couleur_libre = (0, 0, 0, 0)
         fichier = '.caches/' + VAR.fichier_map + '_' + str(VAR.dim) + '.mask.png'
-        if not FCT.existe_fichier(fichier):
+        if not FCT.existe_fichier(fichier) or ENUM_DEMO.BLOCAGE in VAR.demo:
             for y in range(0, self.png_blocage.get_height()):
                 for x in range(0, self.png_blocage.get_width()):
                     couleur = self.png_blocage.get_at((x, y))

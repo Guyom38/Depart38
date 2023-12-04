@@ -52,16 +52,13 @@ class map_tiled:
                             if index > 0:
                                 objet = None
                                 
-                                if not layer.attrib['name'] == "Bloqué":
-                                    if not index in VAR.LISTE_IMAGES_IGNOREES:                                       
-                                        if layer.attrib['name'] in ("Sol"):
-                                            self.creation_couche_primaire(index, x, y)
-                                        else:
-                                            objet = self.analyse_couches_decors(c, layer, index, x, y, ("Decors", "Derriere_Meuble", "Devant_Meuble", "Ordinateur", "Mur"))
-                                            
-                                else:      
-                                    self.creation_couches_collision(index, x, y)
-                                            
+
+                                if not index in VAR.LISTE_IMAGES_IGNOREES:                                       
+                                    if layer.attrib['name'] in ("Sol"):
+                                        self.creation_couche_primaire(index, x, y)
+                                    else:
+                                        objet = self.analyse_couches_decors(c, layer, index, x, y, ("Decors", "Derriere_Meuble", "Devant_Meuble", "Ordinateur", "Mur"))
+    
                                 if (not objet == None and objet.etat == C_OBSTACLE):
                                     self.ajouter_objet_a_la_couches_collision(objet)
                         x += 1                             
@@ -85,16 +82,11 @@ class map_tiled:
     def analyse_couches_decors(self, c, layer, index, x, y, liste_couches_obstacles):                          
         considere_obstacle = (layer.attrib['name'] in liste_couches_obstacles)
         objet = self.MOTEUR.ELEMENTS_VISUELS.traitement_objet(index, x, y, c, considere_obstacle)           
-        return objet
-    
-    def creation_couches_collision(self, index, x, y):
-        image, image_mask, traversable = VAR.images[index] 
-        image_a_utilisee = image if image_mask == None else image_mask                                   
-        self.bloquage.blit(image_a_utilisee, (x * VAR.dim, y * VAR.dim))   
+        return objet   
                                                
     def ajouter_objet_a_la_couches_collision(self, objet):
         image_a_utlisee = objet.image[0] if objet.image_mask == None else objet.image_mask
-        self.bloquage.blit(image_a_utlisee, (objet.position_ecran_x(), objet.position_ecran_y()))
+        self.bloquage.blit(image_a_utlisee, (objet.position_pixel_x(), objet.position_pixel_y()))
                                             
 
         
