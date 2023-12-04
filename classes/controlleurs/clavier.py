@@ -9,13 +9,13 @@ from fonctions import *
 from constantes import *
 from classes.actions.courrir import *
 
-
-class CControlleurs:
+class CClavier:
     def __init__(self, moteur):
         self.MOTEUR = moteur
         self.PERSONNAGES = self.MOTEUR.PERSONNAGES
 
-    def clavier(self):
+        
+    def gestion_clavier(self):
         self.PERSONNAGES.JOUEURS[0].en_mouvement = False
         # --- récupére l'ensemble des évènements
         for event in pygame.event.get():        
@@ -40,7 +40,3 @@ class CControlleurs:
         elif keys[pygame.K_RIGHT] == 1:
             self.PERSONNAGES.JOUEURS[0].direction = ENUM_DIR.DROITE
             self.PERSONNAGES.JOUEURS[0].en_mouvement = True
-            
-
-
-                

@@ -2,13 +2,13 @@ import time, random
 import pygame
 
 import variables as VAR
-
+import fonctions as FCT
 
 
 class CObjet:
     def __init__(self, moteur, index, x, y, offX, offY, liste_images, image_mask, etat, parametres_objet):
         self.MOTEUR = moteur
-        
+          
         self.index = index
         self.x, self.y = x, y
         self.offsetX, self.offsetY = offX, offY
@@ -36,34 +36,40 @@ class CObjet:
         return int(round((self.y * VAR.dim), 0))
     
     def rythme_animation(self):
-        if time.time() - self.tempoTimer > 0.5: 
+        if time.time() - self.tempoTimer > 0.05: 
             self.tempo += 1
             self.tempoTimer = time.time()
     
-    def afficher_zone_selection(self, x, y):
-        i = 0
-        for xo, yo in [(0, VAR.dim), (-VAR.dim, 0), (VAR.dim, 0), (0, -VAR.dim)]:
-            pas_collision = (self.collision_avec_decors(x + xo , y + yo) == None)
-            if pas_collision :                
-                pygame.draw.rect(VAR.fenetre, (0, 255, 0), (x + xo, y + yo, VAR.dim, VAR.dim), 0)
-                i += 1
-                
-        if i > 0:
-            pygame.draw.rect(VAR.fenetre, (0, 255, 0), (x, y, VAR.dim, VAR.dim), 0)
-            
-            
+    def generer_ombre_selection(self, rayon):
+        ombre = pygame.Surface((rayon,rayon), pygame.SRCALPHA).convert_alpha()        
+        dim2 = rayon // 2
+        pygame.draw.circle(ombre, (255,255,0, 100), (dim2, dim2), dim2)
+        return ombre
     
-    
+    def afficher_zone_selection(self):
+        objet_x = self.position_pixel_x()
+        objet_y = self.position_pixel_y() + self.image[0].get_height()     
+        
+        joueurs_contact = self.ya_t_il_contact_avec_des_joueurs(objet_x, objet_y) 
+        if  len(joueurs_contact) > 0:
+            rayon = 1 + (self.tempo % (VAR.dimDiv2)) * 4
+            image_ombre = self.generer_ombre_selection(rayon)
+            centre = (VAR.dim - image_ombre.get_width()) // 2            
+             
+            VAR.fenetre.blit(image_ombre, (objet_x + centre, objet_y + centre - VAR.dim))
+       
 
-    def collision_avec_decors(self): 
-        x, y = self.position_pixel_x(), self.position_pixel_y() + self.image[0].get_height() - VAR.dim        
-        VAR.cellule_rect.center = x+VAR.dimDiv2, y+VAR.dimDiv2        
-            
-        offset_x = 0 - VAR.cellule_rect.left 
-        offset_y = 0 - VAR.cellule_rect.top 
-         
-        collision = VAR.cellule_mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (offset_x, offset_y ))        
-        return collision
+    def ya_t_il_contact_avec_des_joueurs(self, objet_x, objet_y): 
+        contacts_joueurs = []
+        for xo, yo in [(0, VAR.dim), (-VAR.dim, 0), (VAR.dim, 0), (0, -VAR.dim)]:
+            for joueur in self.MOTEUR.PERSONNAGES.JOUEURS:                
+             
+                offset_x = objet_x + xo - joueur.mask_rect.left 
+                offset_y = objet_y + yo - joueur.mask_rect.top 
+                
+                if not ( VAR.cellule_mask.overlap(joueur.mask, (offset_x, offset_y )) == None):      
+                    contacts_joueurs.append(joueur)          
+        return contacts_joueurs
     
                
     def afficher(self):

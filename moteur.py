@@ -14,7 +14,7 @@ from classes.terrain.terrain import *
 from objets import *
 from personnages import *
 from classes.joueurs.pathfinding import *
-from controlleurs import *
+from classes.controlleurs.controlleurs import *
 
 
 class CMoteur:
@@ -128,10 +128,13 @@ class CMoteur:
         while VAR.boucle:
             t = time.time()
              
-            self.CONTROLLEURS.clavier()   
-                
+            self.CONTROLLEURS.gestion_des_commandes_utilisateurs() 
+            self.PERSONNAGES.se_deplacent()     
+            
             self.TERRAIN.afficher()            
-            self.PERSONNAGES.se_deplacent()       
+            self.ELEMENTS_VISUELS.controle_proximites()
+            
+            self.ELEMENTS_VISUELS.prepare_et_tri_les_objets_a_afficher()    
             
             if ENUM_DEMO.CHEMIN_VINCENT in VAR.demo:
                 self.afficher_parcours_vincent()  

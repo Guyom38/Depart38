@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = [ENUM_DEMO.BLOCAGE]
+demo = []
 
 
 resolution_x = 1920
@@ -52,5 +52,8 @@ cellule_image = pygame.Surface((dim, dim)) # 32 pixel => 20
 cellule_mask = pygame.mask.from_surface(cellule_image)
 cellule_rect = cellule_mask.get_rect(center = (0,0))
 
+cellule_image2 = pygame.Surface((dim, dim)) # 32 pixel => 20
+cellule_mask2 = pygame.mask.from_surface(cellule_image2)
+cellule_rect2 = cellule_mask2.get_rect(center = (0,0))
 
 image_zone = [[], []]

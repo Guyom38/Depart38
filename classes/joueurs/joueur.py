@@ -11,9 +11,13 @@ class CJoueur:
     def __init__(self, moteur, index, x, y, nom, is_IA, fonction = -1):
         self.MOTEUR = moteur
         self.MECANIQUE_ACTION = CAction(self)
-               
+        
+        self.MECANIQUE_OBJET = CAction(self) 
+        self.pression_bouton_activer_objet = False
+             
         self.index = index
         self.nom = nom
+        
         
         self.x, self.y = x, y + 0.5
         self.direction = ENUM_DIR.AUCUN
@@ -64,7 +68,7 @@ class CJoueur:
         self.timer_particules = time.time()        
         
         # --- Gestion du mask pour les collisions
-        self.image_mask = pygame.Surface((VAR.dimMask, 2)) # 32 pixel => 20
+        self.image_mask = pygame.Surface((VAR.dimMask, 4)) # 32 pixel => 20
         self.mask = pygame.mask.from_surface(self.image_mask)
         self.mask_rect = self.image_mask.get_rect(center = (0,0))
 

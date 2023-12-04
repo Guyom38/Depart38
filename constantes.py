@@ -44,3 +44,13 @@ class ENUM_ANIMATION:
     BOUQUINER = (7, 6)
     COURIR = (8, 6)
     TOUCHER = (19, 6)
+    
+class CBouton:
+    B_X = 0
+    B_A = 1
+    B_B = 2
+    B_Y = 3
+    B_L = 4
+    B_R = 5
+    B_START = 9
+    B_SELECT = 8

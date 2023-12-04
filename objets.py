@@ -38,6 +38,7 @@ class CObjets:
     def __init__(self, moteur):
         self.MOTEUR = moteur
         self.liste = {}  
+        self.liste_objets_tries = []
         
         for objet in objets:
             index_offset_plaquette, index_sur_plaquette = objet[0]
@@ -71,7 +72,8 @@ class CObjets:
     
    
     
-    def fusionne_les_listes_objets_et_personnages(self):
+    def prepare_et_tri_les_objets_a_afficher(self):
+        t = time.time()
         # --- genere une liste de joueurs et de pnjs
         liste_personnages = {}
         for personnage in self.MOTEUR.PERSONNAGES.JOUEURS + self.MOTEUR.PERSONNAGES.PNJS:
@@ -84,30 +86,27 @@ class CObjets:
         if not ENUM_DEMO.BLOCAGE in VAR.demo:    
             listes_fusionnees = {**self.liste, **liste_personnages}        
         else:
-            listes_fusionnees = liste_personnages            
-        liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
-        return liste_objets_tries
+            listes_fusionnees = liste_personnages     
+                   
+        self.liste_objets_tries = sorted( listes_fusionnees.items(), key=lambda x: x[0])
+        FCT.Performance('OBJETS.prepare_et_tri_les_objets_a_afficher()', t)  
+     
     
     
-    
-    
+        
+        
     def controle_proximites(self):
-        t, i = time.time(), 0
-        for key, objet in liste_objets_tries:   
-            if objet.objet_utilisable:
-                objet.afficher_zone_selection()
-        FCT.Performance('OBJETS.afficher()', t)        
+        t = time.time()
+        for key, objet in self.liste_objets_tries:   
+            if isinstance(objet, OBJ.CObjet):
+                if objet.objet_utilisable:
+                    objet.afficher_zone_selection()
+        FCT.Performance('OBJETS.controle_proximites()', t)  
+              
     def afficher(self):  
-        t, i = time.time(), 0
-
-        # --- tri les listes
-        liste_objets_tries = self.fusionne_les_listes_objets_et_personnages()
-        
-        # --- affiche chaque objets
-        FCT.Performance('OBJETS.afficher( - creation liste)', t)  
-        
+        t, i = time.time(), 0        
                        
-        for key, objet in liste_objets_tries:   
+        for key, objet in self.liste_objets_tries:   
             objet.afficher()    
             
             # // --- test                  
@@ -128,6 +127,6 @@ class CObjets:
                 
             txt = key1 + " (" + str(objet.index) +") " + str(key2)
             image_texte = VAR.ecriture.render( txt , True, (255,0,0))
-            VAR.fenetre.blit(image_texte, (1400, (i * 18)))
+            VAR.fenetre.blit(image_texte, (1600, (i * 18)))
             i+=1
         return i

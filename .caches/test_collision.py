@@ -12,7 +12,7 @@ pygame.display.set_caption("Mon prog Pygame")
 # --- création d'un horloge pour limiter le raffraichissement
 horloge = pygame.time.Clock()
 
-obstacle_surf = pygame.image.load("map.mask.png").convert_alpha()
+obstacle_surf = pygame.Surface((32,32))
 obstacle_pos = (0 ,0)
 
 moving_surf = pygame.Surface((32,32))
@@ -22,13 +22,14 @@ moving_rect = moving_surf.get_rect(center = (300,300))
 moving_mask = pygame.mask.from_surface(moving_surf)
 obstacle_mask = pygame.mask.from_surface(obstacle_surf)
 
+x = 0
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 
 	fenetre.fill('white')
-
+	obstacle_pos =( obstacle_pos[0] + 1, obstacle_pos[1] )
 	# obstacle 
 	fenetre.blit(obstacle_surf,obstacle_pos)
 	
