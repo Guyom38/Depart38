@@ -190,21 +190,18 @@ class CJoueur:
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
     
+    def afficher_champ_vision(self):
+        self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
+        
     # --- affiche joueur
     def afficher(self):  
-        
-        est_ordinateur = (not self.IA == None)               
         
         # -- affiche ombre du joueur    
         x, y = self.get_position()
         centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
         VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
         
-        if est_ordinateur:
-            t = time.time() 
-            self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
-            FCT.Performance('JOUEURS(' + self.nom + ').afficher()', t, (200,200,200))
-            
+    
         # --- affiche sprite joueur
         xImg, yImg = x+self.offsetX, y+self.offsetY
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())

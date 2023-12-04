@@ -131,7 +131,9 @@ class CMoteur:
             self.CONTROLLEURS.gestion_des_commandes_utilisateurs() 
             self.PERSONNAGES.se_deplacent()     
             
-            self.TERRAIN.afficher()            
+            self.TERRAIN.afficher()  
+            
+            self.PERSONNAGES.afficher_champs_vision()          
             self.ELEMENTS_VISUELS.controle_proximites()
             
             self.ELEMENTS_VISUELS.prepare_et_tri_les_objets_a_afficher()    

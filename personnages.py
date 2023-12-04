@@ -14,6 +14,14 @@ class CPersonnages:
         self.JOUEURS = []
         self.PNJS = []
     
+    
+    def afficher_champs_vision(self):
+        t = time.time()
+        for pnj in self.PNJS:
+            pnj.afficher_champ_vision()
+        FCT.Performance('PERSONNAGES.afficher_champs_vision()', t)    
+            
+            
     def se_deplacent(self):
         t = time.time()
         for personnage in self.JOUEURS + self.PNJS:
@@ -22,7 +30,7 @@ class CPersonnages:
             if personnage.animation == ENUM_ANIMATION.COURIR:                   
                 personnage.afficher_fumee()
             
-        FCT.Performance('JOUEURS.se_deplacent()', t)
+        FCT.Performance('PERSONNAGES.se_deplacent()', t)
             
     
 

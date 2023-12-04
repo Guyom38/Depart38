@@ -36,6 +36,11 @@ dossier_dim = str(dim) + "/"
 urlWss = "wss://ws.ladnet.net"
 web_socket = False
 web_socket_id_partie = generate_short_id()
+JOUEURS_WEBSOCKET = {}
+
+# --- joystiques
+nombre_manettes = 0
+dico_manettes = {}
 
 precision_distance = 10
 precision_champs = 10
