@@ -21,6 +21,10 @@ class CJoueur:
         
         self.x, self.y = x, y + 0.5
         self.direction = ENUM_DIR.AUCUN
+        
+        #
+        self.direction_hors_diagonale = ENUM_DIR.AUCUN
+        
         self.en_mouvement = True
         
         self.animation = ENUM_ANIMATION.MARCHER
@@ -152,6 +156,19 @@ class CJoueur:
                 self.y -= VAR.pas
             elif self.direction == ENUM_DIR.BAS:
                 self.y += VAR.pas
+            
+            elif self.direction == ENUM_DIR.DIAGONAL1:
+                self.x -= VAR.pas
+                self.y += VAR.pas
+            elif self.direction == ENUM_DIR.DIAGONAL3:
+                self.x += VAR.pas
+                self.y += VAR.pas
+            elif self.direction == ENUM_DIR.DIAGONAL7:
+                self.x -= VAR.pas
+                self.y -= VAR.pas
+            elif self.direction == ENUM_DIR.DIAGONAL9:
+                self.x += VAR.pas
+                self.y -= VAR.pas 
 
             
             est_ordinateur = (not self.IA == None)    

@@ -72,10 +72,14 @@ class CManettes():
                     joueur.en_mouvement = False
             
             if event.axis == 2:
-                if event.value == 8: joueur.direction, joueur.en_mouvement = ENUM_DIR.HAUT, True
+                if event.value == 1: joueur.direction, joueur.en_mouvement = ENUM_DIR.DIAGONAL1, True
                 elif event.value == 2: joueur.direction, joueur.en_mouvement = ENUM_DIR.BAS, True
-                elif event.value == 4: joueur.direction, joueur.en_mouvement = ENUM_DIR.GAUCHE, True
+                elif event.value == 3: joueur.direction, joueur.en_mouvement = ENUM_DIR.DIAGONAL3, True
+                elif event.value == 4: joueur.direction, joueur.en_mouvement = ENUM_DIR.GAUCHE, True                
                 elif event.value == 6: joueur.direction, joueur.en_mouvement = ENUM_DIR.DROITE, True
+                elif event.value == 7: joueur.direction, joueur.en_mouvement = ENUM_DIR.DIAGONAL7, True
+                elif event.value == 8: joueur.direction, joueur.en_mouvement = ENUM_DIR.HAUT, True
+                elif event.value == 9: joueur.direction, joueur.en_mouvement = ENUM_DIR.DIAGONAL9, True
                 else: joueur.en_mouvement = False
                       
         elif event.type == pygame.JOYBUTTONDOWN :                    
