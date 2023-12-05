@@ -58,7 +58,7 @@ class CJoueur:
         dimension_image = (56 * VAR.dim, 40 * VAR.dim)
         
         self.image = pygame.transform.smoothscale(self.image, dimension_image)
-        self.image_nom = self.generer_image_nom()    
+        self.generer_image_nom()
         self.ombre_joueur = self.generer_ombre_joueur()
         
         self.directionPrecedente = ENUM_DIR.AUCUN
@@ -78,6 +78,7 @@ class CJoueur:
         dim2 = VAR.dim // 2
         pygame.draw.circle(self.ombre, (0,0,0, 60), (dim2, dim2), dim2)
         
+        
     def generer_image_nom(self):
         ecriture = pygame.font.SysFont('arial', 20) 
         
@@ -90,7 +91,7 @@ class CJoueur:
         #image_nom.blit(image_ombre, (0, -4))
         image_nom.blit(image_texte, (2, -2))
         
-        return image_nom
+        self.image_nom = image_nom  
           
     def get_position(self):
         return (int((self.x * VAR.dim) + VAR.dimDiv2), int((self.y * VAR.dim)))    
@@ -192,9 +193,17 @@ class CJoueur:
     
     def afficher_champ_vision(self):
         self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
-        
+    
+    def verifie_changement_nom(self):
+        if self.index in VAR.DICO_NAMES_WEBSOCKET:
+            nouveau_nom = VAR.DICO_NAMES_WEBSOCKET[self.index]
+            if not self.nom == nouveau_nom:
+                self.nom = nouveau_nom
+                self.generer_image_nom()
+                
     # --- affiche joueur
     def afficher(self):  
+        self.verifie_changement_nom()
         
         # -- affiche ombre du joueur    
         x, y = self.get_position()

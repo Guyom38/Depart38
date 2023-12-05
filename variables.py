@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = []
+demo = [ENUM_DEMO.BLOCAGE]
 
 
 resolution_x = 1920
@@ -37,6 +37,7 @@ urlWss = "wss://ws.ladnet.net"
 web_socket = False
 web_socket_id_partie = generate_short_id()
 JOUEURS_WEBSOCKET = {}
+DICO_NAMES_WEBSOCKET = {}
 
 # --- joystiques
 nombre_manettes = 0

@@ -16,7 +16,7 @@ class webSocket():
                     print("         + boucle thread websocket")
                     VAR.web_socket = True
                     
-                    data_to_send = {"game": "EscapeGame",
+                    data_to_send = {"game": "EscapeGame", 
                                     "id_game": str(VAR.web_socket_id_partie),  
                                     "type_client": "game" }
                     
@@ -50,13 +50,25 @@ def injecte_event(data_events):
         idJoueur = int(data_events['playerId'])    
                   
     if 'joystick' in data_events['data']:
-        if data_events['data']['joystick']['x'] > 0:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 1 }))
-        elif data_events['data']['joystick']['x'] < 0:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': -1 }))
-        else: pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))
+        direction = data_events['data']['joystick']['direction']['angle']
+        valeur = 1 if data_events['data']['joystick']['state'] == 'move' else 0
         
-        if data_events['data']['joystick']['y'] > 14:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': 1 }))
-        elif data_events['data']['joystick']['y'] < -14:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': -1 }))
-        else: pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': 0 }))
+        VAR.DICO_NAMES_WEBSOCKET[idJoueur] = data_events['data']['joystick']['name'] 
+            
+        if direction == "right":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': valeur }))
+        elif direction == "left":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': -valeur }))
+        elif direction == "down":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': valeur }))
+        elif direction == "up":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': -valeur }))
+        elif direction == "center":
+             pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))   
+            
+        #if data_events['data']['joystick']['x'] > 0:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 1 }))
+        #elif data_events['data']['joystick']['x'] < 0:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': -1 }))
+        #else: pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))
+        
+        #if data_events['data']['joystick']['y'] > 14:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': 1 }))
+        #elif data_events['data']['joystick']['y'] < -14:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': -1 }))
+        #else: pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': 0 }))
   
     elif 'button' in data_events['data']: 
         etat = pygame.JOYBUTTONUP if data_events['data']['state'] == 'pressed' else pygame.JOYBUTTONDOWN

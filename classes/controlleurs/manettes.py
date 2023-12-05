@@ -80,7 +80,7 @@ class CManettes():
  
         elif event.type == pygame.JOYBUTTONUP:      
             if event.button == CBouton.B_A:  pass
-            if event.button == CBouton.B_B:  pass
+            if event.button == CBouton.B_B:  joueur.MECANIQUE_ACTION.demarrer(CCourir(joueur))
             if event.button == CBouton.B_X:  pass
             if event.button == CBouton.B_Y:  pass
             if event.button == CBouton.B_START:   pass
