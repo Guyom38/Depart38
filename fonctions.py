@@ -1,5 +1,5 @@
 import string
-import random
+import random, math
 import pygame
 import os
 import time
@@ -53,3 +53,10 @@ def collision(objet1, objet2):
 def existe_fichier(chemin):
     return (os.path.isfile(chemin))
 
+def get_angle(x, y):
+    angle_radians = math.atan2(y, x)
+    angle_degrees = math.degrees(angle_radians)
+    adjusted_angle = angle_degrees + 90
+    if adjusted_angle < 0:
+        adjusted_angle += 360
+    return adjusted_angle

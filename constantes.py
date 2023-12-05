@@ -26,13 +26,20 @@ class ENUM_DEMO:
     GENERER_PATHFINDING = 7
     PATHFINDING_OUVERTFERME = 8
     BLOCAGE = 9
+    WEBSOCKET = 10
     
 # --- Joueurs
 class ENUM_DIR:
-    BAS = 270
+    
     GAUCHE = 0
-    DROITE = 180
+    DIAGONAL7 = 45
     HAUT = 90
+    DIAGONAL9 = 135
+    DROITE = 180
+    DIAGONAL3 = 225
+    BAS = 270
+    DIAGONAL1 = 315
+    
     AUCUN = None
 
 class ENUM_ANIMATION:
@@ -45,7 +52,7 @@ class ENUM_ANIMATION:
     COURIR = (8, 6)
     TOUCHER = (19, 6)
     
-class CBouton:
+class ENUM_PAD:
     B_X = 0
     B_A = 1
     B_B = 2

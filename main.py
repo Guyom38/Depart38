@@ -26,7 +26,8 @@ class webSocket():
                             message = await asyncio.wait_for(websocket.recv(), timeout=1.0)
                             donnees = json.loads(message)                            
                             
-                            print(str(donnees))
+                            if ENUM_DEMO.WEBSOCKET in VAR.demo:
+                                print(str(donnees))
                             injecte_event(donnees) 
                             
                         except asyncio.TimeoutError:
@@ -55,13 +56,28 @@ def injecte_event(data_events):
         
         VAR.DICO_NAMES_WEBSOCKET[idJoueur] = data_events['data']['joystick']['name'] 
             
-        if direction == "right":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': valeur }))
-        elif direction == "left":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': -valeur }))
-        elif direction == "down":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': valeur }))
-        elif direction == "up":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': -valeur }))
-        elif direction == "center":
-             pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))   
-            
+        #if direction == "right":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': valeur }))
+        #elif direction == "left":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': -valeur }))
+        #elif direction == "down":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': valeur }))
+        #elif direction == "up":            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': -valeur }))
+        #elif direction == "center":
+        #     pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))   
+        
+        x, y = data_events['data']['joystick']['x'], data_events['data']['joystick']['y']
+        angle = -1 if (x, y) == (0, 0) else FCT.get_angle(x, y)
+        
+        if (337.5 < angle <= 360) and (-1 < angle <= 22.5): pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 8 }))
+        elif (22.5 < angle <= 67.5)   : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 9 }))
+        elif (67.5 < angle <= 112.5)  : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 6 }))
+        elif (112.5 < angle <= 157.5) : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 3 }))
+        elif (157.5 < angle <= 202.5) : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 2 }))
+        elif (202.5 < angle <= 247.5) : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 1 }))
+        elif (247.5 < angle <= 292.5) : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 4 }))
+        elif (292.5 < angle <= 337.5) : pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 2,  'value': 7 }))
+        else :
+            pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))
+         
+        
         #if data_events['data']['joystick']['x'] > 0:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 1 }))
         #elif data_events['data']['joystick']['x'] < 0:  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': -1 }))
         #else: pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 0,  'value': 0 }))
@@ -79,12 +95,12 @@ def injecte_event(data_events):
         elif data_events['data']['button'] == 'DOWN':  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': valeur }))
         elif data_events['data']['button'] == 'UP':  pygame.event.post(pygame.event.Event(pygame.JOYAXISMOTION, {'joy': idJoueur,  'axis': 1,  'value': -valeur }))
         
-        elif data_events['data']['button'] == 'A':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': 0 }))
-        elif data_events['data']['button'] == 'B':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': 1 }))
-        elif data_events['data']['button'] == 'X':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': 2 }))
-        elif data_events['data']['button'] == 'Y':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': 3 }))
-        elif data_events['data']['button'] == 'START':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': 9 }))
-        elif data_events['data']['button'] == 'SELECT':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': 8 }))
+        elif data_events['data']['button'] == 'A':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': ENUM_PAD.B_A }))
+        elif data_events['data']['button'] == 'B':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': ENUM_PAD.B_B }))
+        elif data_events['data']['button'] == 'X':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': ENUM_PAD.B_X }))
+        elif data_events['data']['button'] == 'Y':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': ENUM_PAD.B_Y }))
+        elif data_events['data']['button'] == 'START':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': ENUM_PAD.B_START }))
+        elif data_events['data']['button'] == 'SELECT':  pygame.event.post(pygame.event.Event(etat, {'joy': idJoueur,  'button': ENUM_PAD.B_SELECT }))
         
         
 

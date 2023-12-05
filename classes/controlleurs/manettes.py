@@ -52,7 +52,8 @@ class CManettes():
         id_manette, joueur = self.joueur_derriere_manette(event.joy)
 
         if event.type == pygame.JOYAXISMOTION:  
-            print("EVENEMENT CAPTURE : " + str(event))   
+            if ENUM_DEMO.WEBSOCKET in VAR.demo:
+                print("EVENEMENT CAPTURE : " + str(event))   
                    
             if event.axis == 0:
                 if event.value < -0.5: 
@@ -69,22 +70,29 @@ class CManettes():
                     joueur.direction, joueur.en_mouvement = ENUM_DIR.HAUT, True
                 else:
                     joueur.en_mouvement = False
-                        
+            
+            if event.axis == 2:
+                if event.value == 8: joueur.direction, joueur.en_mouvement = ENUM_DIR.HAUT, True
+                elif event.value == 2: joueur.direction, joueur.en_mouvement = ENUM_DIR.BAS, True
+                elif event.value == 4: joueur.direction, joueur.en_mouvement = ENUM_DIR.GAUCHE, True
+                elif event.value == 6: joueur.direction, joueur.en_mouvement = ENUM_DIR.DROITE, True
+                else: joueur.en_mouvement = False
+                      
         elif event.type == pygame.JOYBUTTONDOWN :                    
-            if event.button == CBouton.B_A:  pass
-            if event.button == CBouton.B_B:  pass
-            if event.button == CBouton.B_X:  pass
-            if event.button == CBouton.B_Y:  pass
-            if event.button == CBouton.B_START:  pass
-            if event.button == CBouton.B_SELECT: pass
+            if event.button == ENUM_PAD.B_A:  pass
+            if event.button == ENUM_PAD.B_B:  pass
+            if event.button == ENUM_PAD.B_X:  pass
+            if event.button == ENUM_PAD.B_Y:  pass
+            if event.button == ENUM_PAD.B_START:  pass
+            if event.button == ENUM_PAD.B_SELECT: pass
  
         elif event.type == pygame.JOYBUTTONUP:      
-            if event.button == CBouton.B_A:  pass
-            if event.button == CBouton.B_B:  joueur.MECANIQUE_ACTION.demarrer(CCourir(joueur))
-            if event.button == CBouton.B_X:  pass
-            if event.button == CBouton.B_Y:  pass
-            if event.button == CBouton.B_START:   pass
-            if event.button == CBouton.B_SELECT:  pass
+            if event.button == ENUM_PAD.B_A:  pass
+            if event.button == ENUM_PAD.B_B:  joueur.MECANIQUE_ACTION.demarrer(CCourir(joueur))
+            if event.button == ENUM_PAD.B_X:  pass
+            if event.button == ENUM_PAD.B_Y:  pass
+            if event.button == ENUM_PAD.B_START:   pass
+            if event.button == ENUM_PAD.B_SELECT:  pass
 
         if id_manette == 0 and joueur.en_mouvement:
             joueur_zero_bouge += 1
