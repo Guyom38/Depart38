@@ -37,7 +37,7 @@ class CManettes():
     
     def joueur_derriere_manette(self, id_manette):        
         if id_manette not in self.CONTROLLEURS.ASSOC_MANETTE_JOUEUR: 
-            nouveau_joueur = CJoueur(self.MOTEUR, id_manette, 2.0 + random.randint(0, 6), 6.0 + random.randint(0, 3), "Guyom #"+str(id_manette), False)
+            nouveau_joueur = CJoueur(self.MOTEUR, id_manette, 6.0 , 6.0 , "Guyom #"+str(id_manette), False)
             
             self.PERSONNAGES.JOUEURS.append(nouveau_joueur)
             self.CONTROLLEURS.ASSOC_MANETTE_JOUEUR[id_manette] = nouveau_joueur   

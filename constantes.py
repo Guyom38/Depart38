@@ -9,6 +9,10 @@ C_ROOM = 1
 C_MODERN = 225
 C_INTERIOR = 1073
 
+class ENUM_PHASE:
+    SALLE_ATTENTE = 0
+    JEU = 1
+    
 class ENUM_PROGRESSION_ETAT:
     AUCUN = False
     SE_DECHARGE = 1

@@ -2,8 +2,8 @@ from fonctions import *
 from constantes import *
 
 demo = []
-
-
+phase_dans_le_jeu = ENUM_PHASE.JEU
+fichier_map = 'map'
 resolution_x = 1920
 resolution_y = 1080
 
@@ -30,9 +30,10 @@ ecriture10 = None
 # ray_alpha = 0 desactive la transparence
 ray_alpha = 128
 
-fichier_map = 'map'
+
 dossier_dim = str(dim) + "/"
 
+urlQrCode = "https://gamepad.ladnet.net/joystick.html"
 urlWss = "wss://ws.ladnet.net"
 web_socket = False
 web_socket_id_partie = generate_short_id()

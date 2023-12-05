@@ -15,7 +15,7 @@ from objets import *
 from personnages import *
 from classes.joueurs.pathfinding import *
 from classes.controlleurs.controlleurs import *
-
+from classes.qr_code import *
 
 class CMoteur:
     def __init__(self):
@@ -23,6 +23,8 @@ class CMoteur:
         VAR.fenetre = pygame.display.set_mode((VAR.resolution_x, VAR.resolution_y), pygame.FULLSCREEN, 32)
         pygame.display.set_caption("No Escape Departement")
         self.horloge = pygame.time.Clock()
+        
+        self.imageQrCode = None
         
         self.titre = pygame.image.load(".ressources/titre.jpg")
         self.titre = pygame.transform.scale(self.titre, (VAR.resolution_x, VAR.resolution_y))
@@ -60,7 +62,16 @@ class CMoteur:
         time.sleep(0.01)
         
         
+    def dessiner_QrCode(self):
+        if self.imageQrCode == None:         
+            # Génère le QR Code et le convertit en surface Pygame
+            qrcode_image = generate_qr_code(VAR.urlQrCode)
+            self.imageQrCode = qr_image_to_pygame_surface(qrcode_image)
         
+        x, y, dimx, dimy = 31 * VAR.dim, 7 * VAR.dim, 18 * VAR.dim, 18 * VAR.dim
+        image_qrcode = pygame.transform.smoothscale(self.imageQrCode, (dimx, dimy))
+        VAR.fenetre.blit( image_qrcode, (x, y))
+    
         
     def initialiser(self):  
         self.PARTICULES = CParticules(self)
@@ -75,11 +86,11 @@ class CMoteur:
         self.afficher_barre_progression(50, 100, "Configuration des tapis ...")  
         self.PERSONNAGES.JOUEURS.append(CJoueur(self, 0, 2.0, 6.0, "Guyom", False))
                 
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 1, 1.0, 5.0, "Vincent", True, 0))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 2, 1.0, 5.0, "Basile", True,2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 3, 1.0, 5.0, "Luc", True, 2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 4, 1.0, 5.0, "Emmanuel", True, 2))
-        self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))        
+        #self.PERSONNAGES.PNJS.append(CJoueur(self, 1, 1.0, 5.0, "Vincent", True, 0))
+        #self.PERSONNAGES.PNJS.append(CJoueur(self, 2, 1.0, 5.0, "Basile", True,2))
+        #self.PERSONNAGES.PNJS.append(CJoueur(self, 3, 1.0, 5.0, "Luc", True, 2))
+        #self.PERSONNAGES.PNJS.append(CJoueur(self, 4, 1.0, 5.0, "Emmanuel", True, 2))
+        #self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))        
 
 
         
@@ -132,6 +143,9 @@ class CMoteur:
             self.PERSONNAGES.se_deplacent()     
             
             self.TERRAIN.afficher()  
+            
+            if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
+                self.dessiner_QrCode()
             
             self.PERSONNAGES.afficher_champs_vision()          
             self.ELEMENTS_VISUELS.controle_proximites()

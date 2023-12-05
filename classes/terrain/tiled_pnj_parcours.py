@@ -4,7 +4,10 @@ import fonctions as FCT
 def initialisation_joueurs(moteur_tiled):
     MOTEUR_TILED = moteur_tiled
     parcours = generer_parcours_PNJ(MOTEUR_TILED)
-        
+    
+    if len(parcours) == 0:
+        return
+      
     compteurs_parcours = {}
     for pnj in MOTEUR_TILED.MOTEUR.PERSONNAGES.PNJS:
         id_parcours = 'Chemin_' + str(pnj.fonction)

@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map.tmx",
+    "activeFile": "salle_attente.tmx",
     "expandedProjectPaths": [
-        "32",
-        "."
+        ".",
+        "32"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -51,8 +51,16 @@
             "scale": 0.5,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 812,
-                "y": 906
+                "x": 1289,
+                "y": 729
+            }
+        },
+        "salle_attente.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1932,
+                "y": 706
             }
         },
         "test.tsx": {
@@ -67,12 +75,13 @@
     "openFiles": [
         "map-vide.tmx",
         "map24.tmx",
-        "map.tmx"
+        "salle_attente.tmx"
     ],
     "project": "NoJobNoGain.tiled-project",
     "recentFiles": [
         "map-vide.tmx",
         "map24.tmx",
+        "salle_attente.tmx",
         "map.tmx",
         "Interiors_32x32.tsx",
         "map-path.tmx",
