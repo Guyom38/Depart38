@@ -20,13 +20,14 @@ OBJ_ARB2x3_GRIS = ((C_INTERIOR, 9683), (2, 3), C_TRAVERSABLE, None, False)
 OBJ_ARB1x3_GRIS2 = ((C_MODERN, 118), (1, 3), C_TRAVERSABLE, None, False)
 OBJ_CHAISE_DEV =  ((C_MODERN, 161), (1, 2), C_OBSTACLE, None, False)
 OBJ_CHAISE_DER =  ((C_MODERN, 163), (1, 2), C_OBSTACLE, None, False)
+OBJ_CHAISE2_DER =  ((C_MODERN, 131), (1, 2), C_OBSTACLE, None, False)
 
 OBJ_BAIE_INFORMATIQUE = ((C_INTERIOR, 8409), (1, 3), C_OBSTACLE, True, False)
 OBJ_4x4_MONITEURS = ((C_INTERIOR, 8372), (4, 3), C_TRAVERSABLE, True, False)
 
 # Liste de tous les objets
 objets = [OBJ_EXTINCTEUR,
-          OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
+          OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_CHAISE2_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
           OBJ_4x4_MONITEURS, OBJ_BAIE_INFORMATIQUE] #, OBJ_TRACE1, OBJ_TRACE2]
 
 
@@ -109,8 +110,9 @@ class CObjets:
         for key, objet in self.liste_objets_tries:   
             objet.afficher()    
             
-            # // --- test                  
-            i = self.afficher_test_priorite(i, key, objet)            
+            # // --- test  
+            if ENUM_DEMO.PRIORITE in VAR.demo:                
+                i = self.afficher_test_priorite(i, key, objet)            
         FCT.Performance('OBJETS.afficher()', t)
         
     

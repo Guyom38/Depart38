@@ -17,6 +17,9 @@ from classes.joueurs.pathfinding import *
 from classes.controlleurs.controlleurs import *
 from classes.qr_code import *
 
+from classes.niveaux.salle_attente import *
+from classes.niveaux.niv_jeu import *
+
 class CMoteur:
     def __init__(self):
         pygame.init()
@@ -68,45 +71,47 @@ class CMoteur:
             qrcode_image = generate_qr_code(VAR.urlQrCode)
             self.imageQrCode = qr_image_to_pygame_surface(qrcode_image)
         
-        x, y, dimx, dimy = 31 * VAR.dim, 7 * VAR.dim, 18 * VAR.dim, 18 * VAR.dim
+        x, y, dimx, dimy = 57 * VAR.dim, 1 * VAR.dim, 18 * VAR.dim, 18 * VAR.dim
         image_qrcode = pygame.transform.smoothscale(self.imageQrCode, (dimx, dimy))
         VAR.fenetre.blit( image_qrcode, (x, y))
     
         
-    def initialiser(self):  
-        self.PARTICULES = CParticules(self)
-        
-        
-        self.afficher_barre_progression(30, 100, "Empilage des dossiers ...")        
+    def initialiser(self):
+        self.PARTICULES = CParticules(self)        
         self.ELEMENTS_VISUELS = CObjets(self)
+        self.PERSONNAGES = CPersonnages(self)
+        self.TERRAIN = CTerrain(self) 
+        self.CONTROLLEURS = CControlleurs(self)
+        
+                
+        self.afficher_barre_progression(30, 100, "Empilage des dossiers ...")         
+        if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
+            niveau_salle_attente(self)
+        elif VAR.phase_dans_le_jeu == ENUM_PHASE.JEU:
+            niveau_jeu(self)
+        
         
         self.afficher_barre_progression(40, 100, "Préparation des pauses café ...")  
-        self.PERSONNAGES = CPersonnages(self)
-        
-        self.afficher_barre_progression(50, 100, "Configuration des tapis ...")  
-        self.PERSONNAGES.JOUEURS.append(CJoueur(self, 0, 2.0, 6.0, "Guyom", False))
-                
-        #self.PERSONNAGES.PNJS.append(CJoueur(self, 1, 1.0, 5.0, "Vincent", True, 0))
-        #self.PERSONNAGES.PNJS.append(CJoueur(self, 2, 1.0, 5.0, "Basile", True,2))
-        #self.PERSONNAGES.PNJS.append(CJoueur(self, 3, 1.0, 5.0, "Luc", True, 2))
-        #self.PERSONNAGES.PNJS.append(CJoueur(self, 4, 1.0, 5.0, "Emmanuel", True, 2))
-        #self.PERSONNAGES.PNJS.append(CJoueur(self, 5, 1.0, 5.0, "Stevan", True, 2))        
-
 
         
-        self.afficher_barre_progression(70, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
-        self.TERRAIN = CTerrain(self) 
+        
+        self.afficher_barre_progression(50, 100, "Configuration des tapis ...")       
+
+        
+        self.afficher_barre_progression(70, 100, "Configuration des tapis ...")      
         self.TERRAIN.preparer_terrain()     
-        self.TERRAIN.preparer_parcours_joueurs()                
         
-        self.PERSONNAGES.PATHFINDING.generer_matrice_obstacles(self.TERRAIN.arrayBlocage)        
-        self.PERSONNAGES.PATHFINDING.charger_pathfinding()
+                            
+        self.afficher_barre_progression(80, 100, "Synchronisation des écrans anti-reflets pour siestes discrètes ...")  
+        
+        if VAR.phase_dans_le_jeu == ENUM_PHASE.JEU:
+            self.TERRAIN.preparer_parcours_joueurs()     
+            self.PERSONNAGES.PATHFINDING.generer_matrice_obstacles(self.TERRAIN.arrayBlocage)       
+            self.PERSONNAGES.PATHFINDING.charger_pathfinding()
         
         self.afficher_barre_progression(100, 100, "Démarrage du jeu")  
-        self.grille_traitee = FCT.GenereMat2D(VAR.dimension_x, VAR.dimension_y, 0)            
-    
             
-        self.CONTROLLEURS = CControlleurs(self)
+        
             
     def afficher_parcours_vincent(self):
         for y in range(0, VAR.dimension_y):
@@ -144,10 +149,9 @@ class CMoteur:
             
             self.TERRAIN.afficher()  
             
-            if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
-                self.dessiner_QrCode()
             
-            self.PERSONNAGES.afficher_champs_vision()          
+            self.PERSONNAGES.afficher_effets_joueurs()     
+                 
             self.ELEMENTS_VISUELS.controle_proximites()
             
             self.ELEMENTS_VISUELS.prepare_et_tri_les_objets_a_afficher()    
@@ -158,6 +162,9 @@ class CMoteur:
             self.PARTICULES.Afficher_Les_Particules()    
             self.ELEMENTS_VISUELS.afficher()   
 
+            if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
+                self.dessiner_QrCode()
+                
             #self.afficher_performances()
   
             # --- afficher le résultat

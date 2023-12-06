@@ -15,11 +15,15 @@ class CPersonnages:
         self.PNJS = []
     
     
-    def afficher_champs_vision(self):
+    def afficher_effets_joueurs(self):
         t = time.time()
+        for joueur in self.JOUEURS:
+            joueur.afficher_ombre()
+            
         for pnj in self.PNJS:
+            pnj.afficher_ombre()
             pnj.afficher_champ_vision()
-        FCT.Performance('PERSONNAGES.afficher_champs_vision()', t)    
+        FCT.Performance('PERSONNAGES.afficher_champs_vision()+ombres', t)    
             
             
     def se_deplacent(self):

@@ -54,10 +54,10 @@ class map_tiled:
                                 
 
                                 if not index in VAR.LISTE_IMAGES_IGNOREES:                                       
-                                    if layer.attrib['name'] in ("Sol"):
+                                    if layer.attrib['name'] in ("Sol", "Ombre"):
                                         self.creation_couche_primaire(index, x, y)
                                     else:
-                                        objet = self.analyse_couches_decors(c, layer, index, x, y, ("Decors", "Derriere_Meuble", "Devant_Meuble", "Ordinateur", "Mur"))
+                                        objet = self.analyse_couches_decors(c, layer, index, x, y, ("1", "2", "3", "4", "5", "6", "7", "Mur"))
     
                                 if (not objet == None and objet.etat == C_OBSTACLE):
                                     self.ajouter_objet_a_la_couches_collision(objet)

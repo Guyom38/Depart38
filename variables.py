@@ -3,7 +3,7 @@ from constantes import *
 
 demo = []
 phase_dans_le_jeu = ENUM_PHASE.JEU
-fichier_map = 'map'
+fichier_map = 'depart'
 resolution_x = 1920
 resolution_y = 1080
 
@@ -64,3 +64,15 @@ cellule_mask2 = pygame.mask.from_surface(cellule_image2)
 cellule_rect2 = cellule_mask2.get_rect(center = (0,0))
 
 image_zone = [[], []]
+
+couleurs_equipes = [
+    (0,0,0, 60),
+    (255, 0, 0, ray_alpha),    # Rouge
+    (0, 0, 255, ray_alpha),    # Bleu
+    (0, 255, 0, ray_alpha),    # Vert
+    (255, 255, 0, ray_alpha),  # Jaune
+    (255, 165, 0, ray_alpha),  # Orange
+    (128, 0, 128, ray_alpha),  # Violet
+    (0, 0, 0, ray_alpha),      # Noir
+    (255, 255, 255, ray_alpha) # Blanc
+]

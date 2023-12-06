@@ -21,9 +21,6 @@ class CPathfinding:
         
         
     def charger_pathfinding(self):
-        if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
-            return
-        
         fichier = '.caches/' + VAR.fichier_map + '.pkl'
         
         if not FCT.existe_fichier(fichier):

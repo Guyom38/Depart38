@@ -17,7 +17,7 @@ class CJoueur:
              
         self.index = index
         self.nom = nom
-        
+        self.equipe = 0
         
         self.x, self.y = x, y + 0.5
         self.direction = ENUM_DIR.AUCUN
@@ -57,7 +57,7 @@ class CJoueur:
         else:
             self.image = pygame.image.load(".ressources/32/agent2.png").convert_alpha()
             self.IA = None
-            self.vitesse = 10
+            self.vitesse = 20
 
         dimension_image = (56 * VAR.dim, 40 * VAR.dim)
         
@@ -76,11 +76,16 @@ class CJoueur:
         self.mask = pygame.mask.from_surface(self.image_mask)
         self.mask_rect = self.image_mask.get_rect(center = (0,0))
 
-    def generer_ombre_joueur(self):
-        self.ombre = pygame.Surface((VAR.dim,VAR.dim), pygame.SRCALPHA).convert_alpha()
+    def changement_equipe(self, equipe):
+        self.equipe = equipe
+        self.generer_ombre_joueur()
         
-        dim2 = VAR.dim // 2
-        pygame.draw.circle(self.ombre, (0,0,0, 60), (dim2, dim2), dim2)
+    def generer_ombre_joueur(self):
+        diametre = VAR.dim * 2
+        rayon = diametre // 2
+        
+        self.ombre = pygame.Surface((diametre, diametre), pygame.SRCALPHA).convert_alpha()
+        pygame.draw.circle(self.ombre, VAR.couleurs_equipes[self.equipe], (rayon, rayon), rayon)
         
         
     def generer_image_nom(self):
@@ -207,7 +212,11 @@ class CJoueur:
             
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
-    
+    def afficher_ombre(self):
+        x, y = self.get_position()
+        centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
+        VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
+        
     def afficher_champ_vision(self):
         self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
     
@@ -220,14 +229,10 @@ class CJoueur:
                 
     # --- affiche joueur
     def afficher(self):  
-        self.verifie_changement_nom()
-        
-        # -- affiche ombre du joueur    
+        self.verifie_changement_nom()        
+      
         x, y = self.get_position()
-        centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
-        VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
-        
-    
+          
         # --- affiche sprite joueur
         xImg, yImg = x+self.offsetX, y+self.offsetY
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
