@@ -148,52 +148,57 @@ class CJoueur:
     
                      
     def se_deplace(self):        
-        if not self.en_mouvement:
+        if not self.en_mouvement :
             return
+        
+        valeurs = None
+        if self.direction == ENUM_DIR.GAUCHE: valeurs = (-VAR.pas, 0, ENUM_DIR.GAUCHE)
+        elif self.direction == ENUM_DIR.DROITE: valeurs = (VAR.pas, 0, ENUM_DIR.DROITE)
+        elif self.direction == ENUM_DIR.HAUT: valeurs = (0, -VAR.pas, ENUM_DIR.HAUT)
+        elif self.direction == ENUM_DIR.BAS: valeurs = (0, VAR.pas, ENUM_DIR.BAS)
+        elif self.direction == ENUM_DIR.DIAGONAL1: valeurs = (-VAR.pas, VAR.pas, ENUM_DIR.GAUCHE)
+        elif self.direction == ENUM_DIR.DIAGONAL3: valeurs = (VAR.pas, VAR.pas, ENUM_DIR.DROITE)
+        elif self.direction == ENUM_DIR.DIAGONAL7: valeurs = (-VAR.pas, -VAR.pas, ENUM_DIR.GAUCHE)
+        elif self.direction == ENUM_DIR.DIAGONAL9: valeurs = (VAR.pas, -VAR.pas, ENUM_DIR.DROITE)
+         
         
         xo, yo = self.x, self.y        
         for _ in range(0, self.vitesse):
-            if self.direction == ENUM_DIR.GAUCHE:
-                self.direction_image = self.direction
-                self.x -= VAR.pas
-            elif self.direction == ENUM_DIR.DROITE:
-                self.direction_image = self.direction
-                self.x += VAR.pas
-            elif self.direction == ENUM_DIR.HAUT:
-                self.direction_image = self.direction
-                self.y -= VAR.pas
-            elif self.direction == ENUM_DIR.BAS:
-                self.direction_image = self.direction
-                self.y += VAR.pas
-            
-            elif self.direction == ENUM_DIR.DIAGONAL1:
-                self.direction_image = ENUM_DIR.GAUCHE
-                self.x -= VAR.pas
-                self.y += VAR.pas
-            elif self.direction == ENUM_DIR.DIAGONAL3:
-                self.direction_image = ENUM_DIR.DROITE
-                self.x += VAR.pas
-                self.y += VAR.pas
-            elif self.direction == ENUM_DIR.DIAGONAL7:
-                self.direction_image = ENUM_DIR.GAUCHE
-                self.x -= VAR.pas
-                self.y -= VAR.pas
-            elif self.direction == ENUM_DIR.DIAGONAL9:
-                self.direction_image = ENUM_DIR.DROITE
-                self.x += VAR.pas
-                self.y -= VAR.pas 
-
+            if not valeurs == None:
+                xx, yy, direction = valeurs
+                self.direction_image = direction
+                self.x += xx
+                self.y += yy
             
             est_ordinateur = (not self.IA == None)    
             if not est_ordinateur:
-                if self.toujours_sur_le_terrain():                
+                if self.toujours_sur_le_terrain():   
                     if self.collision_avec_decors():
-                        self.x, self.y = xo, yo
-                        break
+                        if self.reajustement_apres_collision(xo, yo):
+                            self.x, self.y = xo, yo
+                            break
+                        else:
+                            xo, yo = self.x, self.y    
             
             else:
                 self.reflechit()  
-
+                
+                
+    def reajustement_apres_collision(self, xo, yo):
+        if self.direction == ENUM_DIR.DIAGONAL1: liste_directions_primaires_a_tester = [(-VAR.pas, 0), (0,VAR.pas)]
+        elif self.direction == ENUM_DIR.DIAGONAL3: liste_directions_primaires_a_tester = [(VAR.pas, 0), (0,VAR.pas)]
+        elif self.direction == ENUM_DIR.DIAGONAL7: liste_directions_primaires_a_tester = [(-VAR.pas, 0), (0,-VAR.pas)]
+        elif self.direction == ENUM_DIR.DIAGONAL9: liste_directions_primaires_a_tester = [(VAR.pas, 0), (0,-VAR.pas)]
+        else:
+            return True
+                
+        for xx, yy in liste_directions_primaires_a_tester:
+            self.x, self.y = (xo + xx), (yo + yy)
+            if not self.collision_avec_decors():
+                return False                        
+        return True
+                
+        
     def rythme_animation(self):
         if time.time() - self.tempoTimer > 0.1: 
             self.tempo += 1

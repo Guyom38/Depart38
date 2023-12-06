@@ -6,29 +6,7 @@ import time, os
 from constantes import *
 import fonctions as FCT
 
-# Définition des constantes (index, coeffX, coeffY, traversable)
-# LISTE_SCALE_OBJET[index] = parametres
-
-#   - (x, y) = position de l'image sur la plaquette
-#   - obstacle ou traversable
-#   - Animation
-
-OBJ_EXTINCTEUR =  ((C_INTERIOR, 5197), (1, 2), C_OBSTACLE, None, True)
-OBJ_ARB1x2_GRIS = ((C_INTERIOR, 9697), (1, 3), C_TRAVERSABLE, None, False)
-OBJ_ARB1x3_GRIS = ((C_INTERIOR, 9682), (1, 3), C_TRAVERSABLE, None, False)
-OBJ_ARB2x3_GRIS = ((C_INTERIOR, 9683), (2, 3), C_TRAVERSABLE, None, False)
-OBJ_ARB1x3_GRIS2 = ((C_MODERN_OFFICE, 118), (1, 3), C_TRAVERSABLE, None, False)
-OBJ_CHAISE_DEV =  ((C_MODERN_OFFICE, 161), (1, 2), C_OBSTACLE, None, False)
-OBJ_CHAISE_DER =  ((C_MODERN_OFFICE, 163), (1, 2), C_OBSTACLE, None, False)
-OBJ_CHAISE2_DER =  ((C_MODERN_OFFICE, 131), (1, 2), C_OBSTACLE, None, False)
-
-OBJ_BAIE_INFORMATIQUE = ((C_INTERIOR, 8409), (1, 3), C_OBSTACLE, True, False)
-OBJ_4x4_MONITEURS = ((C_INTERIOR, 8372), (4, 3), C_TRAVERSABLE, True, False)
-
-# Liste de tous les objets
-objets = [OBJ_EXTINCTEUR,
-          OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_CHAISE2_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
-          OBJ_4x4_MONITEURS, OBJ_BAIE_INFORMATIQUE] #, OBJ_TRACE1, OBJ_TRACE2]
+from liste_objets import *
 
 
 
@@ -38,10 +16,13 @@ objets = [OBJ_EXTINCTEUR,
 class CObjets:        
     def __init__(self, moteur):
         self.MOTEUR = moteur
+        self.BDD_OBJETS = CListe_Objets()
+        
         self.liste = {}  
         self.liste_objets_tries = []
-        
-        for objet in objets:
+    
+    def initialiser_les_objets_particulier(self):
+        for objet in self.BDD_OBJETS.objets:
             index_offset_plaquette, index_sur_plaquette = objet[0]
             index = index_offset_plaquette + index_sur_plaquette
             VAR.DICO_OBJETS_PARTICULIERS[index] = objet

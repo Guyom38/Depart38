@@ -25,31 +25,35 @@ class map_tiled:
         
         # <tileset firstgid="289" source="32/Modern_Office_Black_Shadow_32x32.tsx"/>
         for fichier_index in self.root.findall('tileset'):
-            index = fichier_index.attrib['firstgid']
+            index = int(fichier_index.attrib['firstgid'])
             fichier = fichier_index.attrib['source']
             
+            print ("   + Fichier tileset : " + fichier + " (" + str(index) + ")")
             if "Interiors" in fichier:
-                C_INTERIOR = index
+                VAR.C_INTERIOR = index
             elif "mecanique" in fichier:
-                C_MECANIQUE = index
+                VAR.C_MECANIQUE = index
             elif "Exteriors" in fichier:
-                C_MODERN_EXTERIORS = index
+                VAR.C_MODERN_EXTERIORS = index
             elif "Modern_Office" in fichier:
-                C_MODERN_OFFICE = index
+                VAR.C_MODERN_OFFICE = index
             elif "Builder_Office_32x32" in fichier:
-                C_ROOM_BUILDER_OFFICE = index
+                VAR.C_ROOM_BUILDER_OFFICE = index
             elif "Builder_32x32":
-                C_ROOM_BUILDER = index
+                VAR.C_ROOM_BUILDER = index
             else:
                 print ("/!\ Manque fichier tileset " + str(fichier, index))
-                
-                
+        
+        self.MOTEUR.ELEMENTS_VISUELS.BDD_OBJETS.initialiser_objets()
+        self.MOTEUR.ELEMENTS_VISUELS.initialiser_les_objets_particulier()
+        
     def lecture_du_fichier_Tiled(self, fichier):
         
         donnees_xml = XML.parse(fichier)
         self.root = donnees_xml.getroot()   
         
         self.initialise_index_fichiers()
+        
         
         TI.etape1_chargement_des_fichiers_images(self)  
         TI.etape2_chargement_des_images_necessaires_a_la_map(self)   

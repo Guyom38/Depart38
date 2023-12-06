@@ -76,3 +76,10 @@ couleurs_equipes = [
     (0, 0, 0, ray_alpha),      # Noir
     (255, 255, 255, ray_alpha) # Blanc
 ]
+
+C_MECANIQUE = 0
+C_ROOM_BUILDER = 0
+C_ROOM_BUILDER_OFFICE = 0
+C_MODERN_OFFICE = 0
+C_MODERN_EXTERIORS = 0
+C_INTERIOR = 0
