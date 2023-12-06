@@ -125,7 +125,7 @@ def tache2_jeu():
 async def main():
     print("Initialisation des taches :")
     await asyncio.gather(
-        #webSocket.tache1_socket(),
+        webSocket.tache1_socket(),
         tache2()
     )    
        

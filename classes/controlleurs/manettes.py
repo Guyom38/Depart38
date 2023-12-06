@@ -21,7 +21,8 @@ class CManettes():
         pygame.joystick.init()        
         self.nombre_manettes = pygame.joystick.get_count() 
         print(str(self.nombre_manettes) + " manettes trouvées")
-        
+    
+    def initialiser(self):
         if self.nombre_manettes > 0:
             self.CONTROLLEURS.ASSOC_MANETTE_JOUEUR[0] = self.PERSONNAGES.JOUEURS[0] 
             self.MANETTES[0] = pygame.joystick.Joystick(0)

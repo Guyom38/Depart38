@@ -22,31 +22,71 @@
             "scaleInEditor": 1
         },
         "32/Room_Builder_32x32.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.75,
             "scaleInEditor": 1
         },
         "32/Room_Builder_Office_32x32.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "32/mecanique.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Guillaume/Documents/#Projets/python/espion/.ressources/Room_Builder_Office_32x32.tsx": {
+            "scaleInDock": 1
+        },
         "depart.tmx": {
             "scale": 0.5,
-            "selectedLayer": 6,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1004,
-                "y": 557
+                "x": 1951,
+                "y": 548
+            }
+        },
+        "map-path.tmx": {
+            "scale": 0.4632231404958677,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1782.0785013380912,
+                "y": 1161.4272970562
             }
         },
         "map.tmx": {
-            "scale": 0.5791213768115941,
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1137,
+                "y": 782
+            }
+        },
+        "map2024.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 1269,
+                "y": 750
+            }
+        },
+        "map24.tmx": {
+            "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 972.1623523891453,
-                "y": 553.4245718307657
+                "x": 806,
+                "y": 810
+            }
+        },
+        "salle_attente.tmx": {
+            "scale": 0.3503125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2353.6128456735055,
+                "y": 716.5031222123104
             }
         }
     },
-    "last.imagePath": "C:/Users/009728/Documents/#PROJETS/#PYTHON/Depart38/.ressources/32",
+    "last.externalTilesetPath": "C:/Users/Guillaume/Documents/#Projets/python/Depart38/.ressources/32",
+    "last.imagePath": "C:/Users/Guillaume/Documents/#Projets/python/Depart38/.ressources/32",
     "map.height": 45,
     "map.lastUsedFormat": "tmx",
     "map.width": 80,
@@ -55,13 +95,19 @@
     ],
     "project": "projet.tiled-project",
     "recentFiles": [
-        "map.tmx",
-        "depart.tmx",
-        "32/Room_Builder_32x32.tsx",
         "32/Room_Builder_Office_32x32.tsx",
-        "32/Modern_Office_Black_Shadow_32x32.tsx",
+        "map2024.tmx",
         "32/Interiors_32x32.tsx",
-        "32/Modern_Exteriors_Complete_Tileset_32x32.tsx"
+        "32/Room_Builder_32x32.tsx",
+        "32/Modern_Office_Black_Shadow_32x32.tsx",
+        "32/mecanique.tsx",
+        "32/Modern_Exteriors_Complete_Tileset_32x32.tsx",
+        "map.tmx",
+        "salle_attente.tmx",
+        "map-path.tmx",
+        "depart.tmx",
+        "map24.tmx"
     ],
+    "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"
 }

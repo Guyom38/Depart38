@@ -1,5 +1,7 @@
 import variables as VAR
 import fonctions as FCT
+from constantes import *
+
 
 def initialisation_joueurs(moteur_tiled):
     MOTEUR_TILED = moteur_tiled
@@ -46,7 +48,7 @@ def generer_parcours_PNJ(moteur_tiled):
                             grille_parcours[x][y]['CHEMIN'] = (int(index) > 0)
                             grille_parcours[x][y]['UTILISE'] = 0
 
-                            if int(index) == 17106:
+                            if int(index) == (C_MECANIQUE + 1): # Boule bleue, chemin a suivre
                                     liste_positions_pnjs.append((x, y))
                         x += 1
                     y += 1

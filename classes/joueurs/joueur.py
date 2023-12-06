@@ -23,7 +23,7 @@ class CJoueur:
         self.direction = ENUM_DIR.AUCUN
         
         #
-        self.direction_hors_diagonale = ENUM_DIR.AUCUN
+        self.direction_image = ENUM_DIR.AUCUN
         
         self.en_mouvement = True
         
@@ -154,24 +154,32 @@ class CJoueur:
         xo, yo = self.x, self.y        
         for _ in range(0, self.vitesse):
             if self.direction == ENUM_DIR.GAUCHE:
+                self.direction_image = self.direction
                 self.x -= VAR.pas
             elif self.direction == ENUM_DIR.DROITE:
+                self.direction_image = self.direction
                 self.x += VAR.pas
             elif self.direction == ENUM_DIR.HAUT:
+                self.direction_image = self.direction
                 self.y -= VAR.pas
             elif self.direction == ENUM_DIR.BAS:
+                self.direction_image = self.direction
                 self.y += VAR.pas
             
             elif self.direction == ENUM_DIR.DIAGONAL1:
+                self.direction_image = ENUM_DIR.GAUCHE
                 self.x -= VAR.pas
                 self.y += VAR.pas
             elif self.direction == ENUM_DIR.DIAGONAL3:
+                self.direction_image = ENUM_DIR.DROITE
                 self.x += VAR.pas
                 self.y += VAR.pas
             elif self.direction == ENUM_DIR.DIAGONAL7:
+                self.direction_image = ENUM_DIR.GAUCHE
                 self.x -= VAR.pas
                 self.y -= VAR.pas
             elif self.direction == ENUM_DIR.DIAGONAL9:
+                self.direction_image = ENUM_DIR.DROITE
                 self.x += VAR.pas
                 self.y -= VAR.pas 
 
@@ -196,10 +204,10 @@ class CJoueur:
         
         
         position_x, position_y, nombre_images = 0, 8, 6
-        if self.direction == ENUM_DIR.HAUT: position_x = 1
-        elif self.direction == ENUM_DIR.BAS: position_x = 3
-        elif self.direction == ENUM_DIR.GAUCHE: position_x = 2
-        elif self.direction == ENUM_DIR.DROITE: position_x = 0
+        if self.direction_image == ENUM_DIR.HAUT: position_x = 1
+        elif self.direction_image == ENUM_DIR.BAS: position_x = 3
+        elif self.direction_image == ENUM_DIR.GAUCHE: position_x = 2
+        elif self.direction_image == ENUM_DIR.DROITE: position_x = 0
         else: position_y, nombre_images = 7, 12
         
         if self.en_mouvement:

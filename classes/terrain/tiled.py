@@ -21,11 +21,35 @@ class map_tiled:
         self.bloquage = None
     
     
-     
+    def initialise_index_fichiers(self):
+        
+        # <tileset firstgid="289" source="32/Modern_Office_Black_Shadow_32x32.tsx"/>
+        for fichier_index in self.root.findall('tileset'):
+            index = fichier_index.attrib['firstgid']
+            fichier = fichier_index.attrib['source']
+            
+            if "Interiors" in fichier:
+                C_INTERIOR = index
+            elif "mecanique" in fichier:
+                C_MECANIQUE = index
+            elif "Exteriors" in fichier:
+                C_MODERN_EXTERIORS = index
+            elif "Modern_Office" in fichier:
+                C_MODERN_OFFICE = index
+            elif "Builder_Office_32x32" in fichier:
+                C_ROOM_BUILDER_OFFICE = index
+            elif "Builder_32x32":
+                C_ROOM_BUILDER = index
+            else:
+                print ("/!\ Manque fichier tileset " + str(fichier, index))
+                
+                
     def lecture_du_fichier_Tiled(self, fichier):
         
         donnees_xml = XML.parse(fichier)
         self.root = donnees_xml.getroot()   
+        
+        self.initialise_index_fichiers()
         
         TI.etape1_chargement_des_fichiers_images(self)  
         TI.etape2_chargement_des_images_necessaires_a_la_map(self)   
@@ -57,7 +81,7 @@ class map_tiled:
                                     if layer.attrib['name'] in ("Sol", "Ombre"):
                                         self.creation_couche_primaire(index, x, y)
                                     else:
-                                        objet = self.analyse_couches_decors(c, layer, index, x, y, ("1", "2", "3", "4", "5", "6", "7", "Mur"))
+                                        objet = self.analyse_couches_decors(c, layer, index, x, y, ("0", "1", "2", "3", "4", "5", "6", "7", "Mur"))
     
                                 if (not objet == None and objet.etat == C_OBSTACLE):
                                     self.ajouter_objet_a_la_couches_collision(objet)

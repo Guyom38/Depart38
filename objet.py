@@ -76,9 +76,7 @@ class CObjet:
         self.rythme_animation() 
 
         x, y = self.position_pixel_x(), self.position_pixel_y()
-        index = ((self.tempo + self.tempoRnd) % len(self.image)) 
-        
-        
+        index = ((self.tempo + self.tempoRnd) % len(self.image))                
             
         VAR.fenetre.blit(self.image[index], (x, y))
             

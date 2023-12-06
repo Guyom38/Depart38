@@ -18,6 +18,9 @@ class CControlleurs:
         self.ASSOC_MANETTE_JOUEUR = {}
         self.CLAVIER = CClavier(self)
         self.MANETTES = CManettes(self)
+    
+    def initialiser(self):
+        self.MANETTES.initialiser()
         
     def gestion_des_commandes_utilisateurs(self):
         #
