@@ -163,7 +163,8 @@ class CJoueur:
          
         
         xo, yo = self.x, self.y        
-        for _ in range(0, self.vitesse):
+        for i in range(0, self.vitesse):
+            print("==> " + str((i, round(self.x,2), round(self.y,2))))
             if not valeurs == None:
                 xx, yy, direction = valeurs
                 self.direction_image = direction
@@ -174,14 +175,20 @@ class CJoueur:
             if not est_ordinateur:
                 if self.toujours_sur_le_terrain():   
                     if self.collision_avec_decors():
-                        if self.reajustement_apres_collision(xo, yo):
+                        print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS")
+                        if self.reajustement_apres_collision(xo, yo):                            
                             self.x, self.y = xo, yo
+                            print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> COLLISION MALGRE AJUSTEMENT")
                             break
-                        else:
+                        else:                            
                             xo, yo = self.x, self.y    
-            
+                            print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> ON CONTINUE")
+                    else:
+                        print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> PAS DE COLLISION")
             else:
                 self.reflechit()  
+        print("==> TERMINE")
+        print("")
                 
                 
     def reajustement_apres_collision(self, xo, yo):
@@ -195,7 +202,9 @@ class CJoueur:
         for xx, yy in liste_directions_primaires_a_tester:
             self.x, self.y = (xo + xx), (yo + yy)
             if not self.collision_avec_decors():
-                return False                        
+                print("==> " + str((-1, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> PARFAIT " + str((xx, yy)))
+                return False  
+        print("==> " + str((-1, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> COLLISION " + str((xx, yy)))                      
         return True
                 
         
