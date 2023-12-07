@@ -25,8 +25,6 @@ class CIA:
          
     # Fonction principale de réflexion de l'IA
     def je_reflechis(self):
-        self.je_recupere_ma_position_sur_le_terrain()  # Mise à jour de la position du PNJ
-        
         # Si l'IA ne poursuit pas quelqu'un, elle suit son parcours
         if not self.IA_PATHFINDING.traque_est_ce_que_je_poursuis_quelquun():
             self.PNJ.changement_equipe(3)
@@ -39,14 +37,12 @@ class CIA:
 
     # Établissement de la direction initiale du PNJ
     def etablir_direction_initiale(self):
-        self.je_recupere_ma_position_sur_le_terrain()
-            
-        x, y = self.xInt, self.yInt  # Position actuelle du PNJ
+        xx, yy = self.PNJ.position_x(), self.PNJ.position_y()  # Position actuelle du PNJ
         directions_possibles = []
 
         # Vérifie chaque direction possible autour du PNJ
         for direction, offx, offy in [(ENUM_DIR.BAS, 0, 1), (ENUM_DIR.HAUT, 0, -1), (ENUM_DIR.DROITE, 1, 0), (ENUM_DIR.GAUCHE, -1, 0)]:
-            if self.IA_PARCOURS.est_sur_le_terrain(x + offx, y + offy) and self.parcours[x + offx][y + offy]['CHEMIN']:
+            if self.IA_PARCOURS.est_sur_le_terrain(xx + offx, yy + offy) and self.parcours[xx + offx][yy + offy]['CHEMIN']:
                 directions_possibles.append(direction)
 
         # Choix aléatoire d'une direction parmi les possibilités
@@ -54,11 +50,6 @@ class CIA:
             self.PNJ.direction = random.choice(directions_possibles)
         else:
             self.PNJ.direction = ENUM_DIR.AUCUN  # Aucune direction possible
-
-    # Mise à jour de la position du PNJ sur le terrain
-    def je_recupere_ma_position_sur_le_terrain(self):
-        self.x, self.y = self.PNJ.x, self.PNJ.y
-        self.xInt, self.yInt = int(self.PNJ.x), int(self.PNJ.y)   
 
     # Vérifie si le PNJ est au centre de la cellule actuelle
     def est_ce_que_je_suis_au_centre_de_la_cellule(self):

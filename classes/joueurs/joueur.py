@@ -39,7 +39,7 @@ class CJoueur:
             self.IA = CIA(moteur, self)            
 
             if fonction == 0:
-                self.vitesse = 7
+                self.vitesse = 40
                 self.distance_vision = 200
                 self.image = pygame.image.load(".ressources/32/agent.png").convert_alpha()
                 self.couleur_vision = (193,249,153, VAR.ray_alpha)
@@ -78,12 +78,16 @@ class CJoueur:
         self.mask = pygame.mask.from_surface(self.image_mask)
         self.mask_rect = self.image_mask.get_rect(center = (0,0))
         
-    def verifie_changement_nom(self):
-        if self.index in VAR.DICO_NAMES_WEBSOCKET:
-            nouveau_nom = VAR.DICO_NAMES_WEBSOCKET[self.index]
-            if not self.nom == nouveau_nom:
-                self.nom = nouveau_nom
-                self.generer_image_nom()
+    def verifie_changement_nom(self, nouveau_nom = ""):
+        if not nouveau_nom == "":
+            self.nom = nouveau_nom
+            self.generer_image_nom() 
+        else:
+            if self.index in VAR.DICO_NAMES_WEBSOCKET:
+                nouveau_nom = VAR.DICO_NAMES_WEBSOCKET[self.index]
+                if not self.nom == nouveau_nom:
+                    self.nom = nouveau_nom
+                    self.generer_image_nom()
                 
     def changement_equipe(self, equipe):
         self.equipe = equipe
@@ -111,6 +115,9 @@ class CJoueur:
         
         self.image_nom = image_nom  
     
+    
+    # --- proprietes de position
+    # - en pixel
     def position_pixel_x(self):
         return self.position_int_x() - VAR.dimDiv2 
     def position_pixel_y(self):
@@ -120,7 +127,19 @@ class CJoueur:
         return int(round((self.x * VAR.dim))) + VAR.dimDiv2
     def position_int_y(self):
         return int(round((self.y * VAR.dim))) + VAR.dimDiv2
-        
+    
+    # - en cellule
+    def position_x(self):
+        return int(round(self.x))
+    def position_y(self):
+        return int(round(self.y))
+    
+    
+    
+    
+    
+    
+     
     def toujours_sur_le_terrain(self):
         return (    -1 < self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and \
                     -1 < self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            

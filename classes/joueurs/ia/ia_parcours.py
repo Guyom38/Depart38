@@ -34,16 +34,16 @@ class CIA_PARCOURS:
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # Enregistre le passage du PNJ pour éviter de repasser par le même chemin
     def je_note_mon_passage_si_nouveau_chemin(self):
-        nouvelle_position = not ((self.IA.xInt, self.IA.yInt) == self.IA.position_precedente)
+        xx, yy = self.PNJ.position_x(), self.PNJ.position_y()
+        nouvelle_position = not ((xx, yy) == self.IA.position_precedente)
         if nouvelle_position:
-            print("nouvelle position" + str((self.IA.xInt, self.IA.yInt)))
-            self.IA.position_precedente = (self.IA.xInt, self.IA.yInt)
-            self.IA.parcours[self.IA.xInt][self.IA.yInt]['UTILISE'] += 1
+            self.IA.position_precedente = (xx, yy)
+            self.IA.parcours[xx][yy]['UTILISE'] += 1
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # Vérifie si le PNJ est arrivé à une intersection
     def est_ce_que_je_suis_arrive_a_une_intersection(self):
-        xx, yy = int(round(self.PNJ.x,0)), int(round(self.PNJ.y,0))
+        xx, yy = self.PNJ.position_x(), self.PNJ.position_y()
             
         # Vérifie si le PNJ est positionné au centre de la cellule
         if not self.IA.est_ce_que_je_suis_au_centre_de_la_cellule():
@@ -58,15 +58,15 @@ class CIA_PARCOURS:
     # Détermine les directions disponibles autour du PNJ
     def quelles_sont_les_directions_disponibles_autour_de_moi(self):
         directions_disponibles = []
-        x, y = self.IA.xInt, self.IA.yInt
+        xx, yy = self.PNJ.position_x(), self.PNJ.position_y()
             
         # Parcours les directions possibles et les vérifie
         for direction, offx, offy in [(ENUM_DIR.BAS, 0, 1), (ENUM_DIR.HAUT, 0, -1), (ENUM_DIR.DROITE, 1, 0), (ENUM_DIR.GAUCHE, -1, 0)]:            
-            chemin_dans_les_limites = self.est_sur_le_terrain(x + offx, y + offy)
-            chemin_possible = self.IA.parcours[x + offx][y + offy]['CHEMIN']
+            chemin_dans_les_limites = self.est_sur_le_terrain(xx + offx, yy + offy)
+            chemin_possible = self.IA.parcours[xx + offx][yy + offy]['CHEMIN']
             
             if chemin_dans_les_limites and chemin_possible:
-                nombre_de_fois_empreinte = self.IA.parcours[x + offx][y + offy]['UTILISE']
+                nombre_de_fois_empreinte = self.IA.parcours[xx + offx][yy + offy]['UTILISE']
                 directions_disponibles.append((direction, nombre_de_fois_empreinte))
                     
         return directions_disponibles
@@ -92,7 +92,7 @@ class CIA_PARCOURS:
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # Met à jour les coordonnées de la prochaine intersection
     def mise_a_jour_des_coordonnnes_de_l_intersection(self, direction_retenue):
-        x, y = self.IA.xInt, self.IA.yInt
+        xx, yy = self.PNJ.position_x(), self.PNJ.position_y()
         offx, offy = 0, 0
 
         # Calcule les décalages en fonction de la direction retenue
@@ -107,20 +107,20 @@ class CIA_PARCOURS:
 
         # Détermine le prochain objectif en suivant la direction choisie
         while True:
-            x_prochain = x + offx
-            y_prochain = y + offy
+            x_prochain = xx + offx
+            y_prochain = yy + offy
 
             # Vérifie les limites et les obstacles sur le chemin
             if not self.est_sur_le_terrain(x_prochain, y_prochain) or not self.IA.parcours[x_prochain][y_prochain]['CHEMIN']:
                 break
             
-            x, y = x_prochain, y_prochain
+            xx, yy = x_prochain, y_prochain
                 
             # Vérifie s'il y a une intersection à la prochaine cellule
             if self.est_ce_une_intersection(x_prochain, y_prochain, direction_retenue):
                 break
 
-        self.objectifx, self.objectify = x, y
+        self.objectifx, self.objectify = xx, yy
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # Vérifie si la cellule est une intersection
@@ -153,6 +153,7 @@ class CIA_PARCOURS:
 
 
     def DEBUG_afficher_parcours_preenregistre(self):
+        self.PNJ.verifie_changement_nom( str( ( self.PNJ.position_x(), self.PNJ.position_y()) ) )
         for y in range(0, VAR.dimension_y):
             for x in range(0, VAR.dimension_x):
                 if self.IA.parcours[x][y]['CHEMIN']:
@@ -160,4 +161,4 @@ class CIA_PARCOURS:
                     
                 utilise = self.IA.parcours[x][y]['UTILISE']
                 if utilise > 0:
-                    pygame.draw.circle(VAR.fenetre, (255 - (utilise * 16),32,32), ((x * VAR.dim)+16, (y* VAR.dim)+16), 8, 0)   
+                    pygame.draw.circle(VAR.fenetre, (255 - (utilise * 16),32,32), ((x * VAR.dim)+12, (y* VAR.dim)+12), 8, 0)   

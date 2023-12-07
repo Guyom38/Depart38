@@ -19,7 +19,7 @@ boucle = True
 pas = 0.01
 dim = 24
 
-fps_max = 24
+fps_max = 25
 
 dimDiv2 = dim // 2
 dimMul2 = dim * 2
@@ -85,3 +85,5 @@ C_ROOM_BUILDER_OFFICE = 0
 C_MODERN_OFFICE = 0
 C_MODERN_EXTERIORS = 0
 C_INTERIOR = 0
+
+#http://noproblo.dayjo.org/ZeldaSounds/
