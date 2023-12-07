@@ -31,6 +31,7 @@ class ENUM_DEMO:
     BLOCAGE = 9
     WEBSOCKET = 10
     PRIORITE = 11
+    TOUS_CONTRE_UN = 12
     
 # --- Joueurs
 class ENUM_DIR:

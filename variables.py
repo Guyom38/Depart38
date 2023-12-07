@@ -16,10 +16,10 @@ dimOrigine = 32 # --- dimension des sprites PNG
 fenetre = None
 boucle = True
 
-pas = 0.010
+pas = 0.01
 dim = 24
 
-fps_max = 25
+fps_max = 5
 
 dimDiv2 = dim // 2
 dimOffY = (1.75 * dim)

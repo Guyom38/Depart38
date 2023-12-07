@@ -142,7 +142,9 @@ class CJoueur:
             self.timer_particules = time.time()
     
     def reflechit(self):
-        self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+        if ENUM_DEMO.TOUS_CONTRE_UN in VAR.demo:
+            self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+        
         if self.direction == ENUM_DIR.AUCUN:
             self.IA.etablir_direction_initiale()                
         self.IA.je_reflechis()        

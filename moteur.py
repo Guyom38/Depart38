@@ -113,11 +113,7 @@ class CMoteur:
             
         
             
-    def afficher_parcours_vincent(self):
-        for y in range(0, VAR.dimension_y):
-                for x in range(0, VAR.dimension_x):
-                    if self.PERSONNAGES.PNJS[0].IA.parcours[x][y]['CHEMIN']:
-                        pygame.draw.rect(VAR.fenetre, (32,32,32), (x * VAR.dim, y* VAR.dim, VAR.dim, VAR.dim), 0)      
+         
                            
     
     def afficher_performances(self):
@@ -148,7 +144,7 @@ class CMoteur:
             self.TERRAIN.afficher()  
              
             if ENUM_DEMO.CHEMIN_VINCENT in VAR.demo:
-                self.afficher_parcours_vincent()                 
+                self.PERSONNAGES.PNJS[0].IA.IA_PARCOURS.DEBUG_afficher_parcours_preenregistre()   
             self.PERSONNAGES.se_deplacent()  
             
             self.PERSONNAGES.afficher_effets_joueurs() 
