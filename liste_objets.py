@@ -30,3 +30,8 @@ class CListe_Objets:
         self.objets = [OBJ_EXTINCTEUR,
                 OBJ_CHAISE_DEV, OBJ_CHAISE_DER, OBJ_CHAISE2_DER, OBJ_ARB1x2_GRIS, OBJ_ARB1x3_GRIS, OBJ_ARB2x3_GRIS, OBJ_ARB1x3_GRIS2,
                 OBJ_4x4_MONITEURS, OBJ_BAIE_INFORMATIQUE] #, OBJ_TRACE1, OBJ_TRACE2]
+
+        # Liste du haut des murs
+        #for id_unique in (10, 11, 12, 28, 42, 43, 44, 176, 177, 178, 179, 183, 184, 185 ):
+        #    objet = ((VAR.C_ROOM_BUILDER_OFFICE, id_unique), (1, 1), C_TRAVERSABLE, None, False)
+        #    self.objets.append(objet)

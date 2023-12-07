@@ -67,7 +67,7 @@ class CRaytracing:
         
         for joueur in self.MOTEUR.PERSONNAGES.JOUEURS:
             objet_zone_vision = (px2-2, py2-2, 4, 4)
-            objet_joueur = (joueur.position_int_x(), joueur.position_int_y()-5, 20, 6)
+            objet_joueur = (joueur.position_int_x(), joueur.position_int_y(), 20, 6)
             joueur_detecte = collision(objet_zone_vision, objet_joueur)
             
             
@@ -121,9 +121,8 @@ class CRaytracing:
     def generation_du_champs_de_vision(self, plages, personnage):
         liste_joueurs_detectes = []
         
-        x, y = personnage.x, personnage.y  
-        px2, py2 = int(x * VAR.dim) +15 , int(y * VAR.dim) -4  
-              
+        px2, py2 = personnage.position_int_x(), personnage.position_int_y()
+               
         x1, y1, x2, y2 = 9999, 9999, 0, 0        
         contour = []  
         

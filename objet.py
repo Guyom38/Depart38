@@ -30,9 +30,9 @@ class CObjet:
     def position_pixel_y(self):
         return int(round((self.y * VAR.dim) + self.offsetY,0))
     
-    def position_cellule_x(self):
+    def position_int_x(self):
         return int(round((self.x * VAR.dim), 0))
-    def position_cellule_y(self):
+    def position_int_y(self):
         return int(round((self.y * VAR.dim), 0))
     
     def rythme_animation(self):

@@ -15,7 +15,7 @@ class CPourchasser:
         
         # --- valeur originale
         self.reference_vitesse_du_joueur = self.PERSONNAGE.vitesse
-        self.reference_position = self.PERSONNAGE.position_int_x(), self.PERSONNAGE.position_int_x()
+        self.reference_position = self.PERSONNAGE.position_int_x(), self.PERSONNAGE.position_int_y()
         
         # --- parametres
         self.rage = 10

@@ -47,7 +47,6 @@ class CIA_PARCOURS:
             
         # Vérifie si le PNJ est positionné au centre de la cellule
         if not self.IA.est_ce_que_je_suis_au_centre_de_la_cellule():
-            print("pas encore au milieu" + str((self.PNJ.x, self.PNJ.y)))
             return False
                 
         intersection_non_definie = ((self.objectifx, self.objectify) == (-1, -1))

@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = [ENUM_DEMO.CHEMIN_VINCENT, ENUM_DEMO.DIJISKRA]
+demo = []
 phase_dans_le_jeu = ENUM_PHASE.JEU
 fichier_map = 'depart'
 resolution_x = 1920
@@ -19,9 +19,11 @@ boucle = True
 pas = 0.01
 dim = 24
 
-fps_max = 5
+fps_max = 24
 
 dimDiv2 = dim // 2
+dimMul2 = dim * 2
+
 dimOffY = (1.75 * dim)
 dimMask = (0.625 * dim)
 

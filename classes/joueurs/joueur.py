@@ -19,7 +19,7 @@ class CJoueur:
         self.nom = nom
         self.equipe = 0
         
-        self.x, self.y = x, y + 0.5
+        self.x, self.y = x, y
         self.direction = ENUM_DIR.AUCUN
         
         #
@@ -30,7 +30,7 @@ class CJoueur:
         self.animation = ENUM_ANIMATION.MARCHER
         
         self.fonction = fonction        
-        self.offsetX, self.offsetY = -VAR.dimDiv2, -VAR.dimOffY     
+        self.offsetX, self.offsetY = 0, 0   
         
         self.champ_vision = 60
         
@@ -74,10 +74,17 @@ class CJoueur:
         self.timer_particules = time.time()        
         
         # --- Gestion du mask pour les collisions
-        self.image_mask = pygame.Surface((VAR.dimMask, 4)) # 32 pixel => 20
+        self.image_mask = pygame.Surface((VAR.dimMask, 6)) # 32 pixel => 20
         self.mask = pygame.mask.from_surface(self.image_mask)
         self.mask_rect = self.image_mask.get_rect(center = (0,0))
-
+        
+    def verifie_changement_nom(self):
+        if self.index in VAR.DICO_NAMES_WEBSOCKET:
+            nouveau_nom = VAR.DICO_NAMES_WEBSOCKET[self.index]
+            if not self.nom == nouveau_nom:
+                self.nom = nouveau_nom
+                self.generer_image_nom()
+                
     def changement_equipe(self, equipe):
         self.equipe = equipe
         self.generer_ombre_joueur()
@@ -103,47 +110,35 @@ class CJoueur:
         image_nom.blit(image_texte, (2, -2))
         
         self.image_nom = image_nom  
-          
-    def get_position(self):
-        return (int((self.x * VAR.dim) + VAR.dimDiv2), int((self.y * VAR.dim)))    
-               
+    
+    def position_pixel_x(self):
+        return self.position_int_x() - VAR.dimDiv2 
+    def position_pixel_y(self):
+        return self.position_int_y() - VAR.dimMul2 + (self.image_mask.get_height() // 2)
+         
     def position_int_x(self):
-        return round((self.x * VAR.dim))
+        return int(round((self.x * VAR.dim))) + VAR.dimDiv2
     def position_int_y(self):
-        return round((self.y * VAR.dim))
+        return int(round((self.y * VAR.dim))) + VAR.dimDiv2
         
     def toujours_sur_le_terrain(self):
-        return (    self.position_int_x() > -1 and self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] \
-                    and self.position_int_y() > -1 and self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
+        return (    -1 < self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and \
+                    -1 < self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
     
     
     
-    def collision_avec_decors(self): 
-        self.mask_rect.center = self.position_int_x()+VAR.dimDiv2, self.position_int_y() 
-       
-        offset_x = 0 - self.mask_rect.left 
-        offset_y = 0 - self.mask_rect.top 
-     
-        collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (offset_x, offset_y))
-        if collision:
-            if ENUM_DEMO.BLOCAGE in VAR.demo :
-                pygame.draw.rect(VAR.fenetre, (255,0,0), self.mask_rect, 0)  
-            return True
-        return False
+    
         
      
     
     
                                          
-    def afficher_fumee(self):
-        # --- particules
-        if time.time() - self.timer_particules > (2 / self.vitesse) and self.vitesse > 5:            
-            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x() + VAR.dimDiv2, self.position_int_y(), (255,255,255))
-            self.timer_particules = time.time()
+
     
     def reflechit(self):
         if ENUM_DEMO.TOUS_CONTRE_UN in VAR.demo:
-            self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+            pos_joueur_x, pos_joueur_y = self.MOTEUR.PERSONNAGES.JOUEURS[0].position_int_x(), self.MOTEUR.PERSONNAGES.JOUEURS[0].position_int_y()
+            self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((pos_joueur_x, pos_joueur_y))    
         
         if self.direction == ENUM_DIR.AUCUN:
             self.IA.etablir_direction_initiale()                
@@ -166,8 +161,10 @@ class CJoueur:
         elif self.direction == ENUM_DIR.DIAGONAL9: valeurs = (VAR.pas, -VAR.pas, ENUM_DIR.DROITE)
          
         
-        xo, yo = self.x, self.y        
+         
         for i in range(0, self.vitesse):
+            xo, yo = self.x, self.y  
+                
             if not valeurs == None:
                 xx, yy, direction = valeurs
                 self.direction_image = direction
@@ -179,14 +176,13 @@ class CJoueur:
                 if self.toujours_sur_le_terrain():   
                     if self.collision_avec_decors():
                         if self.reajustement_apres_collision(xo, yo):                            
-                            self.x, self.y = xo, yo
+                            self.x, self.y = xo, yo                            
                             break
-                        
-                        else:                            
-                            xo, yo = self.x, self.y    
+      
 
             else:
-                self.reflechit()  
+                self.reflechit() 
+        self.mise_a_jour_position_mask() 
 
                 
                 
@@ -200,19 +196,36 @@ class CJoueur:
                 
         for xx, yy in liste_directions_primaires_a_tester:
             self.x, self.y = (xo + xx), (yo + yy)
+            
             if not self.collision_avec_decors():
                 return False  
         return True
+       
                 
+    def mise_a_jour_position_mask(self):
+        self.mask_rect.center = self.position_int_x(), self.position_int_y() 
         
+    def collision_avec_decors(self): 
+        self.mise_a_jour_position_mask()
+       
+        offset_x = 0 - self.mask_rect.left 
+        offset_y = 0 - self.mask_rect.top 
+     
+        collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (offset_x, offset_y))
+        if collision:
+            if ENUM_DEMO.BLOCAGE in VAR.demo :
+                pygame.draw.rect(VAR.fenetre, (255,255,255), self.mask_rect, 0)  
+
+            return True
+        return False
+            
     def rythme_animation(self):
         if time.time() - self.tempoTimer > 0.1: 
             self.tempo += 1
             self.tempoTimer = time.time()
                 
     def coordonnees_image_animee(self):
-        self.rythme_animation()
-        
+        self.rythme_animation()        
         
         position_x, position_y, nombre_images = 0, 8, 6
         if self.direction_image == ENUM_DIR.HAUT: position_x = 1
@@ -232,28 +245,27 @@ class CJoueur:
         return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
     
     def afficher_ombre(self):
-        x, y = self.get_position()
+        x, y = self.position_int_x(), self.position_int_y()
         centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
         VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
         
     def afficher_champ_vision(self):
         self.MOTEUR.PERSONNAGES.RAYS.afficher(self)
     
-    def verifie_changement_nom(self):
-        if self.index in VAR.DICO_NAMES_WEBSOCKET:
-            nouveau_nom = VAR.DICO_NAMES_WEBSOCKET[self.index]
-            if not self.nom == nouveau_nom:
-                self.nom = nouveau_nom
-                self.generer_image_nom()
+    def afficher_fumee(self):
+        # --- particules
+        if time.time() - self.timer_particules > (2 / self.vitesse) and self.vitesse > 5:            
+            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x(), self.position_int_y(), (255,255,255))
+            self.timer_particules = time.time()    
+    
+    
                 
     # --- affiche joueur
     def afficher(self):  
         self.verifie_changement_nom()        
-      
-        x, y = self.get_position()
-          
+
         # --- affiche sprite joueur
-        xImg, yImg = x+self.offsetX, y+self.offsetY
+        xImg, yImg = self.position_pixel_x(), self.position_pixel_y()
         VAR.fenetre.blit(self.image, (xImg, yImg), self.coordonnees_image_animee())
                    
         # --- affiche nom
@@ -261,6 +273,10 @@ class CJoueur:
         
         # --- affiche la barre de temps (PROGRESSION)
         self.MECANIQUE_ACTION.afficher(xImg, yImg)
+        
+        if ENUM_DEMO.BLOCAGE in VAR.demo :
+            pygame.draw.rect(VAR.fenetre, (255,0,0), self.mask_rect, 0)  
+            pygame.draw.circle(VAR.fenetre, (255,255,255), (self.position_int_x(), self.position_int_y()), 4, 0)
         
         
     
