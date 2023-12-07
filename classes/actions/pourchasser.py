@@ -33,11 +33,13 @@ class CPourchasser:
             # --- action       
             self.PERSONNAGE.animation = ENUM_ANIMATION.COURIR
             self.PERSONNAGE.vitesse = self.PERSONNAGE.vitesse * 2
-            self.reference_position = self.PERSONNAGE.IA.pos_pnj
+            
+            # --- mémorise la position du joueur avant la poursuite
+            self.reference_position = self.PERSONNAGE.IA.IA_PATHFINDING.pos_pnj
             
     def cycle(self):  
         x, y = int(self.JOUEUR_CIBLE.x), int(self.JOUEUR_CIBLE.y) 
-        self.PERSONNAGE.IA.calculer_le_chemin_jusqua( (x, y) )  
+        self.PERSONNAGE.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua( (x, y) )  
             
     def terminer(self):   
         # quand la barre de temps est epuisé, il rentre jusqu'a son chemin
@@ -57,6 +59,6 @@ class CPourchasser:
         # --- retourne a la position ou le pnj était
         if not self.reference_position == None:
             x, y = self.reference_position
-            self.PERSONNAGE.IA.calculer_le_chemin_jusqua((x, y))  
-        
+            self.PERSONNAGE.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((x, y))  
+            print("Retourner a la maison ...")
         #self.chemin_pathfinding = []

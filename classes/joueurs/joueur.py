@@ -4,7 +4,7 @@ import variables as VAR
 from fonctions import *
 import time
 
-from classes.joueurs.ia import *
+from classes.joueurs.ia.ia import *
 from classes.joueurs.action import *
             
 class CJoueur:
@@ -31,6 +31,8 @@ class CJoueur:
         
         self.fonction = fonction        
         self.offsetX, self.offsetY = -VAR.dimDiv2, -VAR.dimOffY     
+        
+        self.champ_vision = 60
         
         if is_IA:
             
@@ -140,7 +142,7 @@ class CJoueur:
             self.timer_particules = time.time()
     
     def reflechit(self):
-        #self.IA.calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
+        self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((int(self.MOTEUR.PERSONNAGES.JOUEURS[0].x), int(self.MOTEUR.PERSONNAGES.JOUEURS[0].y)))    
         if self.direction == ENUM_DIR.AUCUN:
             self.IA.etablir_direction_initiale()                
         self.IA.je_reflechis()        
@@ -164,7 +166,6 @@ class CJoueur:
         
         xo, yo = self.x, self.y        
         for i in range(0, self.vitesse):
-            print("==> " + str((i, round(self.x,2), round(self.y,2))))
             if not valeurs == None:
                 xx, yy, direction = valeurs
                 self.direction_image = direction
@@ -175,20 +176,16 @@ class CJoueur:
             if not est_ordinateur:
                 if self.toujours_sur_le_terrain():   
                     if self.collision_avec_decors():
-                        print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS")
                         if self.reajustement_apres_collision(xo, yo):                            
                             self.x, self.y = xo, yo
-                            print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> COLLISION MALGRE AJUSTEMENT")
                             break
+                        
                         else:                            
                             xo, yo = self.x, self.y    
-                            print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> ON CONTINUE")
-                    else:
-                        print("==> " + str((i, round(self.x,2), round(self.y,2))) + " ==> PAS DE COLLISION")
+
             else:
                 self.reflechit()  
-        print("==> TERMINE")
-        print("")
+
                 
                 
     def reajustement_apres_collision(self, xo, yo):
@@ -202,9 +199,7 @@ class CJoueur:
         for xx, yy in liste_directions_primaires_a_tester:
             self.x, self.y = (xo + xx), (yo + yy)
             if not self.collision_avec_decors():
-                print("==> " + str((-1, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> PARFAIT " + str((xx, yy)))
                 return False  
-        print("==> " + str((-1, round(self.x,2), round(self.y,2))) + " ==> COLLISION AVEC DECORS  ==> COLLISION " + str((xx, yy)))                      
         return True
                 
         

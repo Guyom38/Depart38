@@ -49,7 +49,7 @@ class CRaytracing:
     def calculer_plage_angles(self, personnage, amplitude_balancement, precision):        
         
         angle_champs = personnage.direction
-        champ_vision = personnage.IA.champ_vision   
+        champ_vision = personnage.champ_vision   
         tempo_champ = personnage.tempo
         
         # Calcul du balancement basé sur le tempo et l'amplitude

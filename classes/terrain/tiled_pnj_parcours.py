@@ -25,6 +25,9 @@ def initialisation_joueurs(moteur_tiled):
 def generer_parcours_PNJ(moteur_tiled):
     MOTEUR_TILED = moteur_tiled
     
+    ID_CHEMIN_DEPART = VAR.C_MECANIQUE + 0
+    ID_CHEMIN_PARCOURS = VAR.C_MECANIQUE + 1
+    
     parcours = {}
     for layer in MOTEUR_TILED.root.findall('layer'):
         if layer.attrib['name'].startswith("Chemin"):
@@ -38,22 +41,23 @@ def generer_parcours_PNJ(moteur_tiled):
                 lignes = csv_text.split('\n')
                 y = 0
                 for ligne in lignes:
-                    x = 0
-                    tile_ids = ligne.replace("'", "").split(',')
+                    x = 0            
 
-                    for index in tile_ids:
-
-                        if not index == "":
+                    for index in ligne.replace("'", "").split(','):
+                        if not index == '':
+                            indexInt = int(index)                        
+                        
                             grille_parcours[x][y] = {}
-                            grille_parcours[x][y]['CHEMIN'] = (int(index) > 0)
+                            grille_parcours[x][y]['CHEMIN'] = (indexInt == ID_CHEMIN_PARCOURS)
                             grille_parcours[x][y]['UTILISE'] = 0
 
-                            if int(index) == (VAR.C_MECANIQUE + 1): # Boule bleue, chemin a suivre
-                                    liste_positions_pnjs.append((x, y))
+                            if indexInt == ID_CHEMIN_DEPART:
+                                liste_positions_pnjs.append((x, y))
                         x += 1
                     y += 1
 
-                parcours[layer.attrib['name']] = {}
-                parcours[layer.attrib['name']]['GRILLE'] = grille_parcours
-                parcours[layer.attrib['name']]['DEPART'] = liste_positions_pnjs
+                index_parcours = layer.attrib['name']
+                parcours[ index_parcours ] = {}
+                parcours[ index_parcours ]['GRILLE'] = grille_parcours
+                parcours[ index_parcours ]['DEPART'] = liste_positions_pnjs
     return parcours

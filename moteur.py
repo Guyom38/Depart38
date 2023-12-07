@@ -145,21 +145,17 @@ class CMoteur:
             t = time.time()
              
             self.CONTROLLEURS.gestion_des_commandes_utilisateurs() 
-            self.PERSONNAGES.se_deplacent()     
-            
             self.TERRAIN.afficher()  
-            
-            
-            self.PERSONNAGES.afficher_effets_joueurs()     
-                 
-            self.ELEMENTS_VISUELS.controle_proximites()
-            
-            self.ELEMENTS_VISUELS.prepare_et_tri_les_objets_a_afficher()    
-            
+             
             if ENUM_DEMO.CHEMIN_VINCENT in VAR.demo:
-                self.afficher_parcours_vincent()  
-        
-            self.PARTICULES.Afficher_Les_Particules()    
+                self.afficher_parcours_vincent()                 
+            self.PERSONNAGES.se_deplacent()  
+            
+            self.PERSONNAGES.afficher_effets_joueurs() 
+            self.ELEMENTS_VISUELS.controle_proximites()            
+            self.ELEMENTS_VISUELS.prepare_et_tri_les_objets_a_afficher()    
+            self.PARTICULES.Afficher_Les_Particules()  
+              
             self.ELEMENTS_VISUELS.afficher()   
 
             if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:

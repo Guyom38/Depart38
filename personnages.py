@@ -1,5 +1,5 @@
 from classes.joueurs.joueur import *
-from classes.joueurs.raytracing import *
+from classes.joueurs.algos.raytracing import *
 from classes.joueurs.pathfinding import *
 
 import variables as VAR
