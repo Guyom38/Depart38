@@ -37,7 +37,8 @@ class CRaytracing:
         if len(liste_joueurs_detectes) > 0:
             couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)   
             premier_joueur_detecte = liste_joueurs_detectes[0]  
-            personnage.MECANIQUE_ACTION.demarrer(CPourchasser(personnage, premier_joueur_detecte))        
+            personnage.MECANIQUE_ACTION.demarrer(CPourchasser(personnage, premier_joueur_detecte))  
+                  
         return couleur_champ_vision, forme, rect_forme 
     
     

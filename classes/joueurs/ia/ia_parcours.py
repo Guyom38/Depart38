@@ -7,6 +7,9 @@ class CIA_PARCOURS:
     def __init__(self, IA):
         self.IA = IA  # Référence à l'objet IA (Intelligence Artificielle)
         self.PNJ = IA.PNJ  # Référence au Personnage Non-Joueur (PNJ) associé à l'IA
+        self.MOTEUR = IA.MOTEUR
+        self.TERRAIN = IA.MOTEUR.TERRAIN
+        
         
         # Définit des objectifs initiaux pour la position du PNJ
         self.objectifx = -1
@@ -64,7 +67,7 @@ class CIA_PARCOURS:
             
         # Parcours les directions possibles et les vérifie
         for direction, offx, offy in [(ENUM_DIR.BAS, 0, 1), (ENUM_DIR.HAUT, 0, -1), (ENUM_DIR.DROITE, 1, 0), (ENUM_DIR.GAUCHE, -1, 0)]:            
-            chemin_dans_les_limites = self.est_sur_le_terrain(xx + offx, yy + offy)
+            chemin_dans_les_limites = self.TERRAIN.cellule_est_sur_le_terrain(xx + offx, yy + offy)
             chemin_possible = self.IA.parcours[xx + offx][yy + offy]['CHEMIN']
             
             if chemin_dans_les_limites and chemin_possible:
@@ -73,10 +76,6 @@ class CIA_PARCOURS:
                     
         return directions_disponibles
 
-    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    # Vérifie si une cellule est sur le terrain de jeu
-    def est_sur_le_terrain(self, x_cellule, y_cellule):
-        return (0 <= x_cellule < VAR.dimension_x) and (0 <= y_cellule < VAR.dimension_y)
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # Sélectionne la direction la moins fréquentée parmi les directions disponibles
@@ -113,7 +112,7 @@ class CIA_PARCOURS:
             y_prochain = yy + offy
 
             # Vérifie les limites et les obstacles sur le chemin
-            if not self.est_sur_le_terrain(x_prochain, y_prochain) or not self.IA.parcours[x_prochain][y_prochain]['CHEMIN']:
+            if not self.TERRAIN.cellule_est_sur_le_terrain(x_prochain, y_prochain) or not self.IA.parcours[x_prochain][y_prochain]['CHEMIN']:
                 break
             
             xx, yy = x_prochain, y_prochain
@@ -129,7 +128,7 @@ class CIA_PARCOURS:
     def est_ce_une_intersection(self, x, y, direction_actuelle):
         direction_opposee = self.quelle_est_la_direction_opposee(direction_actuelle)
         for direction, offx, offy in [(ENUM_DIR.BAS, 0, 1), (ENUM_DIR.HAUT, 0, -1), (ENUM_DIR.DROITE, 1, 0), (ENUM_DIR.GAUCHE, -1, 0)]:
-            if direction not in [direction_actuelle, direction_opposee] and self.est_sur_le_terrain(x + offx, y + offy) and self.IA.parcours[x + offx][y + offy]['CHEMIN']:
+            if direction not in [direction_actuelle, direction_opposee] and self.TERRAIN.cellule_est_sur_le_terrain(x + offx, y + offy) and self.IA.parcours[x + offx][y + offy]['CHEMIN']:
                 return True
 
         return False

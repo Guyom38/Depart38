@@ -34,6 +34,7 @@ class CAction:
             self.ACTION.demarrer()
                  
     def arreter(self):
+        print("Actions.arreter()")
         self.ACTION = None
         self.etape = ENUM_PROGRESSION_ETAT.AUCUN
         
@@ -48,6 +49,9 @@ class CAction:
         elif self.etape == ENUM_PROGRESSION_ETAT.SE_RECHARGE:
             position = (time.time() - self.timer)
             est_arrive_au_bout = (position >= self.temps)
+            
+        else:
+            return -1, False
             
         return position, est_arrive_au_bout
     
@@ -67,13 +71,15 @@ class CAction:
         return position
     
     
-    def afficher(self,x ,y):
+    def afficher(self, x, y):
         # --- sort si il n'y a pas de progression dans le temps
         if not self.etape:
             return        
         
         position_progressîon = self.traitement()
-            
+        if position_progressîon == -1:
+            return
+         
         # --- déduit les valeurs pour le graphisme
         dimx = self.PERSONNAGE.image_nom.get_width()
         valeurx = int((dimx / self.temps) * position_progressîon)

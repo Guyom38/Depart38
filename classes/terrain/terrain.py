@@ -49,7 +49,16 @@ class CTerrain:
     def preparer_parcours_joueurs(self):
         initialisation_joueurs(self.MOTEUR_TILED) 
          
-         
+    def pixel_est_sur_le_terrain(self, int_x, int_y):
+        return (    -1 < int_x < self.arrayBlocage.shape[0] and \
+                    -1 < int_y < self.arrayBlocage.shape[1]    )       
+        
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Vérifie si une cellule est sur le terrain de jeu
+    def cellule_est_sur_le_terrain(self, cellule_x, cellule_y):
+        return (    0 <= cellule_x < VAR.dimension_x and \
+                    0 <= cellule_y < VAR.dimension_y    )
+           
     def afficher(self):
         t = time.time()
         VAR.fenetre.fill((16,16,16))    

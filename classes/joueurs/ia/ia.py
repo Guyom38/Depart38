@@ -41,7 +41,7 @@ class CIA:
 
         # Vérifie chaque direction possible autour du PNJ
         for direction, offx, offy in [(ENUM_DIR.BAS, 0, 1), (ENUM_DIR.HAUT, 0, -1), (ENUM_DIR.DROITE, 1, 0), (ENUM_DIR.GAUCHE, -1, 0)]:
-            if self.IA_PARCOURS.est_sur_le_terrain(xx + offx, yy + offy):
+            if self.MOTEUR.TERRAIN.cellule_est_sur_le_terrain(xx + offx, yy + offy):
                 if self.parcours[xx + offx][yy + offy]['CHEMIN']: # Un chemin est-il disponible ?
                     directions_possibles.append(direction)
 
@@ -53,11 +53,12 @@ class CIA:
 
     # Vérifie si le PNJ est au centre de la cellule actuelle
     def est_ce_que_je_suis_au_centre_de_la_cellule(self):
+    
         direction = self.PNJ.direction
-        print( str( (round(self.PNJ.x, 2), round(self.PNJ.y, 2), " -- ", (round(self.PNJ.x % 1, 2), round(self.PNJ.y % 1, 2)), " -- ", self.PNJ.direction)) )
+        #print( str( (round(self.PNJ.x, 2), round(self.PNJ.y, 2), " -- ", (round(self.PNJ.x % 1, 2), round(self.PNJ.y % 1, 2)), " -- ", self.PNJ.direction)) )
         # Vérifie la position du PNJ par rapport à sa direction pour déterminer s'il est au centre
-        if direction == ENUM_DIR.BAS and self.PNJ.y % 1 < 0.99:   return False
-        elif direction == ENUM_DIR.HAUT and self.PNJ.y % 1 > 0.015:   return False
-        elif direction == ENUM_DIR.DROITE and self.PNJ.x % 1 < 0.99:  return False
+        if direction == ENUM_DIR.BAS and self.PNJ.y % 1 < 0.98:   return False
+        elif direction == ENUM_DIR.HAUT and self.PNJ.y % 1 > 0.15:   return False
+        elif direction == ENUM_DIR.DROITE and self.PNJ.x % 1 < 0.98:  return False
         elif direction == ENUM_DIR.GAUCHE and self.PNJ.x % 1 > 0.015: return False                      
         return True

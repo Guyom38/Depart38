@@ -5,70 +5,75 @@ from fonctions import *
 import time
 
 from classes.joueurs.ia.ia import *
-from classes.joueurs.action import *
+from classes.actions.action import *
             
 class CJoueur:
     def __init__(self, moteur, index, x, y, nom, is_IA, fonction = -1):
         self.MOTEUR = moteur
         self.MECANIQUE_ACTION = CAction(self)        
         self.MECANIQUE_OBJET = CAction(self) 
-        self.pression_bouton_activer_objet = False
-             
+        
         self.index = index
         self.nom = nom
         self.equipe = 0
         self.fonction = fonction        
-        
-        self.x, self.y = x, y
-        self.direction = ENUM_DIR.AUCUN
-        
-        #
-        self.direction_image = ENUM_DIR.AUCUN        
-        self.en_mouvement = True        
-        self.animation = ENUM_ANIMATION.MARCHER        
-        
-        self.offsetX, self.offsetY = 0, 0  
         self.champ_vision = 60
         
+        self.x, self.y = x, y
+        self.offsetX, self.offsetY = 0, 0  
+        
+        self.direction = ENUM_DIR.AUCUN
+        self.directionPrecedente = ENUM_DIR.AUCUN
+        
+        self.direction_image = ENUM_DIR.AUCUN 
+        self.animation = ENUM_ANIMATION.MARCHER    
+        self.en_mouvement = True           
+        
+        self.tempo, self.tempoTimer = 0, time.time()        
+        self.timer_particules = time.time()      
+                
         if is_IA:
-            self.IA = CIA(moteur, self)  
-            if fonction == 0:
-                self.vitesse = 30
-                self.distance_vision = 200
-                self.image = pygame.image.load(".ressources/32/agent.png").convert_alpha()
-                self.couleur_vision = (193,249,153, VAR.ray_alpha)
-            elif fonction == 2:
-                self.vitesse = 4
-                self.distance_vision = 120
-                self.image = pygame.image.load(".ressources/32/basile.png").convert_alpha()
-                self.couleur_vision = (255,255,255, VAR.ray_alpha)
-            else:
-                self.vitesse = 4
-                self.distance_vision = 120
-                self.image = pygame.image.load(".ressources/32/chef.png").convert_alpha()
-                self.couleur_vision = (239,231,129, VAR.ray_alpha)
-   
+            self.configurer_IA()
+            
         else:
             self.image = pygame.image.load(".ressources/32/agent2.png").convert_alpha()
             self.IA = None
             self.vitesse = 20
 
-        dimension_image = (56 * VAR.dim, 40 * VAR.dim) # 56x40 sprites de personnages
-        
+        self.configurer_images()
+            
+            
+    def configurer_images(self):
+        dimension_image = (56 * VAR.dim, 40 * VAR.dim) # 56x40 sprites de personnages            
         self.image = pygame.transform.smoothscale(self.image, dimension_image)
         self.generer_image_nom()
         self.ombre_joueur = self.generer_ombre_joueur()
-        
-        self.directionPrecedente = ENUM_DIR.AUCUN
-        self.seTourne = 0  
-        
-        self.tempo, self.tempoTimer = 0, time.time()        
-        self.timer_particules = time.time()        
-        
+
         # --- Gestion du mask pour les collisions
         self.image_mask = pygame.Surface((VAR.dimMask, 6)) # 32 pixel => 20
         self.mask = pygame.mask.from_surface(self.image_mask)
         self.mask_rect = self.image_mask.get_rect(center = (0,0))
+                
+    def configurer_IA(self):
+        
+        self.IA = CIA(self.MOTEUR, self)  
+        if self.fonction == 0:
+            self.vitesse = 7
+            self.distance_vision = 200
+            self.image = pygame.image.load(".ressources/32/agent.png").convert_alpha()
+            self.couleur_vision = (193,249,153, VAR.ray_alpha)
+        elif self.fonction == 2:
+            self.vitesse = 4
+            self.distance_vision = 120
+            self.image = pygame.image.load(".ressources/32/basile.png").convert_alpha()
+            self.couleur_vision = (255,255,255, VAR.ray_alpha)
+        else:
+            self.vitesse = 4
+            self.distance_vision = 120
+            self.image = pygame.image.load(".ressources/32/chef.png").convert_alpha()
+            self.couleur_vision = (239,231,129, VAR.ray_alpha)
+   
+    
         
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def verifie_changement_nom(self, nouveau_nom = ""):
@@ -124,15 +129,14 @@ class CJoueur:
     
        
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def toujours_sur_le_terrain(self):
-        return (    -1 < self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and \
-                    -1 < self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
+       
     
      
     def reflechit(self):
         if ENUM_DEMO.TOUS_CONTRE_UN in VAR.demo:
             pos_joueur_x, pos_joueur_y = self.MOTEUR.PERSONNAGES.JOUEURS[0].position_x(), self.MOTEUR.PERSONNAGES.JOUEURS[0].position_y()
             self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((pos_joueur_x, pos_joueur_y))    
+        
         
         if self.direction == ENUM_DIR.AUCUN:
             self.IA.etablir_direction_initiale()                
@@ -169,7 +173,7 @@ class CJoueur:
                 self.y += yy            
                 
             if not est_ordinateur:
-                if self.toujours_sur_le_terrain():   
+                if self.MOTEUR.TERRAIN.pixel_est_sur_le_terrain(self.position_pixel_x(), self.position_pixel_y()):   
                     if self.collision_avec_decors():
                         if self.reajustement_apres_collision(xo, yo):                            
                             self.x, self.y = xo, yo                            
