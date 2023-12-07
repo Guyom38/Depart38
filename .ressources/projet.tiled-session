@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map2024.tmx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
         ".",
         "32"
@@ -29,6 +29,9 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "32/mecanique.tsx": {
+            "scaleInDock": 1
+        },
         "depart.tmx": {
             "scale": 0.5,
             "selectedLayer": 6,
@@ -41,8 +44,16 @@
             "scale": 0.5791213768115941,
             "selectedLayer": 12,
             "viewCenter": {
-                "x": 966.9820911863612,
-                "y": 549.1076874951123
+                "x": 965.2553374520999,
+                "y": 547.3809337608509
+            }
+        },
+        "map2024.tmx": {
+            "scale": 0.4440217391304348,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1272.4602203182376,
+                "y": 713.9290085679315
             }
         }
     },
@@ -52,10 +63,12 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 80,
     "openFiles": [
-        "map.tmx"
+        "map.tmx",
+        "map2024.tmx"
     ],
     "project": "projet.tiled-project",
     "recentFiles": [
+        "map2024.tmx",
         "map.tmx",
         "depart.tmx",
         "32/Room_Builder_32x32.tsx",
