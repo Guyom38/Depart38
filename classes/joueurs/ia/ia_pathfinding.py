@@ -22,7 +22,7 @@ class CIA_PATHFINDING:
         
     # Méthode pour calculer le chemin jusqu'à une position cible
     def traque_calculer_le_chemin_jusqua(self, position_cible):
-        position_pnj = (int(self.PNJ.x), int(self.PNJ.y))  # Position actuelle du PNJ
+        position_pnj = (self.PNJ.position_x(), self.PNJ.position_y())  # Position actuelle du PNJ
     
         # Vérifie si la cible ou la position du PNJ a changé
         if not position_cible == self.pos_cible or not position_pnj == self.pos_pnj:
@@ -60,39 +60,41 @@ class CIA_PATHFINDING:
         self.DEBUG_afficher_chemin_jusqua_cible()
                 
     # Méthode pour vérifier si l'IA poursuit actuellement quelqu'un
-    def traque_est_ce_que_je_poursuis_quelquun(self):
+    def il_y_a_t_il_poursuite(self):
         return len(self.chemin) > 0 
 
     # Méthode pour réorienter le PNJ vers le nouveau point sur le chemin
     def traque_je_me_reoriente_vers_le_nouveau_point(self):
         # Vérifie si le PNJ a atteint sa destination
-        if self.index_chemin > len(self.chemin)-1:
+        if self.index_chemin >= len(self.chemin) :
             self.PNJ.direction = ENUM_DIR.AUCUN
             return
             
         point_suivant = self.chemin[self.index_chemin]
-        x, y = self.IA.xInt, self.IA.yInt  # Position actuelle du PNJ
+        xx, yy = self.PNJ.position_x(), self.PNJ.position_y()  # Position actuelle du PNJ
         xNew, yNew = point_suivant  # Prochain point du chemin
             
         # Réoriente le PNJ si celui-ci est au centre de la cellule
         if self.IA.est_ce_que_je_suis_au_centre_de_la_cellule():
             # Ajustement de la direction du PNJ en fonction de la position du point suivant
-            if xNew > x:
+            if xNew > xx:
                 self.PNJ.direction = ENUM_DIR.DROITE
-            if xNew < x:
+            if xNew < xx:
                 self.PNJ.direction = ENUM_DIR.GAUCHE
-            if yNew > y:
+            if yNew > yy:
                 self.PNJ.direction = ENUM_DIR.BAS
-            if yNew < y:
+            if yNew < yy:
                 self.PNJ.direction = ENUM_DIR.HAUT
                 
             # Mise à jour de l'index du chemin si le PNJ atteint le point suivant
-            if (x, y) == (xNew, yNew):
+            if (xx, yy) == (xNew, yNew):
                 self.index_chemin += 1    
+
+
                                 
     # Méthode de debug pour afficher le chemin jusqu'à la cible
     def DEBUG_afficher_chemin_jusqua_cible(self): 
-        if ENUM_DEMO.DIJISKRA in VAR.demo and len(self.chemin) > 0:  
+        if ENUM_DEMO.DIJISKRA in VAR.demo and self.il_y_a_t_il_poursuite():  
             # Dessiner le chemin
             for x, y in self.chemin:
                 pygame.draw.circle(VAR.fenetre, (255,255,255), ((x*VAR.dim)+16, (y*VAR.dim)+16), 8, 0)

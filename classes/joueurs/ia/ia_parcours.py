@@ -11,7 +11,9 @@ class CIA_PARCOURS:
         # Définit des objectifs initiaux pour la position du PNJ
         self.objectifx = -1
         self.objectify = -1
-    
+
+        self.position_precedente = (-1, -1)  # Mémorisation de la dernière position du PNJ
+        
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # Fonction principale pour la prise de décision de l'IA
     def je_reflechis(self):
@@ -35,9 +37,9 @@ class CIA_PARCOURS:
     # Enregistre le passage du PNJ pour éviter de repasser par le même chemin
     def je_note_mon_passage_si_nouveau_chemin(self):
         xx, yy = self.PNJ.position_x(), self.PNJ.position_y()
-        nouvelle_position = not ((xx, yy) == self.IA.position_precedente)
+        nouvelle_position = not ((xx, yy) == self.position_precedente)
         if nouvelle_position:
-            self.IA.position_precedente = (xx, yy)
+            self.position_precedente = (xx, yy)
             self.IA.parcours[xx][yy]['UTILISE'] += 1
 
     # ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -162,3 +164,5 @@ class CIA_PARCOURS:
                 utilise = self.IA.parcours[x][y]['UTILISE']
                 if utilise > 0:
                     pygame.draw.circle(VAR.fenetre, (255 - (utilise * 16),32,32), ((x * VAR.dim)+12, (y* VAR.dim)+12), 8, 0)   
+                    
+      

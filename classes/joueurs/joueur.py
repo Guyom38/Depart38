@@ -10,36 +10,30 @@ from classes.joueurs.action import *
 class CJoueur:
     def __init__(self, moteur, index, x, y, nom, is_IA, fonction = -1):
         self.MOTEUR = moteur
-        self.MECANIQUE_ACTION = CAction(self)
-        
+        self.MECANIQUE_ACTION = CAction(self)        
         self.MECANIQUE_OBJET = CAction(self) 
         self.pression_bouton_activer_objet = False
              
         self.index = index
         self.nom = nom
         self.equipe = 0
+        self.fonction = fonction        
         
         self.x, self.y = x, y
         self.direction = ENUM_DIR.AUCUN
         
         #
-        self.direction_image = ENUM_DIR.AUCUN
+        self.direction_image = ENUM_DIR.AUCUN        
+        self.en_mouvement = True        
+        self.animation = ENUM_ANIMATION.MARCHER        
         
-        self.en_mouvement = True
-        
-        self.animation = ENUM_ANIMATION.MARCHER
-        
-        self.fonction = fonction        
-        self.offsetX, self.offsetY = 0, 0   
-        
+        self.offsetX, self.offsetY = 0, 0  
         self.champ_vision = 60
         
         if is_IA:
-            
-            self.IA = CIA(moteur, self)            
-
+            self.IA = CIA(moteur, self)  
             if fonction == 0:
-                self.vitesse = 40
+                self.vitesse = 30
                 self.distance_vision = 200
                 self.image = pygame.image.load(".ressources/32/agent.png").convert_alpha()
                 self.couleur_vision = (193,249,153, VAR.ray_alpha)
@@ -53,15 +47,13 @@ class CJoueur:
                 self.distance_vision = 120
                 self.image = pygame.image.load(".ressources/32/chef.png").convert_alpha()
                 self.couleur_vision = (239,231,129, VAR.ray_alpha)
-            
-            
    
         else:
             self.image = pygame.image.load(".ressources/32/agent2.png").convert_alpha()
             self.IA = None
             self.vitesse = 20
 
-        dimension_image = (56 * VAR.dim, 40 * VAR.dim)
+        dimension_image = (56 * VAR.dim, 40 * VAR.dim) # 56x40 sprites de personnages
         
         self.image = pygame.transform.smoothscale(self.image, dimension_image)
         self.generer_image_nom()
@@ -70,7 +62,7 @@ class CJoueur:
         self.directionPrecedente = ENUM_DIR.AUCUN
         self.seTourne = 0  
         
-        self.tempo,self.tempoTimer = 0, time.time()        
+        self.tempo, self.tempoTimer = 0, time.time()        
         self.timer_particules = time.time()        
         
         # --- Gestion du mask pour les collisions
@@ -78,6 +70,7 @@ class CJoueur:
         self.mask = pygame.mask.from_surface(self.image_mask)
         self.mask_rect = self.image_mask.get_rect(center = (0,0))
         
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def verifie_changement_nom(self, nouveau_nom = ""):
         if not nouveau_nom == "":
             self.nom = nouveau_nom
@@ -103,83 +96,68 @@ class CJoueur:
         
     def generer_image_nom(self):
         ecriture = pygame.font.SysFont('arial', 20) 
-        
-        #image_ombre = ecriture.render( self.nom , True, (0,0,0)) 
         image_texte = ecriture.render( self.nom , True, (255,255,255)) 
         
         image_nom = pygame.Surface( (image_texte.get_width()+4, image_texte.get_height()-4) ).convert_alpha()
         image_nom.fill( (0, 0, 0, 255) )
-        
-        #image_nom.blit(image_ombre, (0, -4))
-        image_nom.blit(image_texte, (2, -2))
-        
+
+        image_nom.blit(image_texte, (2, -2))        
         self.image_nom = image_nom  
     
     
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     # --- proprietes de position
     # - en pixel
     def position_pixel_x(self):
         return self.position_int_x() - VAR.dimDiv2 
     def position_pixel_y(self):
-        return self.position_int_y() - VAR.dimMul2 + (self.image_mask.get_height() // 2)
-         
+        return self.position_int_y() - VAR.dimMul2 + (self.image_mask.get_height() // 2)         
     def position_int_x(self):
         return int(round((self.x * VAR.dim))) + VAR.dimDiv2
     def position_int_y(self):
-        return int(round((self.y * VAR.dim))) + VAR.dimDiv2
-    
+        return int(round((self.y * VAR.dim))) + VAR.dimDiv2    
     # - en cellule
     def position_x(self):
         return int(round(self.x))
     def position_y(self):
         return int(round(self.y))
     
-    
-    
-    
-    
-    
-     
+       
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def toujours_sur_le_terrain(self):
         return (    -1 < self.position_int_x() < self.MOTEUR.TERRAIN.arrayBlocage.shape[0] and \
                     -1 < self.position_int_y() < self.MOTEUR.TERRAIN.arrayBlocage.shape[1]    )            
     
-    
-    
-    
-        
      
-    
-    
-                                         
-
-    
     def reflechit(self):
         if ENUM_DEMO.TOUS_CONTRE_UN in VAR.demo:
-            pos_joueur_x, pos_joueur_y = self.MOTEUR.PERSONNAGES.JOUEURS[0].position_int_x(), self.MOTEUR.PERSONNAGES.JOUEURS[0].position_int_y()
+            pos_joueur_x, pos_joueur_y = self.MOTEUR.PERSONNAGES.JOUEURS[0].position_x(), self.MOTEUR.PERSONNAGES.JOUEURS[0].position_y()
             self.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((pos_joueur_x, pos_joueur_y))    
         
         if self.direction == ENUM_DIR.AUCUN:
             self.IA.etablir_direction_initiale()                
         self.IA.je_reflechis()        
                      
-    
-                     
+                         
     def se_deplace(self):        
-        if not self.en_mouvement :
-            return
+        if self.en_mouvement :            
         
-        valeurs = None
-        if self.direction == ENUM_DIR.GAUCHE: valeurs = (-VAR.pas, 0, ENUM_DIR.GAUCHE)
-        elif self.direction == ENUM_DIR.DROITE: valeurs = (VAR.pas, 0, ENUM_DIR.DROITE)
-        elif self.direction == ENUM_DIR.HAUT: valeurs = (0, -VAR.pas, ENUM_DIR.HAUT)
-        elif self.direction == ENUM_DIR.BAS: valeurs = (0, VAR.pas, ENUM_DIR.BAS)
-        elif self.direction == ENUM_DIR.DIAGONAL1: valeurs = (-VAR.pas, VAR.pas, ENUM_DIR.GAUCHE)
-        elif self.direction == ENUM_DIR.DIAGONAL3: valeurs = (VAR.pas, VAR.pas, ENUM_DIR.DROITE)
-        elif self.direction == ENUM_DIR.DIAGONAL7: valeurs = (-VAR.pas, -VAR.pas, ENUM_DIR.GAUCHE)
-        elif self.direction == ENUM_DIR.DIAGONAL9: valeurs = (VAR.pas, -VAR.pas, ENUM_DIR.DROITE)
-         
+            valeurs = None
+            if self.direction == ENUM_DIR.GAUCHE: valeurs = (-VAR.pas, 0, ENUM_DIR.GAUCHE)
+            elif self.direction == ENUM_DIR.DROITE: valeurs = (VAR.pas, 0, ENUM_DIR.DROITE)
+            elif self.direction == ENUM_DIR.HAUT: valeurs = (0, -VAR.pas, ENUM_DIR.HAUT)
+            elif self.direction == ENUM_DIR.BAS: valeurs = (0, VAR.pas, ENUM_DIR.BAS)
+            elif self.direction == ENUM_DIR.DIAGONAL1: valeurs = (-VAR.pas, VAR.pas, ENUM_DIR.GAUCHE)
+            elif self.direction == ENUM_DIR.DIAGONAL3: valeurs = (VAR.pas, VAR.pas, ENUM_DIR.DROITE)
+            elif self.direction == ENUM_DIR.DIAGONAL7: valeurs = (-VAR.pas, -VAR.pas, ENUM_DIR.GAUCHE)
+            elif self.direction == ENUM_DIR.DIAGONAL9: valeurs = (VAR.pas, -VAR.pas, ENUM_DIR.DROITE)
+            
+            self.controle_collision(valeurs)
         
+        
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    def controle_collision(self, valeurs):
+        est_ordinateur = (not self.IA == None)
          
         for i in range(0, self.vitesse):
             xo, yo = self.x, self.y  
@@ -188,22 +166,20 @@ class CJoueur:
                 xx, yy, direction = valeurs
                 self.direction_image = direction
                 self.x += xx
-                self.y += yy
-            
-            est_ordinateur = (not self.IA == None)    
+                self.y += yy            
+                
             if not est_ordinateur:
                 if self.toujours_sur_le_terrain():   
                     if self.collision_avec_decors():
                         if self.reajustement_apres_collision(xo, yo):                            
                             self.x, self.y = xo, yo                            
                             break
-      
-
             else:
                 self.reflechit() 
         self.mise_a_jour_position_mask() 
 
-                
+    def mise_a_jour_position_mask(self):
+        self.mask_rect.center = self.position_int_x(), self.position_int_y()                 
                 
     def reajustement_apres_collision(self, xo, yo):
         if self.direction == ENUM_DIR.DIAGONAL1: liste_directions_primaires_a_tester = [(-VAR.pas, 0), (0,VAR.pas)]
@@ -213,17 +189,12 @@ class CJoueur:
         else:
             return True
                 
-        for xx, yy in liste_directions_primaires_a_tester:
-            self.x, self.y = (xo + xx), (yo + yy)
+        for x, y in liste_directions_primaires_a_tester:
+            self.x, self.y = (xo + x), (yo + y)
             
             if not self.collision_avec_decors():
                 return False  
-        return True
-       
-                
-    def mise_a_jour_position_mask(self):
-        self.mask_rect.center = self.position_int_x(), self.position_int_y() 
-        
+        return True        
     def collision_avec_decors(self): 
         self.mise_a_jour_position_mask()
        
@@ -237,7 +208,11 @@ class CJoueur:
 
             return True
         return False
+    
+    
+    
             
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def rythme_animation(self):
         if time.time() - self.tempoTimer > 0.1: 
             self.tempo += 1
@@ -261,11 +236,12 @@ class CJoueur:
         position_y = animation[0]
         nombre_images = animation[1]          
             
-        return ( ((position_x * nombre_images)+(self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dim *2)), VAR.dim, (VAR.dim *2) )
+        return ( ((position_x * nombre_images) + (self.tempo % nombre_images)) * VAR.dim, (position_y * (VAR.dimMul2)), VAR.dim, (VAR.dimMul2) )
     
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------
     def afficher_ombre(self):
-        x, y = self.position_int_x(), self.position_int_y()
-        centre_ombrex, centre_ombrey = x - (self.ombre.get_width() // 2), y - (self.ombre.get_height() // 2)
+        xx, yy = self.position_int_x(), self.position_int_y()
+        centre_ombrex, centre_ombrey = xx - (self.ombre.get_width() // 2), yy - (self.ombre.get_height() // 2)
         VAR.fenetre.blit(self.ombre, (centre_ombrex, centre_ombrey))
         
     def afficher_champ_vision(self):
@@ -273,11 +249,10 @@ class CJoueur:
     
     def afficher_fumee(self):
         # --- particules
-        if time.time() - self.timer_particules > (2 / self.vitesse) and self.vitesse > 5:            
-            self.MOTEUR.PARTICULES.Ajouter_Particule(self.position_int_x(), self.position_int_y(), (255,255,255))
-            self.timer_particules = time.time()    
-    
-    
+        if time.time() - self.timer_particules > (2 / self.vitesse) and self.vitesse > 5: 
+            xx, yy = self.position_int_x(), self.position_int_y()           
+            self.MOTEUR.PARTICULES.Ajouter_Particule(xx, yy, (255,255,255))
+            self.timer_particules = time.time()  
                 
     # --- affiche joueur
     def afficher(self):  

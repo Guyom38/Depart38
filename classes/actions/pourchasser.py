@@ -15,7 +15,7 @@ class CPourchasser:
         
         # --- valeur originale
         self.reference_vitesse_du_joueur = self.PERSONNAGE.vitesse
-        self.reference_position = self.PERSONNAGE.position_int_x(), self.PERSONNAGE.position_int_y()
+        self.reference_position = self.PERSONNAGE.position_x(), self.PERSONNAGE.position_y()
         
         # --- parametres
         self.rage = 10
@@ -35,12 +35,17 @@ class CPourchasser:
             self.PERSONNAGE.vitesse = self.PERSONNAGE.vitesse * 2
             
             # --- mémorise la position du joueur avant la poursuite
-            self.reference_position = self.PERSONNAGE.IA.IA_PATHFINDING.pos_pnj
+            self.reference_position = (self.PERSONNAGE.position_x(), self.PERSONNAGE.position_y())
             
     def cycle(self):  
-        x, y = int(self.JOUEUR_CIBLE.x), int(self.JOUEUR_CIBLE.y) 
-        self.PERSONNAGE.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua( (x, y) )  
-            
+        xx, yy = self.JOUEUR_CIBLE.position_x(), self.JOUEUR_CIBLE.position_y() 
+        self.PERSONNAGE.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua( (xx, yy) )  
+        
+        if ENUM_DEMO.CHEMIN_VINCENT in VAR.demo:
+            if not self.reference_position == None:
+                xx, yy = self.reference_position
+                pygame.draw.circle(VAR.fenetre, (32,32,255), ((xx * VAR.dim) + 12, (yy * VAR.dim) + 12), 8, 0)   
+                
     def terminer(self):   
         # quand la barre de temps est epuisé, il rentre jusqu'a son chemin
              
@@ -58,7 +63,7 @@ class CPourchasser:
         
         # --- retourne a la position ou le pnj était
         if not self.reference_position == None:
-            x, y = self.reference_position
-            self.PERSONNAGE.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((x, y))  
+            xx, yy = self.reference_position
+            self.PERSONNAGE.IA.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((xx, yy))  
             print("Retourner a la maison ...")
-        #self.chemin_pathfinding = []
+       

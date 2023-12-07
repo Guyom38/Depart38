@@ -13,7 +13,7 @@ from classes.terrain.terrain import *
 
 from objets import *
 from personnages import *
-from classes.joueurs.pathfinding import *
+from classes.terrain.pathfinding import *
 from classes.controlleurs.controlleurs import *
 from classes.qr_code import *
 

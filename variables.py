@@ -1,9 +1,10 @@
 from fonctions import *
 from constantes import *
 
-demo = []
+demo = [ENUM_DEMO.CHEMIN_VINCENT, ENUM_DEMO.DIJISKRA]
 phase_dans_le_jeu = ENUM_PHASE.JEU
-fichier_map = 'depart'
+
+fichier_map = ''
 resolution_x = 1920
 resolution_y = 1080
 
@@ -19,7 +20,7 @@ boucle = True
 pas = 0.01
 dim = 24
 
-fps_max = 25
+fps_max = 30
 
 dimDiv2 = dim // 2
 dimMul2 = dim * 2
@@ -86,4 +87,5 @@ C_MODERN_OFFICE = 0
 C_MODERN_EXTERIORS = 0
 C_INTERIOR = 0
 
+#http://noproblo.dayjo.org/ZeldaSounds/
 #http://noproblo.dayjo.org/ZeldaSounds/

@@ -25,26 +25,30 @@ class CRaytracing:
                 ligne.append( ( int(rayon*math.cos(angle2)), int(rayon*math.sin(angle2))) )
             self.rayons.append(ligne)
             
-            
-    def afficher(self, personnage):
-        if personnage.direction == None : return
-        couleur_champ_vision = personnage.couleur_vision
-        
-        # --- rect de la forme a creer
-        
+    
+    def controle_detection_joueurs(self, personnage):
+        couleur_champ_vision = personnage.couleur_vision        
         precision = VAR.precision_champs
+        
         plages = self.calculer_plage_angles(personnage, self.amplitude_balancement_ref, precision) 
         liste_joueurs_detectes, forme, rect_forme = self.generation_du_champs_de_vision(plages, personnage)
         
+        # --- detection d'au moins un joueur dans le champ de vision
         if len(liste_joueurs_detectes) > 0:
-            couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)            
-            personnage.MECANIQUE_ACTION.demarrer(CPourchasser(personnage, liste_joueurs_detectes[0]))
-            
-                 
+            couleur_champ_vision = (255, 0, 0, VAR.ray_alpha)   
+            premier_joueur_detecte = liste_joueurs_detectes[0]  
+            personnage.MECANIQUE_ACTION.demarrer(CPourchasser(personnage, premier_joueur_detecte))        
+        return couleur_champ_vision, forme, rect_forme 
+    
+    
+    def afficher(self, personnage):
+        if personnage.direction == None : return
+        
+        # --- rect de la forme a creer
+        couleur_champ_vision, forme, rect_forme = self.controle_detection_joueurs(personnage)
         self.dessiner_vision(forme, couleur_champ_vision, rect_forme)
     
-    
-    
+       
     
     def calculer_plage_angles(self, personnage, amplitude_balancement, precision):        
         
@@ -69,8 +73,6 @@ class CRaytracing:
             objet_zone_vision = (px2-2, py2-2, 4, 4)
             objet_joueur = (joueur.position_int_x(), joueur.position_int_y(), 20, 6)
             joueur_detecte = collision(objet_zone_vision, objet_joueur)
-            
-            
                          
             # --- demo --- detection (FACULTATIF)
             if VAR.demo == ENUM_DEMO.CHAMP_VISION: 
@@ -155,8 +157,7 @@ class CRaytracing:
                     
         # --- ajoute la position du joueur comme dernier point de la figure (centre du cercle)        
         contour.append((px2 , py2))            
-        
-        
+                
         # --- retourne la liste des joueurs dans le champs de vision
         return (liste_joueurs_detectes, contour, (x1, y1, x2, y2))
     
@@ -173,8 +174,7 @@ class CRaytracing:
             forme_reajustee = []
             for xxx, yyy in contour_forme:
                 forme_reajustee.append((xxx - x1, yyy - y1))
-                         
-                    
+                                             
             forme_tmp = pygame.Surface((x2 - x1, y2 - y1), pygame.SRCALPHA).convert_alpha()
             pygame.draw.polygon(forme_tmp, couleur_vision, forme_reajustee, 0)    
             pygame.draw.polygon(forme_tmp, (255, 255, 255, 255), forme_reajustee, 2)                 
