@@ -1,6 +1,7 @@
 import variables as VAR
 import fonctions as FCT
 import pygame
+from pygame.locals import *
 import random
 import time
 import classes.joueurs.algos.algo_dijkstra as AD
@@ -49,20 +50,15 @@ class CPathfinding:
         for x in range(0, VAR.dimension_x):        
             ligne_obstacles = []
             for y in range(0, VAR.dimension_y):       
-                #xx, yy = (x * VAR.dim) + offset, (y * VAR.dim) + offset                  
-                
                 obstacle = self.obstacle_detecte((x * VAR.dim)+offset, (y * VAR.dim)+offset)
                 ligne_obstacles.append(1 if obstacle else 0)    
                 if not obstacle:
                     self.zones_libres.append((x, y))   
                 
                 pygame.draw.rect(VAR.fenetre, (255, 0, 0) if obstacle else (0,255,0), (x * VAR.dim, y * VAR.dim, VAR.dim, VAR.dim), 0 ) 
-                pygame.display.update()
-                time.sleep(0)
-                     
-                #ligne_obstacles.append(1 if arrayBlocage[xx][yy] == 255 else 0)    
-                #if arrayBlocage[xx][yy] == 0:
-                #    self.zones_libres.append((x, y))        
+            pygame.display.update()
+            time.sleep(0.0001)
+             
                        
             self.grille_obstacles.append(ligne_obstacles)
         print("PATHFINDING, zones libres : " + str(len(self.zones_libres)) + " => " + str(len(self.zones_libres)**2))        
@@ -74,11 +70,8 @@ class CPathfinding:
         offset_y = 0 - self.mask_rect.top 
      
         collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (offset_x, offset_y))
-        print(str((x, y, collision)))
+        #print(str((x, y, collision)))
         if not collision == None:
-            if ENUM_DEMO.BLOCAGE in VAR.demo :
-                pygame.draw.rect(VAR.fenetre, (255,255,255), self.mask_rect, 0)  
-
             return True
         return False
     
@@ -110,37 +103,32 @@ class CPathfinding:
         ignore_deduction = 0  
         nb_deduction = 0 
         maximum = len(self.zones_libres)**2
-        aff = True  
-        
+    
         # --- Boucle principale qui compare le premier avec le dernier
         for indexA, zoneA in enumerate(self.zones_libres):
-            if aff:
-                VAR.fenetre.fill( (200,200,200) )
-                VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
+            
+            VAR.fenetre.fill( (200,200,200) )
+            VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
                 
-            for indexB, zoneB in enumerate(self.zones_libres[::-1]):
+            for indexB, zoneB in enumerate(self.zones_libres[::-1]):                
                 chemin = []
                  
                 # --- affiche les zones bloquées                
-                if aff:
-                    self.afficher_destinations_possibles(zoneA)
+                self.afficher_destinations_possibles(zoneA)
                
                 # vérifie que B n'existe pas dans la dico
+
                 if self.preparation_AB( zoneA, zoneB):
-                 
-                    # genere le chemin entre zoneA et zoneB
-                    chemin, _, _ = AD.CDijkstra.algo_dijkstra(zoneA, zoneB, self.grille_obstacles)
-                        
-                    if aff:                    
-                        for x, y in chemin:                                
-                            pygame.draw.circle(VAR.fenetre, (0,255,0), ((x * VAR.dim) + 16, (y * VAR.dim)+16), 16, 0)
-                                
+                    # genere le chemin entre zoneA et zoneB             
+                    chemin, _, _ = AD.CDijkstra.algo_dijkstra(zoneA, zoneB, self.grille_obstacles)          
+                    
                     # si un chemin a été trouvé
                     if len(chemin) > 0:
                             
                         # ajoute a la liste ce nouveau chemin
                         self.PARCOURS[index] = chemin  
 
+         
                         for depart in range(0, len(chemin)): 
                             zoneC = chemin[depart]     
                             for arrive in range(len(chemin)-1, -1, -1):  
@@ -158,35 +146,15 @@ class CPathfinding:
                 else:   
                     ignore_dij +=1
                 
-                    if aff:           
-                        for zoneE in self.zones_libres:
-                            if zoneE in self.ZONES:
-                                x, y = zoneE
-                                x, y = (x * VAR.dim) , (y * VAR.dim)
-                                image_texte = VAR.ecriture10.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
-                                VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
-                    
-                    if time.time() - t > 0.5:
-                        total_secondes = ((time.time() - duree) / (index+ignore_dij)) * maximum # Exemple: 3665 secondes
-                        heures = int(total_secondes // 3600)  # Convertit les secondes en heures
-                        minutes = int((total_secondes % 3600) // 60)  # Convertit le reste en minutes
-                        secondes = int(total_secondes % 60)  # Le reste sont les secondes
+        
+                self.afficher_chemins_trouves_sur_zone()
+                if time.time() - t > 1:   
+                    texte = self.afficher_statistiques(t, duree, index, ignore_dij, maximum, indexA, indexB, nb_deduction)
+                    t = time.time()
+                pygame.display.update()
+                time.sleep(0.0001)
 
-                        texte = []
-                        texte.append("IndexA : " + str(indexA) + " / " + "IndexB : " + str(indexB) + " / " + str(len(self.zones_libres)))
-                        texte.append("Nb Parcours : " + str(index) +"  // Chemins deduis : " + str(nb_deduction))
-                        texte.append("Ignore Pathfinding : " + str(ignore_dij))
-                        texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
-                        texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
-                        
-                        pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
-                        for y, txt in enumerate(texte):
-                            image_texte = VAR.ecriture10.render( txt, True, (255,255,255)) 
-                            VAR.fenetre.blit(image_texte, (10,y*20))   
-                        
-                        pygame.display.update()
-                        t = time.time()    
-            
+                
         time.sleep(10)       
         pygame.display.update()  
           
@@ -197,6 +165,36 @@ class CPathfinding:
         print("Relancer le jeu, les chemins ont été calculés.")
         quit()
     
+    def afficher_chemins_trouves_sur_zone(self):
+        for zoneE in self.zones_libres:
+            if zoneE in self.ZONES:
+                x, y = zoneE
+                x, y = (x * VAR.dim) , (y * VAR.dim)
+                image_texte = VAR.ecriture10.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
+                VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
+        
+    def afficher_statistiques(self, t, duree, index, ignore_dij, maximum, indexA, indexB, nb_deduction):
+        
+        total_secondes = ((time.time() - duree) / (index+ignore_dij)) * maximum # Exemple: 3665 secondes
+        heures = int(total_secondes // 3600)  # Convertit les secondes en heures
+        minutes = int((total_secondes % 3600) // 60)  # Convertit le reste en minutes
+        secondes = int(total_secondes % 60)  # Le reste sont les secondes
+
+        texte = []
+        texte.append("IndexA : " + str(indexA) + " / " + "IndexB : " + str(indexB) + " / " + str(len(self.zones_libres)))
+        texte.append("Nb Parcours : " + str(index) +"  // Chemins deduis : " + str(nb_deduction))
+        texte.append("Ignore Pathfinding : " + str(ignore_dij))
+        texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
+        texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
+                        
+        pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
+        for y, txt in enumerate(texte):
+            image_texte = VAR.ecriture10.render( txt, True, (255,255,255)) 
+            VAR.fenetre.blit(image_texte, (10,y*20))   
+                        
+        return texte
+                        
+        
     def afficher_destinations_possibles(self, depart):
         if not depart in self.ZONES:
             print("Aucune destination")
@@ -205,7 +203,6 @@ class CPathfinding:
         x1, y1 = depart        
         pygame.draw.rect(VAR.fenetre, (255,0,0), (x1 * VAR.dim, y1 * VAR.dim, VAR.dim, VAR.dim), 0)
         for zone, _ in self.ZONES[depart].items():
-
             x2, y2 = zone
             pygame.draw.rect(VAR.fenetre, (0,128,128), (x2 * VAR.dim, y2 * VAR.dim, VAR.dim, VAR.dim), 0)
 
