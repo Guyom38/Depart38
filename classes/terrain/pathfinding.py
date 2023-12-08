@@ -34,11 +34,9 @@ class CPathfinding:
         with open(fichier, 'rb') as fichier:
             donnees = pickle.load(fichier)
             self.PARCOURS = donnees['PARCOURS']
-            self.ZONES = donnees['ZONES']         
-            
-            
+            self.ZONES = donnees['ZONES']       
                         
-    def generer_matrice_obstacles(self, arrayBlocage):      
+    def generer_matrice_obstacles(self):      
         self.grille_obstacles = []
         self.zones_libres = []
         
@@ -57,7 +55,7 @@ class CPathfinding:
                 
                 pygame.draw.rect(VAR.fenetre, (255, 0, 0) if obstacle else (0,255,0), (x * VAR.dim, y * VAR.dim, VAR.dim, VAR.dim), 0 ) 
             pygame.display.update()
-            time.sleep(0.0001)
+            time.sleep(0.01)
              
                        
             self.grille_obstacles.append(ligne_obstacles)
@@ -75,26 +73,34 @@ class CPathfinding:
             return True
         return False
     
-    def preparation_AB(self, zoneA, zoneB):
-        if not zoneA == zoneB: 
-            # --- si la zone de depart et d'arrivee (x,y) n'ont jamais été initialisées    
-            if not zoneA in self.ZONES: 
-                self.ZONES[zoneA] = {}
-                return True                            
-            elif not zoneB in self.ZONES: 
-                self.ZONES[zoneB] = {}
-                return True
-            
-            if not zoneB in self.ZONES[zoneA] or not zoneA in self.ZONES[zoneB]: 
-                return True
-        return False
-                
+    
+    
+    
+    
+    
+    def zone_cible_a_calculer(self, zoneA, zoneB):
+        return ( not zoneA == zoneB and self.ZONES[zoneA][zoneB] == None )
+    
+    def initialiser_zones_completes(self):
+        t = time.time()
+        print("[PATHFINDING][ZONE] Initialisation")
+        self.ZONES = {}
+        for indexA, zoneA in enumerate(self.zones_libres):
+            self.ZONES[zoneA] = {}
+            for indexB, zoneB in enumerate(self.zones_libres):
+                self.ZONES[zoneA][zoneB] = None
+        print("[PATHFINDING][ZONE] Terminée (" + str(round(time.time() - t, 2)) + "s)")
+        
+        
+                        
     def generer_tous_les_parcours(self):
         
         # --- Initialisation des differentes variables
         self.PARCOURS = {}
-        self.ZONES = {}
-                
+        
+        self.initialiser_zones_completes()
+        
+        print("[PATHFINDING][GENERER] Initialisation")       
         t = time.time() 
         duree=time.time()
       
@@ -109,16 +115,18 @@ class CPathfinding:
             
             VAR.fenetre.fill( (200,200,200) )
             VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
-                
+            pygame.display.update()
+            
+            print("[PATHFINDING][GENERER][ZONEA]" + str(indexA))      
             for indexB, zoneB in enumerate(self.zones_libres[::-1]):                
                 chemin = []
                  
                 # --- affiche les zones bloquées                
-                self.afficher_destinations_possibles(zoneA)
+                #self.afficher_destinations_possibles(zoneA)
                
                 # vérifie que B n'existe pas dans la dico
 
-                if self.preparation_AB( zoneA, zoneB):
+                if self.zone_cible_a_calculer( zoneA, zoneB):
                     # genere le chemin entre zoneA et zoneB             
                     chemin, _, _ = AD.CDijkstra.algo_dijkstra(zoneA, zoneB, self.grille_obstacles)          
                     
@@ -134,10 +142,10 @@ class CPathfinding:
                             for arrive in range(len(chemin)-1, -1, -1):  
                                 zoneD = chemin[arrive]
                                     
-                                if self.preparation_AB( zoneC, zoneD):                    
+                                if self.zone_cible_a_calculer( zoneC, zoneD):                    
                                     self.ZONES[zoneC][zoneD] = index, depart, arrive, 1
                                     self.ZONES[zoneD][zoneC] = index, depart, arrive, -1
-                                    
+                                    #print("[PATHFINDING][GENERER][" +  str(zoneC) +"][" + str(zoneD) +"]" + str( ( index, depart, arrive, 1 ))) 
                                     nb_deduction +=1
                                 else:
                                     ignore_deduction +=1    
@@ -147,12 +155,15 @@ class CPathfinding:
                     ignore_dij +=1
                 
         
-                self.afficher_chemins_trouves_sur_zone()
-                if time.time() - t > 1:   
+                
+                if time.time() - t > 0.5:   
+                    #self.afficher_chemins_trouves_sur_zone()
                     texte = self.afficher_statistiques(t, duree, index, ignore_dij, maximum, indexA, indexB, nb_deduction)
+                    print(texte)
                     t = time.time()
-                pygame.display.update()
-                time.sleep(0.0001)
+                    #pygame.display.update()
+
+      
 
                 
         time.sleep(10)       
@@ -187,24 +198,22 @@ class CPathfinding:
         texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
         texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
                         
-        pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
-        for y, txt in enumerate(texte):
-            image_texte = VAR.ecriture10.render( txt, True, (255,255,255)) 
-            VAR.fenetre.blit(image_texte, (10,y*20))   
+        #pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
+        #for y, txt in enumerate(texte):
+        #    image_texte = VAR.ecriture10.render( txt, True, (255,255,255)) 
+        #    VAR.fenetre.blit(image_texte, (10,y*20))   
                         
-        return texte
+        return str(texte)
                         
         
     def afficher_destinations_possibles(self, depart):
-        if not depart in self.ZONES:
-            print("Aucune destination")
-            return
-        
+              
         x1, y1 = depart        
         pygame.draw.rect(VAR.fenetre, (255,0,0), (x1 * VAR.dim, y1 * VAR.dim, VAR.dim, VAR.dim), 0)
-        for zone, _ in self.ZONES[depart].items():
-            x2, y2 = zone
-            pygame.draw.rect(VAR.fenetre, (0,128,128), (x2 * VAR.dim, y2 * VAR.dim, VAR.dim, VAR.dim), 0)
+        for zone, donnees in self.ZONES[depart].items():
+            if not donnees == None:
+                x2, y2 = zone
+                pygame.draw.rect(VAR.fenetre, (0,128,128), (x2 * VAR.dim, y2 * VAR.dim, VAR.dim, VAR.dim), 0)
 
             
     

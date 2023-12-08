@@ -106,7 +106,7 @@ class CMoteur:
         
         if VAR.phase_dans_le_jeu == ENUM_PHASE.JEU:
             self.TERRAIN.preparer_parcours_joueurs()     
-            self.PERSONNAGES.PATHFINDING.generer_matrice_obstacles(self.TERRAIN.arrayBlocage)       
+            self.PERSONNAGES.PATHFINDING.generer_matrice_obstacles()       
             self.PERSONNAGES.PATHFINDING.charger_pathfinding()
         
         self.afficher_barre_progression(100, 100, "Démarrage du jeu")  

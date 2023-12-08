@@ -2,7 +2,7 @@
 from queue import PriorityQueue
 import heapq
 import time
-from multiprocessing import Pool
+
 
 class CNoeud:
     def __init__(self, parent=None, position=None):
@@ -22,16 +22,12 @@ class CNoeud:
 
 
 class CDijkstra:
-    NombreDeProcessus = 16
+  
+
+    def algo_dijkstra(depart, arrivee, grille_obstacles):        
+        return CDijkstra.algo_dijkstra_gpt(depart, arrivee, grille_obstacles)
     
-    def parallèle_dijkstra(args):
-        return CDijkstra.algo_dijkstra_gpt(*args)
-
-    def executer_en_parallele(self, grille_obstacles, paires_depart_arrivee):
-        with Pool(processes=CDijkstra.NombreDeProcessus) as pool:
-            resultats = pool.map(CDijkstra.parallèle_dijkstra, [(depart, arrivee, grille_obstacles) for depart, arrivee in paires_depart_arrivee])
-
-    def algo_dijkstra(depart, arrivee, grille_obstacles):
+    
         t1 = time.time()        
         valeurs1 = CDijkstra.algo_dijkstra_original(depart, arrivee, grille_obstacles)
         t2 = time.time()
