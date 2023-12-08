@@ -50,10 +50,10 @@
         },
         "map2024.tmx": {
             "scale": 0.5,
-            "selectedLayer": 0,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 1296,
-                "y": 734
+                "x": 1071,
+                "y": 730
             }
         }
     },

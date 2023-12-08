@@ -27,7 +27,7 @@ class CIA_PATHFINDING:
         # Vérifie si la cible ou la position du PNJ a changé
         if not position_cible == self.pos_cible or not position_pnj == self.pos_pnj:
             self.pos_cible, self.pos_pnj = position_cible, position_pnj     
-                    
+            print("Changement de destination")       
             # Utilisation de l'algorithme de Dijkstra pour le pathfinding
             if 1 == 1:  # Ce if semble être un placeholder pour une condition future
                 chemin_pathfinding, self.ouverte, self.ferme = AD.CDijkstra.algo_dijkstra(position_pnj, position_cible, self.PATHFINDING.grille_obstacles)   

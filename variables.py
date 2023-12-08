@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = [ENUM_DEMO.DIJISKRA, ENUM_DEMO.CHEMIN_VINCENT]
+demo = [ENUM_DEMO.DIJISKRA, ENUM_DEMO.CHEMIN_VINCENT, ENUM_DEMO.PATHFINDING_OUVERTFERME]
 phase_dans_le_jeu = ENUM_PHASE.JEU
 
 fichier_map = ''

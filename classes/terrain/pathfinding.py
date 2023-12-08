@@ -18,7 +18,8 @@ class CPathfinding:
         self.zones_libres = []      
         
         self.PARCOURS = {}       
-        self.ZONES = []        
+        self.ZONES = {}
+        self.ZONES_CPT = {}
         
         self.image_mask = pygame.Surface((VAR.dim, VAR.dim)) # 32 pixel => 20
         self.mask = pygame.mask.from_surface(self.image_mask)
@@ -59,8 +60,12 @@ class CPathfinding:
              
                        
             self.grille_obstacles.append(ligne_obstacles)
-        print("PATHFINDING, zones libres : " + str(len(self.zones_libres)) + " => " + str(len(self.zones_libres)**2))        
-   
+        
+        with open('.caches/'+VAR.fichier_map+'_obstacle.pkl', 'wb') as fichier:
+            pickle.dump({'ZONES_LIBRES': self.zones_libres, "GRILLE_OBSTACLES": self.grille_obstacles}, fichier, protocol=pickle.HIGHEST_PROTOCOL)
+        
+        print("PATHFINDING, zones libres : " + str(len(self.zones_libres)) + " => " + str(len(self.zones_libres)**2))       
+            
     def obstacle_detecte(self, x, y): 
         self.mask_rect.center = x, y 
        
@@ -85,12 +90,17 @@ class CPathfinding:
         t = time.time()
         print("[PATHFINDING][ZONE] Initialisation")
         self.ZONES = {}
+        self.ZONES_CPT = {}
+        
         for indexA, zoneA in enumerate(self.zones_libres):
             self.ZONES[zoneA] = {}
+            self.ZONES_CPT[zoneA] = 0
+            
             for indexB, zoneB in enumerate(self.zones_libres):
                 self.ZONES[zoneA][zoneB] = None
         print("[PATHFINDING][ZONE] Terminée (" + str(round(time.time() - t, 2)) + "s)")
         
+
         
                         
     def generer_tous_les_parcours(self):
@@ -122,7 +132,7 @@ class CPathfinding:
                 chemin = []
                  
                 # --- affiche les zones bloquées                
-                #self.afficher_destinations_possibles(zoneA)
+                
                
                 # vérifie que B n'existe pas dans la dico
 
@@ -145,23 +155,25 @@ class CPathfinding:
                                 if self.zone_cible_a_calculer( zoneC, zoneD):                    
                                     self.ZONES[zoneC][zoneD] = index, depart, arrive, 1
                                     self.ZONES[zoneD][zoneC] = index, depart, arrive, -1
-                                    #print("[PATHFINDING][GENERER][" +  str(zoneC) +"][" + str(zoneD) +"]" + str( ( index, depart, arrive, 1 ))) 
-                                    nb_deduction +=1
-                                else:
-                                    ignore_deduction +=1    
 
-                        index +=1
+                                    self.ZONES_CPT[zoneC] += 1
+                                    self.ZONES_CPT[zoneD] += 1
+                                    nb_deduction += 1
+                                else:
+                                    ignore_deduction += 1    
+
+                        index += 1
                 else:   
-                    ignore_dij +=1
+                    ignore_dij += 1
                 
-        
-                
-                if time.time() - t > 0.5:   
-                    #self.afficher_chemins_trouves_sur_zone()
+                if time.time() - t > 1: 
+                    self.afficher_destinations_possibles(zoneA)  
+                    self.afficher_chemins_trouves_sur_zone()
                     texte = self.afficher_statistiques(t, duree, index, ignore_dij, maximum, indexA, indexB, nb_deduction)
                     print(texte)
                     t = time.time()
-                    #pygame.display.update()
+                    pygame.display.update()
+                    
 
       
 
@@ -181,7 +193,7 @@ class CPathfinding:
             if zoneE in self.ZONES:
                 x, y = zoneE
                 x, y = (x * VAR.dim) , (y * VAR.dim)
-                image_texte = VAR.ecriture10.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
+                image_texte = VAR.ecriture10.render( str(self.ZONES_CPT[zoneE]) , True, (0,255,255)) 
                 VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
         
     def afficher_statistiques(self, t, duree, index, ignore_dij, maximum, indexA, indexB, nb_deduction):
@@ -195,7 +207,7 @@ class CPathfinding:
         texte.append("IndexA : " + str(indexA) + " / " + "IndexB : " + str(indexB) + " / " + str(len(self.zones_libres)))
         texte.append("Nb Parcours : " + str(index) +"  // Chemins deduis : " + str(nb_deduction))
         texte.append("Ignore Pathfinding : " + str(ignore_dij))
-        texte.append("Total : " + str(index+ignore_dij) + " / "+str(maximum))
+        texte.append("Total : " + str(nb_deduction) + " / "+str(maximum))
         texte.append("Estimation : {:03d}h {:02d}m {:02d}s".format(heures,minutes,secondes))
                         
         #pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
