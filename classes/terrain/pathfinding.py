@@ -19,6 +19,9 @@ class CPathfinding:
         self.PARCOURS = {}       
         self.ZONES = []        
         
+        self.image_mask = pygame.Surface((VAR.dim, VAR.dim)) # 32 pixel => 20
+        self.mask = pygame.mask.from_surface(self.image_mask)
+        self.mask_rect = self.image_mask.get_rect(center = (0,0))
         
     def charger_pathfinding(self):
         fichier = '.caches/' + VAR.fichier_map + '.pkl'
@@ -37,21 +40,47 @@ class CPathfinding:
     def generer_matrice_obstacles(self, arrayBlocage):      
         self.grille_obstacles = []
         self.zones_libres = []
+        
+        VAR.fenetre.fill( (255, 255, 255) )
+        VAR.fenetre.blit(self.MOTEUR.TERRAIN.png_blocage, (0, 0))
               
+        
         offset = VAR.dim // 2
         for x in range(0, VAR.dimension_x):        
             ligne_obstacles = []
             for y in range(0, VAR.dimension_y):       
-                xx, yy = (x * VAR.dim) + offset, (y * VAR.dim) + offset                  
-                 
-                ligne_obstacles.append(1 if arrayBlocage[xx][yy] == 255 else 0)    
-                if arrayBlocage[xx][yy] == 0:
-                    self.zones_libres.append((x, y))        
+                #xx, yy = (x * VAR.dim) + offset, (y * VAR.dim) + offset                  
+                
+                obstacle = self.obstacle_detecte((x * VAR.dim)+offset, (y * VAR.dim)+offset)
+                ligne_obstacles.append(1 if obstacle else 0)    
+                if not obstacle:
+                    self.zones_libres.append((x, y))   
+                
+                pygame.draw.rect(VAR.fenetre, (255, 0, 0) if obstacle else (0,255,0), (x * VAR.dim, y * VAR.dim, VAR.dim, VAR.dim), 0 ) 
+                pygame.display.update()
+                time.sleep(0)
+                     
+                #ligne_obstacles.append(1 if arrayBlocage[xx][yy] == 255 else 0)    
+                #if arrayBlocage[xx][yy] == 0:
+                #    self.zones_libres.append((x, y))        
                        
             self.grille_obstacles.append(ligne_obstacles)
         print("PATHFINDING, zones libres : " + str(len(self.zones_libres)) + " => " + str(len(self.zones_libres)**2))        
    
-   
+    def obstacle_detecte(self, x, y): 
+        self.mask_rect.center = x, y 
+       
+        offset_x = 0 - self.mask_rect.left 
+        offset_y = 0 - self.mask_rect.top 
+     
+        collision = self.mask.overlap(self.MOTEUR.TERRAIN.maskBlocage, (offset_x, offset_y))
+        print(str((x, y, collision)))
+        if not collision == None:
+            if ENUM_DEMO.BLOCAGE in VAR.demo :
+                pygame.draw.rect(VAR.fenetre, (255,255,255), self.mask_rect, 0)  
+
+            return True
+        return False
     
     def preparation_AB(self, zoneA, zoneB):
         if not zoneA == zoneB: 
@@ -134,7 +163,7 @@ class CPathfinding:
                             if zoneE in self.ZONES:
                                 x, y = zoneE
                                 x, y = (x * VAR.dim) , (y * VAR.dim)
-                                image_texte = VAR.ecriture.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
+                                image_texte = VAR.ecriture10.render( str(len(self.ZONES[zoneE])) , True, (0,255,255) if len(self.ZONES[zoneE]) == len(self.zones_libres)-1 else (255,255,255)) 
                                 VAR.fenetre.blit(image_texte, (x + ((VAR.dim - image_texte.get_width()) // 2), y + ((VAR.dim - image_texte.get_height()) // 2)))   
                     
                     if time.time() - t > 0.5:
@@ -152,7 +181,7 @@ class CPathfinding:
                         
                         pygame.draw.rect(VAR.fenetre, (0,0,0), (0,0,500,112))
                         for y, txt in enumerate(texte):
-                            image_texte = VAR.ecriture.render( txt, True, (255,255,255)) 
+                            image_texte = VAR.ecriture10.render( txt, True, (255,255,255)) 
                             VAR.fenetre.blit(image_texte, (10,y*20))   
                         
                         pygame.display.update()

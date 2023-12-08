@@ -3,7 +3,7 @@ import xml.etree.ElementTree as XML
 
 import fonctions as FCT
 import variables as VAR
-from classes.moteur.objets import *
+from objets import *
 import os
 
 import classes.terrain.tiled_images as TI
