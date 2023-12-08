@@ -4,15 +4,15 @@ from pygame.locals import *
 
 import time
 
-from particules import *
+from classes.moteur.particules import *
 
 import variables as VAR
 
 from fonctions import *
 from classes.terrain.terrain import *
 
-from objets import *
-from personnages import *
+from classes.moteur.objets import *
+from classes.moteur.personnages import *
 from classes.terrain.pathfinding import *
 from classes.controlleurs.controlleurs import *
 from classes.qr_code import *

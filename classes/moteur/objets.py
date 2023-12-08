@@ -1,12 +1,12 @@
 import variables as VAR
-import objet as OBJ
+import classes.moteur.objet as OBJ
 import pygame
 import time, os
 
 from constantes import *
 import fonctions as FCT
 
-from liste_objets import *
+from classes.moteur.liste_objets import *
 
 
 

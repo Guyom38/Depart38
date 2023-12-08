@@ -1,7 +1,7 @@
 from fonctions import *
 from constantes import *
 
-demo = []
+demo = [ENUM_DEMO.CHEMIN_VINCENT, ENUM_DEMO.DIJISKRA]
 phase_dans_le_jeu = ENUM_PHASE.JEU
 
 fichier_map = ''
@@ -42,6 +42,10 @@ web_socket = False
 web_socket_id_partie = generate_short_id()
 JOUEURS_WEBSOCKET = {}
 DICO_NAMES_WEBSOCKET = {}
+
+# pointeur pour le thread
+MOTEUR = None
+
 
 # --- joystiques
 nombre_manettes = 0
