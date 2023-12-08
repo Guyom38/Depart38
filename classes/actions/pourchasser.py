@@ -68,7 +68,8 @@ class CPourchasser:
             self.MECANIQUE_ACTION.configurer(self.fatiguer, self.couleur2) 
             
             # --- action       
-            self.PERSONNAGE.vitesse = 3            
+            self.PERSONNAGE.vitesse = 2 # lent
+                        
             # --- retourne a la position ou le pnj était        
             xx, yy = self.IA_PARCOURS.position_precedente
             self.IA_PATHFINDING.traque_calculer_le_chemin_jusqua((xx, yy))  

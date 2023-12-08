@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map.tmx",
+    "activeFile": "map2024.tmx",
     "expandedProjectPaths": [
         ".",
         "32"
@@ -14,7 +14,7 @@
             "scaleInEditor": 1
         },
         "32/Modern_Exteriors_Complete_Tileset_32x32.tsx": {
-            "scaleInDock": 0.5,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "32/Modern_Office_Black_Shadow_32x32.tsx": {
@@ -44,16 +44,16 @@
             "scale": 0.5791213768115941,
             "selectedLayer": 12,
             "viewCenter": {
-                "x": 965.2553374520999,
-                "y": 547.3809337608509
+                "x": 963.5285837178385,
+                "y": 545.6541800265895
             }
         },
         "map2024.tmx": {
-            "scale": 0.4440217391304348,
-            "selectedLayer": 2,
+            "scale": 0.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1272.4602203182376,
-                "y": 713.9290085679315
+                "x": 1296,
+                "y": 734
             }
         }
     },
@@ -63,7 +63,6 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 80,
     "openFiles": [
-        "map.tmx",
         "map2024.tmx"
     ],
     "project": "projet.tiled-project",

@@ -15,6 +15,7 @@ class CObjet:
         self.etat = etat
         
         self.objet_utilisable = (False if parametres_objet == None else parametres_objet[4])
+        self.taille = (1 if parametres_objet == None else parametres_objet[1]) # x, y
         
         self.tempo = 0
         self.tempoTimer = time.time()
@@ -40,19 +41,19 @@ class CObjet:
             self.tempo += 1
             self.tempoTimer = time.time()
     
-    def generer_ombre_selection(self, rayon):
-        ombre = pygame.Surface((rayon,rayon), pygame.SRCALPHA).convert_alpha()        
-        dim2 = rayon // 2
-        pygame.draw.circle(ombre, (255,255,0, 100), (dim2, dim2), dim2)
+    def generer_ombre_selection(self, diametre):
+        ombre = pygame.Surface((diametre, diametre), pygame.SRCALPHA).convert_alpha()        
+        rayon = diametre // 2
+        pygame.draw.circle(ombre, (255,255,0, 100), (rayon, rayon), rayon)
         return ombre
     
-    def afficher_zone_selection(self):
-        objet_x = self.position_pixel_x()
-        objet_y = self.position_pixel_y() + self.image[0].get_height()     
+    def afficher_zone_activable(self):
+        objet_x = self.position_int_x()
+        objet_y = self.position_int_y() + (self.taille[1] * VAR.dim)   
         
         joueurs_contact = self.ya_t_il_contact_avec_des_joueurs(objet_x, objet_y) 
         if  len(joueurs_contact) > 0:
-            rayon = 1 + (self.tempo % (VAR.dimDiv2)) * 4
+            rayon = 1 + ( (self.tempo % (VAR.dimDiv2)) * 4 )
             image_ombre = self.generer_ombre_selection(rayon)
             centre = (VAR.dim - image_ombre.get_width()) // 2            
              

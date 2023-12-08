@@ -71,7 +71,7 @@ class CMoteur:
             qrcode_image = generate_qr_code(VAR.urlQrCode)
             self.imageQrCode = qr_image_to_pygame_surface(qrcode_image)
         
-        x, y, dimx, dimy = 57 * VAR.dim, 1 * VAR.dim, 18 * VAR.dim, 18 * VAR.dim
+        x, y, dimx, dimy = 5 * VAR.dim, 20 * VAR.dim, 6 * VAR.dim, 6 * VAR.dim
         image_qrcode = pygame.transform.smoothscale(self.imageQrCode, (dimx, dimy))
         VAR.fenetre.blit( image_qrcode, (x, y))
     
@@ -154,8 +154,8 @@ class CMoteur:
               
             self.ELEMENTS_VISUELS.afficher()   
 
-            if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
-                self.dessiner_QrCode()
+            #if VAR.phase_dans_le_jeu == ENUM_PHASE.SALLE_ATTENTE:
+            self.dessiner_QrCode()
                 
             #self.afficher_performances()
   

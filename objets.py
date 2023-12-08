@@ -82,7 +82,7 @@ class CObjets:
         for key, objet in self.liste_objets_tries:   
             if isinstance(objet, OBJ.CObjet):
                 if objet.objet_utilisable:
-                    objet.afficher_zone_selection()
+                    objet.afficher_zone_activable()
         FCT.Performance('OBJETS.controle_proximites()', t)  
               
     def afficher(self):  
@@ -105,7 +105,7 @@ class CObjets:
             nombre2 = int(key[4:8])  # Convertit "4567" en entier
             nombre3 = int(key[8])    # Convertit "0" en entier
 
-            key1 = "y:" + str(nombre1//VAR.dim)+" x:" + str(nombre2//VAR.dim)+" c:" + str(nombre3)
+            key1 = "y:" + str(nombre1 // VAR.dim)+" x:" + str(nombre2 // VAR.dim)+" c:" + str(nombre3)
             key2 = key
                 
             txt = key1 + " (" + str(objet.index) +") " + str(key2)
